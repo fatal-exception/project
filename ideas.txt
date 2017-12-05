@@ -1,0 +1,7 @@
+Text search for fundamentalism / unchallenged ideas?
+voting app for smartphones
+Display v large graphs so users can browser them effectively - Peter Wood
+automata visual simulator - M Zakhariyashev
+text abridger for hansard - how many m/f in chamber, how many words each say proportionally to how many m/f there are and how many words in total
+    How specialised is the language used by MPs? Diff vocabulary used by background? Does it have a higher social register than normal discourse?
+    Which issues take the most words in each sitting, proportionally? Could this be pie-charted? How does that compare to media coverage of, say, the previous month?

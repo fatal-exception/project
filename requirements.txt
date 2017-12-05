@@ -1,0 +1,4 @@
+nltk
+ipython
+doit
+requests
