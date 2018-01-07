@@ -77,3 +77,7 @@ nltk_data/
 
 # Idea
 .idea/
+
+2venv
+
+config.yml

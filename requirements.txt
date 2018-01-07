@@ -1,4 +1,6 @@
 nltk
 ipython
-doit
+invoke
 requests
+pyyaml
+gensim
