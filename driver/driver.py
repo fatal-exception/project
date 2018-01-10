@@ -27,16 +27,20 @@ def get_hansard_titles(datestring, content_type):
 
     resp = requests.get(request_url)
 
-    xml_root = etree.fromstring(resp.content)
+    if "No data to display" in resp.text:
+        return [("No data to display for this date", "N/A", "N/A")]
+    else:
 
-    titles = []
-    for elem in xml_root.iter():
-        if elem.tag == 'body' and has_sibling(elem, 'listurl'):
-            listurl_elem = get_sibling(elem, 'listurl')
-            titles.append((elem.text, make_twfy_html_url(listurl_elem.text),
-                           make_twfy_xml_url(listurl_elem.text, content_type)))
+        xml_root = etree.fromstring(resp.content)
 
-    return titles
+        titles = []
+        for elem in xml_root.iter():
+            if elem.tag == 'body' and has_sibling(elem, 'listurl'):
+                listurl_elem = get_sibling(elem, 'listurl')
+                titles.append((elem.text, make_twfy_html_url(listurl_elem.text),
+                               make_twfy_xml_url(listurl_elem.text, content_type)))
+
+        return titles
 
 
 def has_sibling(elem, tag_name):
