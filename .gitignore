@@ -78,6 +78,8 @@ nltk_data/
 # Idea
 .idea/
 
-2venv
+venv
 
 config.yml
+
+hansard_debate_list*

@@ -1,0 +1,2 @@
+class SiblingNotFoundException(Exception):
+    pass

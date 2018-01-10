@@ -1,0 +1,71 @@
+from util.config_parser import parse_config
+from exception import SiblingNotFoundException
+import requests
+import lxml.etree as etree
+
+
+
+def get_hansard_debate_list(datestring):
+    """
+    Given a datetime date, download the Hansard xml for the specified date
+    :param datestring: e.g. '2017-12-04'
+    :return xml in a unicode string, of the hansard list of debates from TWFY
+    """
+    twfy_key = parse_config()["api_key"]
+    resp = requests.get('https://www.theyworkforyou.com/api/getDebates?date={}&type=commons&key={}&output=xml'
+                        .format(datestring, twfy_key))
+    with open('hansard_debate_list.xml', 'w') as f:
+        f.write(resp.text)
+
+
+def has_sibling(elem, tag_name):
+    """
+    return True if the given LXML Etree Element has a sibling with the given tag:
+    :param elem: Element being examined
+    :param tag_name:
+    :return: True if the elem has >= 1 signling with tag_name
+    """
+    for sibling in elem.itersiblings():
+        if sibling.tag == tag_name:
+            return True
+    return False
+
+
+def get_sibling(elem, tag_name):
+    """
+    return True if the given LXML Etree Element has a sibling with the given tag:
+    :param elem: Element being examined
+    :param tag_name:
+    :return: True if the elem has >= 1 signling with tag_name
+    """
+    for sibling in elem.itersiblings():
+        if sibling.tag == tag_name:
+            return sibling
+    raise SiblingNotFoundException
+
+
+def make_twfy_html_url(text):
+    return 'https://www.theyworkforyou.com{}'.format(text)
+
+
+def make_twfy_xml_url(text):
+    return 'https://www.theyworkforyou.com/pwdata/scrapedxml/debates/debates{}.xml'\
+        .format(text.split('=')[1].split('.')[0])
+
+
+def get_hansard_titles(filename='hansard_debate_list.xml'):
+    tree = etree.parse(filename)
+    root = tree.getroot()
+    titles = []
+    for elem in root.iter():
+        if elem.tag == 'body' and has_sibling(elem, 'listurl'):
+            titles.append((elem.text, make_twfy_html_url(get_sibling(elem, 'listurl').text),
+                           make_twfy_xml_url(get_sibling(elem, 'listurl').text)))
+    return titles
+
+
+def get_hansard_debate(ctx, date, debate_id):
+    resp = requests.get('https://www.theyworkforyou.com/pwdata/scrapedxml/debates/debates2017-12-04a.xml') # TODO make dynamic
+    with open('hansard_{}_{}.xml'.format(date, debate_id, 'wb')) as hansard_file:
+        hansard_file.write(resp.content)
+

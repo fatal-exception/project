@@ -1,6 +1,8 @@
-nltk
-ipython
-invoke
-requests
-pyyaml
 gensim
+invoke
+ipython
+lxml
+nltk
+pytest
+pyyaml
+requests
