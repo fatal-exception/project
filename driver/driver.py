@@ -3,31 +3,29 @@ from exception import SiblingNotFoundException
 import requests
 import lxml.etree as etree
 
-
-def get_hansard_debate_titles(datestring):
-    twfy_key = parse_config()["api_key"]
-    resp = requests.get(
-        'https://www.theyworkforyou.com/api/getDebates?date={}&type=commons&key={}&output=xml'
-        .format(datestring, twfy_key))
-    root = etree.fromstring(resp.content)
-    titles = []
-    for elem in root.iter():
-        if elem.tag == 'body' and has_sibling(elem, 'listurl'):
-            listurl_elem = get_sibling(elem, 'listurl')
-            titles.append((elem.text, make_twfy_debate_html_url(listurl_elem.text),
-                           make_twfy_debate_xml_url(listurl_elem.text)))
-    return titles
+# Prefixes used for each content type by TWFY
+# 'Content-Type': ['url-prefix', 'file-prefix']
+prefixes = {'Wrans': ['wrans', 'answers'],
+            'WMS': ['wms', 'ministerial'],
+            'Debates': ['debates', 'debates']}
 
 
-def get_hansard_wms_titles(datestring):
+def get_hansard_titles(datestring, content_type):
     """
-    Given a datetime date, download the Hansard xml for the specified date
+    Given a date, download the Hansard xml of specified content for the specified date
     :param datestring: e.g. '2017-12-04'
-    :return xml in a unicode string, of the hansard list of debates from TWFY
+    :param content_type: Wrans, WMS or Debates
+    :return List of titles extracted from the json, as well as their HTML and XML urls
     """
-    twfy_key = parse_config()["api_key"]
-    resp = requests.get('https://www.theyworkforyou.com/api/getWMS?date={}&key={}&output=xml'
-                        .format(datestring, twfy_key))
+    twfy_key = parse_config()['api_key']
+
+    request_url = 'https://www.theyworkforyou.com/api/get{}?date={}&key={}&output=xml'\
+        .format(content_type, datestring, twfy_key)
+
+    if content_type == 'Debates':
+        request_url += '&type=commons'
+
+    resp = requests.get(request_url)
 
     xml_root = etree.fromstring(resp.content)
 
@@ -35,7 +33,8 @@ def get_hansard_wms_titles(datestring):
     for elem in xml_root.iter():
         if elem.tag == 'body' and has_sibling(elem, 'listurl'):
             listurl_elem = get_sibling(elem, 'listurl')
-            titles.append((elem.text, make_twfy_wms_html_url(listurl_elem.text), make_twfy_wms_xml_url(listurl_elem.text)))
+            titles.append((elem.text, make_twfy_html_url(listurl_elem.text),
+                           make_twfy_xml_url(listurl_elem.text, content_type)))
 
     return titles
 
@@ -66,19 +65,14 @@ def get_sibling(elem, tag_name):
     raise SiblingNotFoundException
 
 
-def make_twfy_debate_html_url(text):
+def make_twfy_html_url(text):
     return 'https://www.theyworkforyou.com{}'.format(text)
 
 
-def make_twfy_debate_xml_url(text):
-    return 'https://www.theyworkforyou.com/pwdata/scrapedxml/debates/debates{}.xml'\
-        .format(text.split('=')[1].split('.')[0])
+def make_twfy_xml_url(text, content_type):
 
+    return 'https://www.theyworkforyou.com/pwdata/scrapedxml/{}/{}{}.xml' \
+        .format(prefixes[content_type][0],
+                prefixes[content_type][1],
+                text.split('=')[1].split('.')[0])
 
-def make_twfy_wms_html_url(text):
-    return 'https://www.theyworkforyou.com{}'.format(text)
-
-
-def make_twfy_wms_xml_url(text):
-    return 'https://www.theyworkforyou.com/pwdata/scrapedxml/wms/ministerial{}.xml' \
-        .format(text.split('=')[1].split('.')[0])

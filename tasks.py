@@ -4,13 +4,18 @@ from invoke import task
 
 
 @task
-def print_hansard_debate_titles(ctx, datestring):
-    [print(title) for title in driver.get_hansard_debate_titles(datestring)]
+def print_debate_titles(ctx, datestring):
+    [print(title) for title in driver.get_hansard_titles(datestring, "Debates")]
 
 
 @task
 def print_wms_titles(ctx, datestring):
-    [print(title) for title in driver.get_hansard_wms_titles(datestring)]
+    [print(title) for title in driver.get_hansard_titles(datestring, "WMS")]
+
+
+@task
+def print_wrans_titles(ctx, datestring):
+    [print(title) for title in driver.get_hansard_titles(datestring, "Wrans")]
 
 
 @task
