@@ -1,19 +1,16 @@
 from __future__ import print_function
-from invoke import task
-from invoke import call
-
 from driver import driver
+from invoke import task
 
 
 @task
-def get_hansard_debate_list(ctx, datestring):
-    driver.get_hansard_debate_list(datestring)
+def print_hansard_debate_titles(ctx, datestring):
+    [print(title) for title in driver.get_hansard_debate_titles(datestring)]
 
 
 @task
-def print_hansard_titles(ctx, datestring):
-    get_hansard_debate_list(ctx, datestring)
-    [print(title) for title in driver.get_hansard_titles()]
+def print_wms_titles(ctx, datestring):
+    [print(title) for title in driver.get_hansard_wms_titles(datestring)]
 
 
 @task

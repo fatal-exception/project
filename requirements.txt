@@ -6,3 +6,4 @@ nltk
 pytest
 pyyaml
 requests
+tabulate
