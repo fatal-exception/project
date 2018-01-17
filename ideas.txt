@@ -6,3 +6,5 @@ text abridger for hansard - how many m/f in chamber, how many words each say pro
 How specialised is the language used by MPs? Diff vocabulary used by background? Does it have a higher social register than normal discourse?
     Which issues take the most words in each sitting, proportionally? Could this be pie-charted? How does that compare to media coverage of, say, the previous month?
 Speech browser? Segment into sections to allow easy traversing between them...
+
+Topic segmentation using streams of characters: UN secretary general speeches?
