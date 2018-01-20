@@ -10,3 +10,5 @@ Speech browser? Segment into sections to allow easy traversing between them...
 Topic segmentation using streams of characters: UN secretary general speeches?
 
 Queen's speech to open parliament?
+
+president state of the nation address?
