@@ -12,3 +12,9 @@ Topic segmentation using streams of characters: UN secretary general speeches?
 Queen's speech to open parliament?
 
 president state of the nation address?
+
+niceLdap OpenLDAP wrapper for easy setup?
+
+CharNER in Samtla - could add Soundex alternatives to NEs?§
+
+Go-based config management?

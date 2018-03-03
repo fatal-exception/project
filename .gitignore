@@ -79,9 +79,12 @@ nltk_data/
 .idea/
 
 venv
+venv3
 
 config.yml
 
 hansard_debate_list*
 
 *bz2
+
+data

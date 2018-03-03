@@ -3,9 +3,15 @@ invoke
 ipython
 lxml
 nltk
+pandas
 pytest
 pyyaml
 requests
 tabulate
 jupyter
 textblob
+lasagne
+django
+psycopg2-binary
+gunicorn
+xlrd

@@ -1,0 +1,69 @@
+#NER{
+    overflow: auto;
+    height: 50%;
+}
+
+.NER{
+    cursor: pointer;
+    width: 96%;
+}
+.NER span{
+    display: inline;
+}
+
+.NER span{
+    display: inline;
+}
+#NER-menu{
+
+}
+
+.NER{border-bottom: solid 2px;border-color: #000;} 
+.location{border-bottom: solid 2px;border-color: #0f0;} 
+.people{border-bottom: solid 2px;border-color: #00f;} 
+.occupation{border-bottom: solid 2px;border-color: #f00;}
+.biology{border-bottom: solid 2px;border-color: #fa0;}
+.animal{border-bottom: 0px;}
+
+.NERstat{
+    border-radius: 50%;
+}
+
+.highlight-people{
+   background-color: rgba(255,0,0,0.4);
+}
+.highlight-country{
+   background-color: rgba(0,255,0,0.4);
+}
+.highlight-city{
+   background-color: rgba(0,255,0,0.4);
+}
+.highlight-location{
+   background-color: rgba(0,255,0,0.4);
+}
+.highlight-occupation{
+   background-color: rgba(0,100,255,0.4);
+}
+.highlight-company{
+   background-color: rgba(255,155,0,0.4);
+}
+.highlight-commodity {
+   background-color: rgba(255,180,0,0.4);
+}
+.highlight-diseases{
+   background-color: rgba(255,255,0,0.4);
+}
+.highlight-body{
+   background-color: rgba(255,200,200,0.4);
+
+}
+
+#NER-container {        
+    z-index:9999;
+}
+
+#map-label{
+    position: relative;
+    top: 10px;
+    left: 2px;
+}

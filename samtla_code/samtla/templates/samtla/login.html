@@ -1,0 +1,139 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<style>
+.row{color:white;text-shadow: rgba(0,0,0,0.3) 1px 2px;}
+p{color:white;text-shadow: rgba(0,0,0,0.3) 1px 2px;}
+li a{color:white;text-shadow: rgba(0,0,0,0.3) 1px 2px;}
+label{color:white;text-shadow: rgba(0,0,0,0.3) 1px 2px;}
+
+.background { 
+  background: url(static/img/shard-background.jpg) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+</style>
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Samtla</title>
+
+    <!-- Bootstrap Core CSS -->
+
+    <!-- Custom Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Catamaran:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=NTR" rel="stylesheet">
+    <!-- Plugin CSS -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="{% static '/css/ui/ui.css' %}" rel="stylesheet">
+    <link href="{% static '/css/ui/style_v2.css' %}" rel="stylesheet">
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body id="page-top" class="background">
+
+    <!--<nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand page-scroll" href="/"></a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a class="page-scroll" href="#download">Publications</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#features">Features</a>
+                    </li>
+                    <li>
+                 
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>-->
+
+    <header>
+
+<div class="container">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="container">
+                        <div class="header-content-inner">
+                            <div id="title-container" style="position:relative; margin-top:80px;margin-bottom:20px;"/>
+                            
+
+                            <h2 id="samtla-txt" class="row"><img src="/static/img/logo.png" style="height: 64px;"/>&nbspSamtla</h2>
+                            <h4 class="row">Search And Mining Tools for Labelling Archives</h4>
+                            <br>
+        	            <form id = "input"  class="col-md-4 row" action = "/authenticate" method="POST">
+                             {% csrf_token %}
+<!---                            <input type="hidden" name="csrfmiddlewaretoken" value="@+zabs=(iu_sze9v!jxy%v*lqp!9s*=6$9ge02kp6268u5w17h" disabled="">--->
+                            <label>Username </label><br>
+                            <input type = "text" style="text-align: left;" name = "username" id="username" class="form-control"/></br></br>
+                            <label>Password </label><br>
+	                    <input type = "password" name = "password" class="form-control" id="password" /></br>
+                                                      <input id="submit" class="btn btn-primary page-scroll pull-right" type="submit" value="Sign in"></input>   
+   	                    </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <footer>
+
+        <div class="container" style="margin-top:10%;">
+
+            <ul class="list-inline">
+                <li>            <p>&copy; 2016 Samtla. All Rights Reserved.</p></li> 
+                <li>
+                    <p><a href="#">Privacy</a></p>
+                </li>
+                <li>
+                    <p><a href="#">Terms</a></p>
+                </li>
+                <li>
+                    <p><a href="#">FAQ</a></p>
+                </li>
+            </ul>
+        </div>
+    </footer>
+
+      <!-- Plugin CSS -->
+      <link rel="stylesheet" href="{% static 'vendor/font-awesome/css/font-awesome.min.css' %}">
+      <link rel="stylesheet" href="{% static 'vendor/simple-line-icons/css/simple-line-icons.css' %}">
+      <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+
+</body>
+
+</html>
+
+

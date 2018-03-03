@@ -1,0 +1,96 @@
+body{
+  margin-top: 70px;
+  background: url("../img/bg-pattern.png"), #55769a;
+  /* fallback for old browsers */
+  background: url("../img/bg-pattern.png"), -webkit-linear-gradient(to left, #729fcf, #405974); /*#55769a);*/
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: url("../img/bg-pattern.png"),linear-gradient(to left, #729fcf, #405974);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ #77C5F7 #F2AE72 #7b4397 #354458*/
+
+}
+
+.container {
+    display: table;
+    vertical-align: middle;
+}
+
+.white, .white a {
+  color: #fff;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    text-align: center;
+}
+
+.samtla-blue{
+  background: url("../img/bg-pattern.png"), #55769a;
+  /* fallback for old browsers */
+  background: url("../img/bg-pattern.png"), -webkit-linear-gradient(to left, #729fcf, #405974); /*#55769a);*/
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: url("../img/bg-pattern.png"),linear-gradient(to left, #729fcf, #405974);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ #77C5F7 #F2AE72 #7b4397 #354458*/
+}
+
+.back-white{
+    background-color: white;
+}
+
+.inline-text{
+    display:inline;
+}
+
+.img-wrapper{
+
+}
+
+.img-wrapper img{
+    width: 96px;
+    border-radius: 3px;
+    position: relative;
+}
+
+#page-content-wrapper{
+    border: none;
+}
+
+.row{
+    border: none;
+}
+
+.btn{
+    border-radius: 3px;
+}
+
+.btn-primary{
+    border-radius: 3px;
+    padding: 2px;
+    margin: 2px;
+}
+
+
+.card {
+    color: black;
+    background-color: white;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    border-radius: 5px;
+    margin: 5px;
+    max-height: 320px;
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.5);
+}
+
+img {
+    border-radius: 5px 5px 0 0;
+}
+
+
+@media(min-width:768px) {
+    #page-content-wrapper {
+        padding: 20px;
+        position: relative;
+    }
+}
+
