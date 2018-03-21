@@ -6,17 +6,17 @@ function getNERmetadata(element, NER, data){
      
     //if (typeof(data) == 'object'){return}
     var meta = data.replace(':', ': ').replace('\n', '<br>');
-    element.setAttribute('title', meta)
-    row = data.split('point:')[1]
-    console.log("mydata",data)
-    if (row == undefined){geo=row}
-    var geo = row.split('\n')[0].split(' ')
+    element.setAttribute('title', meta);
+    var row = data.split('point:')[1];
+    console.log("mydata",data);
+    if (row === undefined){geo=row}
+    var geo = row.split('\n')[0].split(' ');
     console.log("hover google map", element, meta, typeof(meta), geo);
     var myLatlng = new google.maps.LatLng(parseFloat(geo[0]), parseFloat(geo[1]));
     var mapOptions = {
         zoom: 4,
         center: myLatlng
-    }
+    };
     map = new google.maps.Map(document.getElementById("google_map"), mapOptions);
     var marker = new google.maps.Marker({
         position: myLatlng,
@@ -164,10 +164,10 @@ function drawNERMenu(docID, element, data){
     var menu = {} 
     for (var i=0; i < sortable.length; i++){
         var obj = sortable[i]; 
-        if (menu[obj.type] == undefined){
+        if (menu[obj.type] === undefined){
             menu[obj.type] = {};
         }
-        if (menu[obj.type][obj.cat] == undefined){
+        if (menu[obj.type][obj.cat] === undefined){
             menu[obj.type][obj.cat] = {};
         }
         var NER = obj.ner;
@@ -190,11 +190,11 @@ function drawNERMenu(docID, element, data){
 
     	for(var cat in menu[type]){
     	    // console.log("draw NER menu", type, NER, data[type][NER].length);
-    	    if (cat != type) {
+            if (cat !== type) {
                 html += '<br>';
     	        html += '<ul><a href="#' + type + '|' + cat + '" class="'+type.toTitleCase+'"><b>' + cat.toTitleCase() +'</b></a>';
     	    }
-            if (cat == 'Mammal'){continue};
+            if (cat === 'Mammal'){continue}
     	    for(var NER in menu[type][cat]){
   
     	        html += '<li><a href="#' + type + '|' + cat +'_'+ NER + '">' + NER.toTitleCase() +'</a><span class="NERstat"> ('+menu[type][cat][NER]+')</span></li>';

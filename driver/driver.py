@@ -1,5 +1,5 @@
 from util.config_parser import parse_config
-from exception import SiblingNotFoundException
+from driver.exception import SiblingNotFoundException
 import requests
 import lxml.etree as etree
 

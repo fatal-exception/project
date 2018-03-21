@@ -8,6 +8,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 
+import time
+
 ROOT = "http://127.0.0.1:"
 
 config = {
@@ -49,26 +51,26 @@ def changepassword(request):
     context = {}
     return render(request, 'samtla/registration.html', context)
 
-    if request.method == 'POST':
-        username = request.POST.get('user')
-        password = request.POST.get('password')
-        newpassword = request.POST.get('newpassword')
-        user = auth(username = username, password = password)
-        if user is not None:
-            if user.is_active:
-                login(request, user)
-                user.set_password(password)
-                user.save()
-                # Redirect to a success page.
-                message = "You've successfully changed your password."
-            else:
-                message = "You don't have an active account"
-                # Return a 'disabled account' error message
-        else:
-            # Return an 'invalid login' error message.
-            message = "Login failed."
-        context = {}
-        return render(request, 'samtla/registration.html', context)
+    # if request.method == 'POST':
+    #     username = request.POST.get('user')
+    #     password = request.POST.get('password')
+    #     newpassword = request.POST.get('newpassword')
+    #     user = auth(username = username, password = password)
+    #     if user is not None:
+    #         if user.is_active:
+    #             login(request, user)
+    #             user.set_password(password)
+    #             user.save()
+    #             # Redirect to a success page.
+    #             message = "You've successfully changed your password."
+    #         else:
+    #             message = "You don't have an active account"
+    #             # Return a 'disabled account' error message
+    #     else:
+    #         # Return an 'invalid login' error message.
+    #         message = "Login failed."
+    #     context = {}
+    #     return render(request, 'samtla/registration.html', context)
 
 def register(request):
     message = "You've successfully registered."

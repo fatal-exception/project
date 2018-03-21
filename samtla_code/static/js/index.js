@@ -59,21 +59,22 @@ window.onload=function(){
     };
 
     _samtla.setBrowserType = function(){
-        if(_samtla.settings['browser_view'] == 'list'){
+        var browser_view = $("browser-view");
+        if(_samtla.settings['browser_view'] === 'list'){
             _samtla.settings['browser_view'] = 'treemap';
-            _samtla.settings['document_view'] =='text';
+            _samtla.settings['document_view'] ='text';
 
-            $("#browser-view").removeClass("fa fa-th-large");
-            $("#browser-view").addClass("fa fa-list");
+            browser_view.removeClass("fa fa-th-large");
+            browser_view.addClass("fa fa-list");
 
 
-        } else if(_samtla.settings['browser_view'] == 'treemap'){
+        } else if(_samtla.settings['browser_view'] === 'treemap'){
             _samtla.settings['browser_view'] = 'list';
-            _samtla.settings['document_view'] =='img';
+            _samtla.settings['document_view'] ='img';
 
 
-            $("#browser-view").removeClass("fa fa-list");
-            $("#browser-view").addClass("fa fa-th-large");
+            browser_view.removeClass("fa fa-list");
+            browser_view.addClass("fa fa-th-large");
 
 
         }
