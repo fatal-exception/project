@@ -88,3 +88,6 @@ hansard_debate_list*
 *bz2
 
 data
+
+# LibreOffice lock files
+.~lock*
