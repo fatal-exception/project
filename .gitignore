@@ -1,4 +1,3 @@
-### Python template
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -47,10 +46,6 @@ coverage.xml
 *.cover
 .hypothesis/
 
-# Flask stuff:
-instance/
-.webassets-cache
-
 # Scrapy stuff:
 .scrapy
 
@@ -66,24 +61,14 @@ celerybeat-schedule
 # SageMath parsed files
 *.sage.py
 
-# Environments
-hansum.3venv/
-
-# NTLK data
-nltk_data/
-
-# Doit
-.doit.db
+# Virtual Environments
+masters_venv/
 
 # Idea
 .idea/
 
 venv
 venv3
-
-config.yml
-
-hansard_debate_list*
 
 *bz2
 
