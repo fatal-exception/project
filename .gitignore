@@ -78,4 +78,4 @@ data
 .~lock*
 
 # NE data files
-ne_data_gathering/processed_ne_data/people/*
+ne_data_gathering/processed_ne_data/*

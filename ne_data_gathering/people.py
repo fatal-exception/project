@@ -1,6 +1,7 @@
 import csv
 from typing import List
 
+import os
 import util
 
 
@@ -14,8 +15,13 @@ def main():
         dbpedia_sparql_extract_people(people_list_file)
         dbpedia_post_processing(people_list_file)
 
+    def conll2003eng():
+        conll_people = util.process_conll_file(util.conll_file, 'PER')
+        util.write_to_data_file(conll_people, "people", "conll_2003.txt")
+
     nyc()
     dbpedia()
+    conll2003eng()
 
 
 def process_kaggle_nyc_baby_names() -> List[str]:
@@ -26,9 +32,11 @@ def process_kaggle_nyc_baby_names() -> List[str]:
 
 
 def dbpedia_post_processing(people_list_file):
-    with open(people_list_file, 'rw') as f:
-        lines = sorted(f.readlines())
-        f.writelines(lines)
+    with open(people_list_file, 'r') as f:
+        lines = sorted(set(f.readlines()))
+        with open(people_list_file + '_sorted', 'w+') as g:
+            g.writelines(lines)
+    os.rename(people_list_file + '_sorted', people_list_file)
 
 
 def dbpedia_sparql_get_people_count() -> int:
@@ -38,8 +46,8 @@ def dbpedia_sparql_get_people_count() -> int:
     PREFIX  dbp: <http://dbpedia.org/property/>
     
     SELECT COUNT(*)
-    WHERE{
-        ?resource  rdf:type  dbo:Person.
+    WHERE { ?resource  foaf:name ?name .
+            ?resource  rdf:type  dbo:Person .
     }
     """
     res = util.dbpedia_do_sparql_query(sparql_query)
@@ -51,7 +59,10 @@ def dbpedia_sparql_extract_people(people_list_file):
     # and https://stackoverflow.com/questions/38332857/
     # sparql-query-to-get-all-person-available-in-dbpedia-is-showing-only-some-person
 
-    total_people = dbpedia_sparql_get_people_count()
+    if os.path.exists(people_list_file):
+        os.unlink(people_list_file)
+    # total_people = dbpedia_sparql_get_people_count()
+    total_people = 2109301
     for i in range(0, total_people, 10_000):
         people_list = []
         offset = str(i)
@@ -60,16 +71,15 @@ def dbpedia_sparql_extract_people(people_list_file):
         PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX  dbo: <http://dbpedia.org/ontology/>
         PREFIX  dbp: <http://dbpedia.org/property/>
-        SELECT ?resource
-        WHERE { ?resource  rdf:type  dbo:Person.
-
+        SELECT ?name
+        WHERE { ?resource  foaf:name ?name .
+                ?resource  rdf:type  dbo:Person .
         }
-        ORDER BY ASC(?name)
         """
         sparql_query_offset = "LIMIT 10000 OFFSET {}".format(offset)
         response = util.dbpedia_do_sparql_query(sparql_query + sparql_query_offset)
         results = response['results']['bindings']
-        people_list.extend([res['resource']['value'].split("/")[-1] for res in results])
+        people_list.extend([res['name']['value'] for res in results])
         print("Adding {count} to people list file".format(count=len(results)))
         with open(people_list_file, 'a') as f:
             f.writelines("\n".join(people_list))
