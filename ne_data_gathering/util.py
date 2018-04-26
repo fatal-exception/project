@@ -59,17 +59,22 @@ def remove_outer_brackets(_line: str) -> str:
 
 def dbpedia_post_processing(list_file):
 
+    res_lines = []
+    processed_list_file = list_file + "_processed"
     with open(list_file, 'r+', encoding='utf-8') as f:
-        lines = sorted(set(f.readlines()))
-        res_lines = []
+        lines: List[str] = sorted(set(f.readlines()))
         for line in lines:
+            # TODO 1 below corrupts unicode
             # 1. Remove certain characters which surround whole line
-            if surrounded_by_chars(line, "(", ")"):
-                line = remove_outer_brackets(line)
-            # 2. Get rid of lines that are entirely numbers
-            if re.match("""^\d+$""", line):
+            # if surrounded_by_chars(line, "(", ")"):
+            #     line = remove_outer_brackets(line)
+            # 2. Left-trim any whitespace
+            line = line.lstrip()
+            if line == "":
+                continue
+            # 3. Get rid of lines that are entirely numbers or symbols
+            if re.match("""^\d+$""", line) or re.match("""^[!@£$%^&*()]+$""", line):
                 continue
             res_lines.append(line)
-
-        f.seek(0)
+    with open(processed_list_file, 'w+') as f:
         f.writelines(res_lines)
