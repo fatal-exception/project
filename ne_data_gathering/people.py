@@ -5,8 +5,17 @@ import util
 
 
 def main():
-    nyc_baby_names = sorted(set(process_kaggle_nyc_baby_names()))
-    util.write_to_data_file(nyc_baby_names, "people", "nyc_baby_names.txt")
+    def nyc():
+        nyc_baby_names = sorted(set(process_kaggle_nyc_baby_names()))
+        util.write_to_data_file(nyc_baby_names, "people", "nyc_baby_names.txt")
+
+    def dbpedia():
+        people_list_file = 'processed_ne_data/people/dbpedia.txt'
+        dbpedia_sparql_extract_people(people_list_file)
+        dbpedia_post_processing(people_list_file)
+
+    nyc()
+    dbpedia()
 
 
 def process_kaggle_nyc_baby_names() -> List[str]:
@@ -14,6 +23,12 @@ def process_kaggle_nyc_baby_names() -> List[str]:
         data = f.readlines()
         for row in csv.reader(data):
             yield row[3].capitalize()
+
+
+def dbpedia_post_processing(people_list_file):
+    with open(people_list_file, 'rw') as f:
+        lines = sorted(f.readlines())
+        f.writelines(lines)
 
 
 def dbpedia_sparql_get_people_count() -> int:
@@ -31,13 +46,13 @@ def dbpedia_sparql_get_people_count() -> int:
     return int(res['results']['bindings'][0]['callret-0']['value'])
 
 
-def dbpedia_sparql_search_people(people_list_file):
+def dbpedia_sparql_extract_people(people_list_file):
     # With help from https://rdflib.github.io/sparqlwrapper/
     # and https://stackoverflow.com/questions/38332857/
     # sparql-query-to-get-all-person-available-in-dbpedia-is-showing-only-some-person
 
     total_people = dbpedia_sparql_get_people_count()
-    for i in range(0, total_people, 10000):
+    for i in range(0, total_people, 10_000):
         people_list = []
         offset = str(i)
         print("We're at {sofar} out of {total}".format(sofar=offset, total=total_people))
@@ -49,13 +64,13 @@ def dbpedia_sparql_search_people(people_list_file):
         WHERE { ?resource  rdf:type  dbo:Person.
 
         }
-        ORDER BY ASC(?name) // TODO this doesn't work
+        ORDER BY ASC(?name)
         """
         sparql_query_offset = "LIMIT 10000 OFFSET {}".format(offset)
         response = util.dbpedia_do_sparql_query(sparql_query + sparql_query_offset)
         results = response['results']['bindings']
         people_list.extend([res['resource']['value'].split("/")[-1] for res in results])
         print("Adding {count} to people list file".format(count=len(results)))
-        with open(people_list_file, 'w') as f:
+        with open(people_list_file, 'a') as f:
             f.writelines("\n".join(people_list))
 
