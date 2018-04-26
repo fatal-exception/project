@@ -2,6 +2,7 @@ from typing import List
 from os.path import realpath, dirname
 
 import os
+import re
 
 conll_file = 'raw_ne_data/eng.list'
 
@@ -44,3 +45,31 @@ def process_conll_file(filepath, tag) -> List[str]:
             contents = line.split(" ")
             if contents[0] == tag:
                 yield " ".join(contents[1:]).rstrip()
+
+
+def surrounded_by_chars(_line: str, start_char, end_char=None) -> bool:
+    if end_char is None:
+        end_char = start_char
+    return _line.startswith(start_char) and _line.rstrip().endswith(end_char)
+
+
+def remove_outer_brackets(_line: str) -> str:
+    return _line[1:-2] + _line[-1]
+
+
+def dbpedia_post_processing(list_file):
+
+    with open(list_file, 'r+', encoding='utf-8') as f:
+        lines = sorted(set(f.readlines()))
+        res_lines = []
+        for line in lines:
+            # 1. Remove certain characters which surround whole line
+            if surrounded_by_chars(line, "(", ")"):
+                line = remove_outer_brackets(line)
+            # 2. Get rid of lines that are entirely numbers
+            if re.match("""^\d+$""", line):
+                continue
+            res_lines.append(line)
+
+        f.seek(0)
+        f.writelines(res_lines)

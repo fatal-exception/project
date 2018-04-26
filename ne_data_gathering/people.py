@@ -13,7 +13,7 @@ def main():
     def dbpedia():
         people_list_file = 'processed_ne_data/people/dbpedia.txt'
         dbpedia_sparql_extract_people(people_list_file)
-        dbpedia_post_processing(people_list_file)
+        util.dbpedia_post_processing(people_list_file)
 
     def conll2003eng():
         conll_people = util.process_conll_file(util.conll_file, 'PER')
@@ -29,14 +29,6 @@ def process_kaggle_nyc_baby_names() -> List[str]:
         data = f.readlines()
         for row in csv.reader(data):
             yield row[3].capitalize()
-
-
-def dbpedia_post_processing(people_list_file):
-    with open(people_list_file, 'r') as f:
-        lines = sorted(set(f.readlines()))
-        with open(people_list_file + '_sorted', 'w+') as g:
-            g.writelines(lines)
-    os.rename(people_list_file + '_sorted', people_list_file)
 
 
 def dbpedia_sparql_get_people_count() -> int:

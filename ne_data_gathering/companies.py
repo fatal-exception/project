@@ -10,6 +10,32 @@ import csv
 import requests
 
 
+def main() -> None:
+    # FTP companies data is too dirty to use :(
+
+    def nasdaq():
+        nasdaq_csv_companies = dedup(process_nasdaq_csv())
+        write_to_data_file(nasdaq_csv_companies, "companies", "nasdaq_csv_companies.txt")
+
+    def lse():
+        lse_data = process_lse_download()
+        write_to_data_file(lse_data, "companies", "lse_manual_download.txt")
+
+    def dbpedia():
+        company_list_file = 'processed_ne_data/companies/dbpedia.txt'
+        dbpedia_sparql_extract_companies(company_list_file)
+        util.dbpedia_post_processing(company_list_file)
+
+    def conll2003eng():
+        conll_companies = util.process_conll_file(util.conll_file, 'ORG')
+        util.write_to_data_file(conll_companies, "companies", "conll_2003.txt")
+
+    nasdaq()
+    lse()
+    dbpedia()
+    conll2003eng()
+
+
 def download_nasdaq(data_files: List[str]) -> List[str]:
     class Reader:
         def __init__(self):
@@ -111,24 +137,6 @@ def process_lse_download() -> List[str]:
         lse = f.readlines()
 
     return capitalise_text_list(lse)
-
-
-def main() -> None:
-    # FTP companies data is too dirty to use :(
-
-    nasdaq_csv_companies = dedup(process_nasdaq_csv())
-    write_to_data_file(nasdaq_csv_companies, "companies", "nasdaq_csv_companies.txt")
-
-    lse = process_lse_download()
-    write_to_data_file(lse, "companies", "lse_manual_download.txt")
-
-    dbpedia_sparql_extract_companies('processed_ne_data/companies/dbpedia.txt')
-
-    def conll2003eng():
-        conll_companies = util.process_conll_file(util.conll_file, 'ORG')
-        util.write_to_data_file(conll_companies, "companies", "conll_2003.txt")
-
-    conll2003eng()
 
 
 if __name__ == "__main__":
