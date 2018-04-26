@@ -48,7 +48,7 @@ def has_sibling(elem, tag_name):
     return True if the given LXML Etree Element has a sibling with the given tag:
     :param elem: Element being examined
     :param tag_name:
-    :return: True if the elem has >= 1 signling with tag_name
+    :return: True if the elem has >= 1 sibling with tag_name
     """
     for sibling in elem.itersiblings():
         if sibling.tag == tag_name:
@@ -61,7 +61,7 @@ def get_sibling(elem, tag_name):
     return True if the given LXML Etree Element has a sibling with the given tag:
     :param elem: Element being examined
     :param tag_name:
-    :return: True if the elem has >= 1 signling with tag_name
+    :return: True if the elem has >= 1 sibling with tag_name
     """
     for sibling in elem.itersiblings():
         if sibling.tag == tag_name:

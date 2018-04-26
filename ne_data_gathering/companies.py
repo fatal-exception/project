@@ -58,7 +58,9 @@ def process_nasdaq_csv() -> List[str]:
 
 
 def process_lse_download() -> List[str]:
-    # manually downloaded on 3rd March 2018 from http://www.londonstockexchange.com/statistics/companies-and-issuers/companies-defined-by-mifir-identifiers-list-on-lse.xlsx . Pandas cannot cope with this xlsx :(
+    # manually downloaded on 3rd March 2018 from
+    # http://www.londonstockexchange.com/statistics/companies-and-issuers/companies-defined-by-mifir-identifiers-list-on-lse.xlsx
+    # Pandas cannot cope with this xlsx :(
     with open('lse_manual_download.txt') as f:
         lse = f.readlines()
 

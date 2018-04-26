@@ -76,3 +76,6 @@ data
 
 # LibreOffice lock files
 .~lock*
+
+# NE data files
+ne_data_gathering/processed_ne_data/people/*

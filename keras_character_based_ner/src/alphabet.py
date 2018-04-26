@@ -9,12 +9,13 @@ class CharBasedNERAlphabet:
         self.num_to_char = None
         self.init_mappings()
 
-    def get_alphabet_from_texts(self, texts):
+    @staticmethod
+    def get_alphabet_from_texts(texts):
         all_characters = set()
 
         for t in texts:
             text_characters = set(t)
-            all_characters |= text_characters
+            all_characters |= text_characters  # union
 
         alphabet = sorted(list(all_characters))
         return alphabet
