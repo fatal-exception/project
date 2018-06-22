@@ -1,5 +1,6 @@
 import numpy as np
 from alphabet import CharBasedNERAlphabet
+from typing import List
 
 
 class CharBasedNERDataset:
@@ -7,7 +8,7 @@ class CharBasedNERDataset:
     BASE_LABELS = [NULL_LABEL]
 
     def __init__(self):
-        self.texts = self.get_texts()
+        self.texts: List[str] = self.get_texts()
         self.alphabet = CharBasedNERAlphabet(self.texts)
         self.labels = self.BASE_LABELS + self.get_lables()
         self.num_labels = len(self.labels)

@@ -1,5 +1,5 @@
-from util.config_parser import parse_config
-from driver.exception import SiblingNotFoundException
+from config_util.config_parser import parse_config
+from hansard_preprocessing.exception import SiblingNotFoundException
 import requests
 import lxml.etree as etree
 
@@ -79,4 +79,3 @@ def make_twfy_xml_url(text, content_type):
         .format(prefixes[content_type][0],
                 prefixes[content_type][1],
                 text.split('=')[1].split('.')[0])
-

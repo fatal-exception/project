@@ -1,5 +1,5 @@
-from driver import driver
-from driver.exception import SiblingNotFoundException
+from hansard_preprocessing import driver
+from hansard_preprocessing.exception import SiblingNotFoundException
 
 import lxml.etree as etree
 import pytest
