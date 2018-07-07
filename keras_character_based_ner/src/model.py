@@ -24,14 +24,14 @@ class CharacterBasedLSTMModel:
         model = Sequential()
 
         model.add(Embedding(num_words,
-                            self.config.embed_size,
+                            self.config.embed_size,  # MIR what does this do?
                             mask_zero=True))
         model.add(Dropout(self.config.input_dropout))
 
         for _ in range(self.config.recurrent_stack_depth):
-            model.add(Bidirectional(LSTM(self.config.num_lstm_units, return_sequences=True)))
+            model.add(Bidirectional(LSTM(self.config.num_lstm_units, return_sequences=True)))  # MIR return_sequences?
 
-        model.add(Dropout(self.config.output_dropout))
+        model.add(Dropout(self.config.output_dropout))  # MIR Does the paper have both input- and output-dropout?
         model.add(TimeDistributed(Dense(num_labels, activation='softmax')))
 
         # TODO Add Viterbi decoder here, see Kuru et al.
@@ -40,13 +40,14 @@ class CharacterBasedLSTMModel:
                          clipnorm=1.0)
 
         model.compile(optimizer=optimizer, loss='categorical_crossentropy',
-                      metrics=['categorical_accuracy', self.non_null_label_accuracy])
+                      metrics=['categorical_accuracy', self.non_null_label_accuracy]) # MIR non_null_label_accuracy is a func
         return model
 
     def fit(self):
         x_train, y_train = self.dataset.get_x_y(self.config.sentence_max_length, dataset_name='train')
         x_dev, y_dev = self.dataset.get_x_y(self.config.sentence_max_length, dataset_name='dev')
 
+        # MIR ??
         early_stopping = EarlyStopping(patience=self.config.early_stopping,
                                        verbose=1)
         checkpointer = ModelCheckpoint(filepath="/tmp/model.weights.hdf5",
@@ -61,6 +62,8 @@ class CharacterBasedLSTMModel:
                        shuffle=True,
                        callbacks=[early_stopping, checkpointer])
 
+    # MIR where is this used? Check keras docs on Sequential model...
+    # Maybe alternative to fit()
     def fit_generator(self):
         train_data_generator = self.dataset.get_x_y_generator(dataset_name='train',
                                                               maxlen=self.config.sentence_max_length,
@@ -90,7 +93,7 @@ class CharacterBasedLSTMModel:
 
         self.model.evaluate_generator(test_data_generator, steps=self.dataset.num_test_docs / self.config.batch_size)
 
-    def predict_str(self, s):
+    def predict_str(self, s: str):
         """ Get model prediction for a string
         :param s: string to get named entities for
         :return: a list of len(s) tuples: [(character, predicted-label for character), ...]
