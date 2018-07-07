@@ -23,15 +23,18 @@ class CharacterBasedLSTMModel:
 
         model = Sequential()
 
-        model.add(Embedding(num_words,
-                            self.config.embed_size,  # MIR what does this do?
+# MIR Embeding turns positive integers into dense vectors, for 1st layer of model
+        model.add(Embedding(num_words,               # MIR input dimension
+                            self.config.embed_size,  # MIR output dimension
                             mask_zero=True))
         model.add(Dropout(self.config.input_dropout))
 
         for _ in range(self.config.recurrent_stack_depth):
-            model.add(Bidirectional(LSTM(self.config.num_lstm_units, return_sequences=True)))  # MIR return_sequences?
+            model.add(Bidirectional(LSTM(self.config.num_lstm_units, return_sequences=True)))
+            # MIR return_sequences means return full sequence, not just last output
 
-        model.add(Dropout(self.config.output_dropout))  # MIR Does the paper have both input- and output-dropout?
+        model.add(Dropout(self.config.output_dropout))
+        # MIR Does the paper have both input- and output-dropout?
         model.add(TimeDistributed(Dense(num_labels, activation='softmax')))
 
         # TODO Add Viterbi decoder here, see Kuru et al.
@@ -40,16 +43,18 @@ class CharacterBasedLSTMModel:
                          clipnorm=1.0)
 
         model.compile(optimizer=optimizer, loss='categorical_crossentropy',
-                      metrics=['categorical_accuracy', self.non_null_label_accuracy]) # MIR non_null_label_accuracy is a func
+                      metrics=['categorical_accuracy', self.non_null_label_accuracy])
+        # MIR non_null_label_accuracy is a func
         return model
 
     def fit(self):
         x_train, y_train = self.dataset.get_x_y(self.config.sentence_max_length, dataset_name='train')
         x_dev, y_dev = self.dataset.get_x_y(self.config.sentence_max_length, dataset_name='dev')
 
-        # MIR ??
+        # MIR stop training when monitored quality stops improving. Patience = num of epochs
         early_stopping = EarlyStopping(patience=self.config.early_stopping,
                                        verbose=1)
+        # MIR save model after every epoch
         checkpointer = ModelCheckpoint(filepath="/tmp/model.weights.hdf5",
                                        verbose=1,
                                        save_best_only=True)
@@ -62,8 +67,6 @@ class CharacterBasedLSTMModel:
                        shuffle=True,
                        callbacks=[early_stopping, checkpointer])
 
-    # MIR where is this used? Check keras docs on Sequential model...
-    # Maybe alternative to fit()
     def fit_generator(self):
         train_data_generator = self.dataset.get_x_y_generator(dataset_name='train',
                                                               maxlen=self.config.sentence_max_length,

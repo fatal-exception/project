@@ -30,7 +30,7 @@ class CharBasedNERAlphabet:
     def get_num_to_char(self):
         return {c: char for c, char in enumerate(self.characters)}
 
-    def get_char_index(self, char): -> int
+    def get_char_index(self, char) -> int:
         try:
             num = self.char_to_num[char]
         except KeyError:
