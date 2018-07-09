@@ -1,4 +1,5 @@
 from config_util.config_parser import parse_config
+from datetime import datetime, timedelta
 from hansard_gathering.exception import SiblingNotFoundException
 import json
 import requests
@@ -8,6 +9,29 @@ import requests
 prefixes = {'Wrans': ['wrans', 'answers'],
             'WMS': ['wms', 'ministerial'],
             'Debates': ['debates', 'debates']}
+
+
+def get_all_hansards():
+    """
+    Generate All datestrings from now back to March 29, 1803 (when Hansard started).
+    Get all available debates for each.
+    """
+    def date_gen():
+        year = 1803
+        month = 3
+        day = 28
+        now_dt = datetime.now()
+        then_dt = datetime(year, month, day)
+
+        # While it's less than today
+        while then_dt < now_dt:
+            datestring = "{}-{}-{}".format(
+                str(then_dt.year),
+                str(then_dt.month).zfill(2),
+                str(then_dt.day).zfill(2))
+
+            yield datestring
+            then_dt += timedelta(days=1)
 
 
 def get_hansard_titles(datestring, content_type, house="commons"):
