@@ -1,18 +1,25 @@
 from __future__ import print_function
-from hansard_preprocessing import driver
+from hansard_gathering import driver
 from invoke import task
 
 @task
 def print_debate_titles(ctx, datestring):
-    [print(title) for title in driver.get_hansard_titles(datestring, "Debates")]
+    [print(title) for title in driver.get_hansard_titles(datestring, "Debates", "commons")]
+    [print(title) for title in driver.get_hansard_titles(datestring, "Debates", "lords")]
 
 @task
+# Written Ministerial Statements
 def print_wms_titles(ctx, datestring):
     [print(title) for title in driver.get_hansard_titles(datestring, "WMS")]
 
 @task
+# Written Answers
 def print_wrans_titles(ctx, datestring):
     [print(title) for title in driver.get_hansard_titles(datestring, "Wrans")]
+
+@task
+def hansard_download_all(ctx):
+    ctx.run("cd hansard_gathering && python hansard_download.py")
 
 @task
 def enable_venv(ctx):
