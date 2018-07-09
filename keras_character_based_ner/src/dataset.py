@@ -27,13 +27,15 @@ class CharBasedNERDataset:
         :param sentence_maxlen: maximum number of characters per sample
         :param dataset_name: 'all', 'train', 'dev' or 'test'
         :return: Tuple (x, y)
-                x: Array of shape (batch_size, sentence_maxlen). Entries in dimension 1 are alphabet indices, index 0 is the padding symbol
-                y: Array of shape (batch_size, sentence_maxlen, self.num_labels). Entries in dimension 2 are label indices, index 0 is the null label
+                x: Array of shape (batch_size, sentence_maxlen).
+                Entries in dimension 1 are alphabet indices, index 0 is the padding symbol
+                y: Array of shape (batch_size, sentence_maxlen, self.num_labels).
+                Entries in dimension 2 are label indices, index 0 is the null label
         """
         # MIR x 1st dimension is for all samples,
         # 2nd dimension is for characters-string in each sample,
         # using ints to lookup the alphabet.
-        # MIR y 1st dimension is for all samples,
+        # MIR y 1st dimension is for all samples,
         # 2nd dimension is for char-strings, 3rd dim is for streams of labels, by int
         raise NotImplementedError
 
@@ -50,7 +52,7 @@ class CharBasedNERDataset:
         :return: List of labels (classes) to predict, e.g. 'PER', 'LOC', not including the null label '0'.
         """
         # 1 = LOC, 2 = ORG, 3 = PER, 0 = null
-        return list(range(1, 4)) # MIR
+        return list(range(1, 4))  # MIR
 
     def str_to_x(self, s: str, maxlen: int):
         x: np.ndarray = np.zeros(maxlen)
@@ -58,7 +60,8 @@ class CharBasedNERDataset:
         char: str
         for c, char in enumerate(s[:maxlen]):
             x[c] = self.alphabet.get_char_index(char)
-        return x.reshape((-1, maxlen))  # -1 means infer the length
+        # -1 means infer the length
+        return x.reshape((-1, maxlen))
 
     def x_to_str(self, x):
         return [[self.alphabet.num_to_char[i] for i in row] for row in x]
