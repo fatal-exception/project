@@ -64,10 +64,8 @@ def dbpedia_post_processing(list_file):
     with open(list_file, 'r+', encoding='utf-8') as f:
         lines: List[str] = sorted(set(f.readlines()))
         for line in lines:
-            # TODO 1 below corrupts unicode
-            # 1. Remove certain characters which surround whole line
-            # if surrounded_by_chars(line, "(", ")"):
-            #     line = remove_outer_brackets(line)
+            # 1. Remove double quotes
+            line = line.replace('"', '')
             # 2. Left-trim any whitespace
             line = line.lstrip()
             if line == "":

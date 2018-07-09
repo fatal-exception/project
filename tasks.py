@@ -25,3 +25,7 @@ def test(ctx):
 @task
 def compile(ctx):
     ctx.run("find . -name '*.py' | grep -v masters_venv | xargs python -m py_compile")
+
+@task
+def ne_data_companies(ctx):
+    ctx.run("cd ne_data_gathering && python companies.py")
