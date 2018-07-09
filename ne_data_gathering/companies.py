@@ -22,9 +22,11 @@ def main() -> None:
         write_to_data_file(lse_data, "companies", "lse_manual_download.txt")
 
     def dbpedia():
-        company_list_file = 'processed_ne_data/companies/dbpedia.txt'
-        dbpedia_sparql_extract_companies(company_list_file)
-        util.dbpedia_post_processing(company_list_file)
+        file_path = '/companies/dbpedia.txt'
+        src_dir = "raw_ne_data"
+        dbpedia_sparql_extract_companies("{}{}".format(src_dir, file_path))
+        util.dbpedia_post_processing(
+            "{}{}".format(src_dir, file_path), "processed_ne_data{}".format(file_path))
 
     def conll2003eng():
         conll_companies = util.process_conll_file(util.conll_file, 'ORG')

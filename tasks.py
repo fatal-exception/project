@@ -29,3 +29,7 @@ def compile(ctx):
 @task
 def ne_data_companies(ctx):
     ctx.run("cd ne_data_gathering && python companies.py")
+
+@task
+def ne_data_people(ctx):
+    ctx.run("cd ne_data_gathering && python people.py")

@@ -57,11 +57,11 @@ def remove_outer_brackets(_line: str) -> str:
     return _line[1:-2] + _line[-1]
 
 
-def dbpedia_post_processing(list_file):
+def dbpedia_post_processing(src_list_file, dest_list_file):
 
     res_lines = []
-    processed_list_file = list_file + "_processed"
-    with open(list_file, 'r+', encoding='utf-8') as f:
+    processed_list_file = dest_list_file
+    with open(src_list_file, 'r+', encoding='utf-8') as f:
         lines: List[str] = sorted(set(f.readlines()))
         for line in lines:
             # 1. Remove double quotes
