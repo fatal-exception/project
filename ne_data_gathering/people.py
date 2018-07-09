@@ -11,9 +11,10 @@ def main():
         util.write_to_data_file(nyc_baby_names, "people", "nyc_baby_names.txt")
 
     def dbpedia():
-        people_list_file = 'processed_ne_data/people/dbpedia.txt'
-        dbpedia_sparql_extract_people(people_list_file)
-        util.dbpedia_post_processing(people_list_file)
+        file_path = '/people/dbpedia.txt'
+        dbpedia_sparql_extract_people("{}{}".format("raw_ne_data", file_path))
+        util.dbpedia_post_processing(
+            "{}{}".format("raw_ne_data", file_path), "{}{}".format("processed_ne_data", file_path))
 
     def conll2003eng():
         conll_people = util.process_conll_file(util.conll_file, 'PER')
@@ -75,4 +76,8 @@ def dbpedia_sparql_extract_people(people_list_file):
         print("Adding {count} to people list file".format(count=len(results)))
         with open(people_list_file, 'a') as f:
             f.writelines("\n".join(people_list))
+
+
+if __name__ == "__main__":
+    main()
 

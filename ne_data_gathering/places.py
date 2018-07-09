@@ -5,9 +5,10 @@ import os
 
 def main() -> None:
     def dbpedia():
-        place_list_file = 'processed_ne_data/places/dbpedia.txt'
-        dbpedia_sparql_extract_places(place_list_file)
-        util.dbpedia_post_processing(place_list_file)
+        file_path = '/places/dbpedia.txt'
+        dbpedia_sparql_extract_places("{}{}".format("raw_ne_data", file_path))
+        util.dbpedia_post_processing(
+            "{}{}".format("raw_ne_data", file_path), "{}{}".format("processed_ne_data", file_path))
 
     def conll2003eng():
         conll_places = util.process_conll_file(util.conll_file, 'LOC')

@@ -79,6 +79,7 @@ data
 
 # NE data files
 ne_data_gathering/processed_ne_data/*
+ne_data_gathering/raw_ne_data/*
 
 # Pytest
 .pytest_cache

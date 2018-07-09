@@ -33,3 +33,7 @@ def ne_data_companies(ctx):
 @task
 def ne_data_people(ctx):
     ctx.run("cd ne_data_gathering && python people.py")
+
+@task
+def ne_data_places(ctx):
+    ctx.run("cd ne_data_gathering && python places.py")
