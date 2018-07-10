@@ -19,7 +19,7 @@ def print_wrans_titles(ctx, datestring):
 
 @task
 def hansard_download_all(ctx):
-    ctx.run("cd hansard_gathering && python hansard_download.py")
+    driver.get_all_hansards()
 
 @task
 def enable_venv(ctx):

@@ -1,6 +1,7 @@
 from config_util.config_parser import parse_config
 from datetime import datetime, timedelta
 from hansard_gathering.exception import SiblingNotFoundException
+from multiprocessing import Pool
 import json
 import requests
 
@@ -11,9 +12,25 @@ prefixes = {'Wrans': ['wrans', 'answers'],
             'Debates': ['debates', 'debates']}
 
 
+def download_all_debates(datestring, debates_list):
+    """
+    Given a list of debate titles, download all of them into files.
+    """
+    for debate in debates_list:
+        print("Data for {}: {}".format(datestring, debate))
+        title = debate[0]
+        xml_url = debate[2]
+        if xml_url == "N/A":
+            continue
+        xml_data = requests.get(xml_url).text
+        with open("hansard_gathering/raw_hansard_data/{datestring}/{title}.xml".format(
+                datestring=datestring, title=title), "w") as f:
+            f.write(xml_data)
+
+
 def get_all_hansards():
     """
-    Generate All datestrings from now back to March 29, 1803 (when Hansard started).
+    Generate all datestrings from now back to March 29, 1803 (when Hansard started).
     Get all available debates for each.
     """
     def date_gen():
@@ -25,13 +42,20 @@ def get_all_hansards():
 
         # While it's less than today
         while then_dt < now_dt:
-            datestring = "{}-{}-{}".format(
+            _datestring = "{}-{}-{}".format(
                 str(then_dt.year),
                 str(then_dt.month).zfill(2),
                 str(then_dt.day).zfill(2))
 
-            yield datestring
+            yield _datestring
             then_dt += timedelta(days=1)
+
+    dg = date_gen()
+    for datestring in dg:
+        commons_titles = get_hansard_titles(datestring, "Debates", "commons")
+        download_all_debates(datestring, commons_titles)
+        lords_titles = get_hansard_titles(datestring, "Debates", "lords")
+        download_all_debates(datestring, lords_titles)
 
 
 def get_hansard_titles(datestring, content_type, house="commons"):
