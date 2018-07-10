@@ -1,7 +1,7 @@
 from config_util.config_parser import parse_config
 from datetime import datetime, timedelta
 from hansard_gathering.exception import SiblingNotFoundException
-from multiprocessing import Pool
+import concurrent.futures
 import json
 import requests
 
@@ -28,15 +28,22 @@ def download_all_debates(datestring, debates_list):
             f.write(xml_data)
 
 
+def get_titles_and_download(datestring, content_type):
+    commons_titles = get_hansard_titles(datestring, content_type, "commons")
+    lords_titles = get_hansard_titles(datestring, "Debates", "lords")
+    download_all_debates(datestring, commons_titles)
+    download_all_debates(datestring, lords_titles)
+
+
 def get_all_hansards():
     """
     Generate all datestrings from now back to March 29, 1803 (when Hansard started).
     Get all available debates for each.
     """
     def date_gen():
-        year = 1803
-        month = 3
-        day = 28
+        year = 1919
+        month = 1
+        day = 1
         now_dt = datetime.now()
         then_dt = datetime(year, month, day)
 
@@ -51,11 +58,9 @@ def get_all_hansards():
             then_dt += timedelta(days=1)
 
     dg = date_gen()
-    for datestring in dg:
-        commons_titles = get_hansard_titles(datestring, "Debates", "commons")
-        download_all_debates(datestring, commons_titles)
-        lords_titles = get_hansard_titles(datestring, "Debates", "lords")
-        download_all_debates(datestring, lords_titles)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=60) as executor:
+        for datestring in dg:
+            executor.submit(get_titles_and_download, datestring, "Debates")
 
 
 def get_hansard_titles(datestring, content_type, house="commons"):
