@@ -61,7 +61,7 @@ def get_all_hansards(start_year=1919, start_month=1, start_day=1):
             then_dt += timedelta(days=1)
 
     dg = date_gen()
-    with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
         for datestring in dg:
             executor.submit(get_titles_and_download, datestring, "Debates")
 
