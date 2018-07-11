@@ -11,7 +11,9 @@ def unxml_hansard_document(document_text):
     :param document_text:
     :return:
     """
-    tree = etree.fromstring(document_text)
+    # Declare that strings are Unicode-encoded
+    parser = etree.XMLParser(ns_clean=True, recover=True, encoding='utf-8')
+    tree = etree.fromstring(document_text.encode('utf-8'), parser=parser)
     notags = etree.tostring(tree, encoding='utf8', method='text')
     return notags
 
@@ -24,10 +26,11 @@ def process_hansard_file(file_path):
     """
     file_path e.g. "hansard_gathering/raw_hansard_data/1919-02-04/MyDebate.xml"
     """
+    print("Processing {}".format(file_path))
     with open(file_path) as f:
         document_text = f.read()
         processed_document_text = unxml_hansard_document(document_text)
-    dest_path = "hansard_gathering/processed_hansard_data/{}".format(file_path.replace(".xml", ".txt"))
+    dest_path = file_path.replace("raw_hansard_data", "processed_hansard_data").replace(".xml", ".txt")
     os.makedirs(os.path.dirname(dest_path), exist_ok=True)
     with open(dest_path, 'wb+') as f:
         f.write(processed_document_text)
@@ -35,7 +38,6 @@ def process_hansard_file(file_path):
 
 def list_hansard_files() -> List[str]:
     for _file in glob.glob("hansard_gathering/raw_hansard_data/**/*.xml", recursive=True):
-        print("BLAH: {}".format(_file))
         yield _file
 
 

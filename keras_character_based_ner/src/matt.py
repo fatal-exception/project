@@ -7,7 +7,7 @@ from typing import List
 def get_texts() -> List[str]:
     cwd = os.getcwd()
     for _file in glob.glob("hansard_gathering/processed_hansard_data/**/*.txt", recursive=True):
-        yield _file
+        yield open(_file).read()
 
 
 def get_sentence_maxlen() -> int:
@@ -16,3 +16,8 @@ def get_sentence_maxlen() -> int:
     :return:
     """
     pass
+
+
+def get_labels():
+    # 1 = LOC, 2 = ORG, 3 = PER, 0 = null
+    return list(range(1, 4))
