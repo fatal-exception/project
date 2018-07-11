@@ -1,5 +1,6 @@
 import numpy as np
 from alphabet import CharBasedNERAlphabet
+import matt
 from typing import List
 
 
@@ -19,7 +20,8 @@ class CharBasedNERDataset:
 
     def get_texts(self) -> List[str]:
         """ Implement with own data source. """
-        raise NotImplementedError
+        # raise NotImplementedError
+        return matt.get_texts()
 
     def get_x_y(self, sentence_maxlen, dataset_name='all'):
         """ Implement with own data source.

@@ -1,3 +1,6 @@
+from typing import List
+
+
 class CharBasedNERAlphabet:
     PADDING_SYMBOL = '<PAD>'
     UNKNOWN_CHAR_SYMBOL = '<UNK>'
@@ -13,6 +16,7 @@ class CharBasedNERAlphabet:
     def get_alphabet_from_texts(texts):
         all_characters = set()
 
+        texts: List[str]  # MIR
         for t in texts:
             text_characters = set(t)
             all_characters |= text_characters  # union

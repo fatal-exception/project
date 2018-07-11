@@ -2,6 +2,7 @@ from config_util.config_parser import parse_config
 from datetime import datetime, timedelta
 from hansard_gathering.exception import SiblingNotFoundException
 import concurrent.futures
+import html
 import json
 import os
 import requests
@@ -24,7 +25,7 @@ def download_all_debates(datestring, debates_list):
         if xml_url == "N/A":
             continue
         xml_data = requests.get(xml_url).text
-        os.makedirs("hansard_gathering/raw_hansard_data/{datestring}".format(datestring=datestring))
+        os.makedirs("hansard_gathering/raw_hansard_data/{datestring}".format(datestring=datestring), exist_ok=True)
         with open("hansard_gathering/raw_hansard_data/{datestring}/{title}.xml".format(
                 datestring=datestring, title=title), "w") as f:
             f.write(xml_data)

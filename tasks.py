@@ -1,5 +1,6 @@
 from __future__ import print_function
 from hansard_gathering import driver
+from hansard_gathering import preprocessing
 from invoke import task
 
 @task
@@ -20,6 +21,14 @@ def print_wrans_titles(ctx, datestring):
 @task
 def hansard_download_all(ctx, year=1919, month=1, day=1):
     driver.get_all_hansards(year, month, day)
+
+@task
+def hansard_process_one(ctx, filepath):
+    preprocessing.process_hansard_file(filepath)
+
+@task
+def hansard_process_all(ctx):
+    preprocessing.process_all_hansard_files()
 
 @task
 def enable_venv(ctx):
