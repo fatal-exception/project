@@ -5,14 +5,14 @@ import sys
 from typing import List
 
 
-def get_all_processed_hansard_files():
-    for _file in glob.glob("hansard_gathering/processed_hansard_data/**/*.txt", recursive=True):
+def get_all_chunked_hansard_files():
+    for _file in glob.glob("hansard_gathering/chunked_hansard_data/**/*.txt", recursive=True):
         yield _file
 
 
 def get_texts() -> List[str]:
     cwd = os.getcwd()
-    for _file in get_all_processed_hansard_files():
+    for _file in get_all_chunked_hansard_files():
         yield open(_file).read()
 
 
@@ -37,7 +37,7 @@ def get_max_sentence_length():
     """
     max_so_far = 0
     max_file = ""
-    for _file in get_all_processed_hansard_files():
+    for _file in get_all_chunked_hansard_files():
         file_len = len(open(_file).read())
         if file_len > max_so_far:
             max_so_far = file_len

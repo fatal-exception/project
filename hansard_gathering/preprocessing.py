@@ -36,11 +36,11 @@ def process_hansard_file(file_path):
         f.write(processed_document_text)
 
 
-def list_hansard_files() -> List[str]:
+def list_raw_hansard_files() -> List[str]:
     for _file in glob.glob("hansard_gathering/raw_hansard_data/**/*.xml", recursive=True):
         yield _file
 
 
 def process_all_hansard_files():
-    for hansard_file in list_hansard_files():
+    for hansard_file in list_raw_hansard_files():
         process_hansard_file(hansard_file)

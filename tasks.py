@@ -1,6 +1,7 @@
 from __future__ import print_function
 from hansard_gathering import driver
 from hansard_gathering import preprocessing
+from hansard_gathering import chunk
 from invoke import task
 
 @task
@@ -29,6 +30,10 @@ def hansard_process_one(ctx, filepath):
 @task
 def hansard_process_all(ctx):
     preprocessing.process_all_hansard_files()
+
+@task
+def hansard_chunk_one(ctx, filepath):
+    chunk.chunk_hansard_debate(filepath)
 
 @task
 def enable_venv(ctx):

@@ -1,5 +1,6 @@
 class Config:
-    sentence_max_length = 200
+    # sentence_max_length = 200
+    sentence_max_length = 900  # MIR there are some very long sentences in debates!
     input_dropout = 0.3
     output_dropout = 0.5
     recurrent_stack_depth = 5

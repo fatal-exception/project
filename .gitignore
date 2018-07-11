@@ -84,6 +84,7 @@ ne_data_gathering/raw_ne_data/*
 # hansard downloads
 hansard_gathering/raw_hansard_data/*
 hansard_gathering/processed_hansard_data/*
+hansard_gathering/chunked_hansard_data/*
 
 # Pytest
 .pytest_cache
