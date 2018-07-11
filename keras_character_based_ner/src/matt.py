@@ -2,6 +2,7 @@
 import glob
 import os
 import sys
+from alphabet import CharBasedNERAlphabet
 from typing import List
 
 
@@ -14,6 +15,10 @@ def get_texts() -> List[str]:
     cwd = os.getcwd()
     for _file in get_all_chunked_hansard_files():
         yield open(_file).read()
+
+
+def get_alphabet():
+    return CharBasedNERAlphabet.get_alphabet_from_texts(get_texts())
 
 
 def get_labels():
@@ -48,3 +53,5 @@ def get_max_sentence_length():
 if __name__ == "__main__":
     if sys.argv[1] == "max-sentence-length":
         print(get_max_sentence_length())
+    elif sys.argv[1] == "get-alphabet":
+        print(get_alphabet())

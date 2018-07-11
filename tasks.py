@@ -33,7 +33,7 @@ def hansard_process_all(ctx):
 
 @task
 def hansard_chunk_one(ctx, filepath):
-    chunk.chunk_hansard_debate(filepath)
+    chunk.chunk_hansard_debate_file_textblob(filepath)
 
 @task
 def enable_venv(ctx):
@@ -62,3 +62,7 @@ def ne_data_people(ctx):
 @task
 def ne_data_places(ctx):
     ctx.run("cd ne_data_gathering && python places.py")
+
+@task
+def char_ner_get_alphabet(ctx):
+    ctx.run("python keras_character_based_ner/src/matt.py get-alphabet")
