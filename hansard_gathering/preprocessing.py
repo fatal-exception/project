@@ -27,10 +27,10 @@ def process_hansard_file(file_path):
     file_path e.g. "hansard_gathering/raw_hansard_data/1919-02-04/MyDebate.xml"
     """
     print("Processing {}".format(file_path))
+    dest_path = file_path.replace("raw_hansard_data", "processed_hansard_data").replace(".xml", ".txt")
     with open(file_path) as f:
         document_text = f.read()
         processed_document_text = unxml_hansard_document(document_text)
-    dest_path = file_path.replace("raw_hansard_data", "processed_hansard_data").replace(".xml", ".txt")
     os.makedirs(os.path.dirname(dest_path), exist_ok=True)
     with open(dest_path, 'wb+') as f:
         f.write(processed_document_text)
