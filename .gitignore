@@ -87,3 +87,6 @@ hansard_gathering/processed_hansard_data/*
 
 # Pytest
 .pytest_cache
+
+# MSWord cache files
+~\$*.docx

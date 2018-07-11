@@ -32,7 +32,11 @@ def hansard_process_all(ctx):
 
 @task
 def enable_venv(ctx):
-    ctx.run("source ./venv/bin/activate && pip install -r requirements.txt")
+    ctx.run("source ./masters_venv/bin/activate && pip install -r requirements.txt")
+
+@task(pre=[enable_venv])
+def hansard_max_sentence_length(ctx):
+    ctx.run("python keras_character_based_ner/src/matt.py max-sentence-length")
 
 @task
 def test(ctx):
