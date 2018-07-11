@@ -18,8 +18,8 @@ def print_wrans_titles(ctx, datestring):
     [print(title) for title in driver.get_hansard_titles(datestring, "Wrans")]
 
 @task
-def hansard_download_all(ctx, start_year=1919):
-    driver.get_all_hansards(start_year)
+def hansard_download_all(ctx, year=1919, month=1, day=1):
+    driver.get_all_hansards(year, month, day)
 
 @task
 def enable_venv(ctx):

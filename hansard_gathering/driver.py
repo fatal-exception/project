@@ -37,15 +37,15 @@ def get_titles_and_download(datestring, content_type):
     download_all_debates(datestring, lords_titles)
 
 
-def get_all_hansards(start_year=1919):
+def get_all_hansards(start_year=1919, start_month=1, start_day=1):
     """
     Generate all datestrings from now back to March 29, 1803 (when Hansard started).
     Get all available debates for each.
     """
     def date_gen():
         year = start_year
-        month = 1
-        day = 1
+        month = start_month
+        day = start_day
         now_dt = datetime.now()
         then_dt = datetime(year, month, day)
 
@@ -60,7 +60,7 @@ def get_all_hansards(start_year=1919):
             then_dt += timedelta(days=1)
 
     dg = date_gen()
-    with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
         for datestring in dg:
             executor.submit(get_titles_and_download, datestring, "Debates")
 
