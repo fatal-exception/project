@@ -23,9 +23,9 @@ class CharacterBasedLSTMModel:
 
         model = Sequential()
 
-# MIR Embeding turns positive integers into dense vectors, for 1st layer of model
+        # MIR Embedding turns positive integers into dense vectors, for 1st layer of model
         model.add(Embedding(num_words,               # MIR input dimension
-                            self.config.embed_size,  # MIR output dimension
+                            self.config.embed_size,  # MIR dense embedding
                             mask_zero=True))
         model.add(Dropout(self.config.input_dropout))
 

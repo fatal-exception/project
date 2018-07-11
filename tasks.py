@@ -36,6 +36,10 @@ def hansard_chunk_one(ctx, filepath):
     chunk.chunk_hansard_debate_file_textblob(filepath)
 
 @task
+def hansard_chunk_all(ctx):
+    chunk.chunk_all_hansard_files()
+
+@task
 def enable_venv(ctx):
     ctx.run("source ./masters_venv/bin/activate && pip install -r requirements.txt")
 
