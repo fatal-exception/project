@@ -1,4 +1,4 @@
-from nltk.tokenize import sent_tokenize
+from nltk.tokenize.punkt import PunktSentenceTokenizer, PunktParameters
 from textblob import TextBlob
 from typing import List
 import concurrent.futures
@@ -38,7 +38,15 @@ def chunk_hansard_debate_file_nltk(file_path):
     with open(file_path) as f:
         debate_text = f.read()
 
-    sents = sent_tokenize(debate_text)
+    # With thanks to
+    # https://stackoverflow.com/questions/34805790/how-to-avoid-nltks-sentence-tokenizer-spliting-on-abbreviations
+    punkt_param = PunktParameters()
+    # 'hon. Gentleman' is very common in Hansard!
+    abbreviation = ['hon']
+    punkt_param.abbrev_types = set(abbreviation)
+    tokenizer = PunktSentenceTokenizer(punkt_param)
+
+    sents = tokenizer.sent_tokenize(debate_text)
     print("Chunking up file: {}".format(file_path))
     dest_file_path = file_path \
         .replace("processed_hansard_data", "chunked_hansard_data") \
@@ -58,7 +66,7 @@ def list_processed_hansard_files() -> List[str]:
 def chunk_all_hansard_files():
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
         for _file in list_processed_hansard_files():
-            # TODO try other chunking approaches: fixed-length, NLTK
+            # TODO try other chunking approaches: fixed-length
             executor.submit(chunk_hansard_debate_file_nltk, _file)
 
 
