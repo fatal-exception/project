@@ -2,6 +2,7 @@ from __future__ import print_function
 from hansard_gathering import driver
 from hansard_gathering import preprocessing
 from hansard_gathering import chunk
+from hansard_gathering import interpolate
 from invoke import task
 
 @task
@@ -35,6 +36,10 @@ def hansard_process_all(ctx):
 def hansard_chunk_one(ctx, filepath):
     tokenizer = chunk.nltk_get_tokenizer()
     chunk.chunk_hansard_debate_file_nltk(filepath, tokenizer)
+
+@task
+def hansard_interpolate_one(ctx, filepath):
+    interpolate.interpolate_one_wrapper(filepath)
 
 @task
 def hansard_chunk_all(ctx):
