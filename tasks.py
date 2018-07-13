@@ -59,14 +59,17 @@ def compile(ctx):
 @task
 def ne_data_companies(ctx):
     ctx.run("cd ne_data_gathering && python companies.py")
+    ctx.run("cd ne_data_gathering/processed_ne_data/companies && cat * | sort > ALL.txt")
 
 @task
 def ne_data_people(ctx):
     ctx.run("cd ne_data_gathering && python people.py")
+    ctx.run("cd ne_data_gathering/processed_ne_data/people && cat * | sort > ALL.txt")
 
 @task
 def ne_data_places(ctx):
     ctx.run("cd ne_data_gathering && python places.py")
+    ctx.run("cd ne_data_gathering/processed_ne_data/places && cat * | sort > ALL.txt")
 
 @task
 def char_ner_get_alphabet(ctx):
