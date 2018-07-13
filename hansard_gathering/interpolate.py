@@ -1,4 +1,5 @@
 from nltk.tokenize import TreebankWordTokenizer
+import os
 
 
 def get_all_ne_data():
@@ -37,6 +38,7 @@ def interpolate_one(file_path, tokenizer, all_places, all_companies, all_people)
             interpolated_text[span_start:span_end] = '3' * span_length
 
     interpolated_file_path = file_path.replace("chunked_hansard_data", "interpolated_hansard_data")
+    os.makedirs(os.path.dirname(interpolated_file_path), exist_ok=True)
     with open(interpolated_file_path) as f:
         f.write(interpolated_text)
 
