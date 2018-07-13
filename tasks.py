@@ -33,7 +33,8 @@ def hansard_process_all(ctx):
 
 @task
 def hansard_chunk_one(ctx, filepath):
-    chunk.chunk_hansard_debate_file_textblob(filepath)
+    tokenizer = chunk.nltk_get_tokenizer()
+    chunk.chunk_hansard_debate_file_nltk(filepath, tokenizer)
 
 @task
 def hansard_chunk_all(ctx):
@@ -70,3 +71,11 @@ def ne_data_places(ctx):
 @task
 def char_ner_get_alphabet(ctx):
     ctx.run("python keras_character_based_ner/src/matt.py get-alphabet")
+
+@task
+def char_ner_get_some_alphabet(ctx):
+    ctx.run("python keras_character_based_ner/src/matt.py get-some-alphabet")
+
+@task
+def char_ner_pickle_some_alphabet(ctx):
+    ctx.run("python keras_character_based_ner/src/matt.py pickle-some-alphabet")

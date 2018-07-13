@@ -14,6 +14,7 @@ class CharBasedNERAlphabet:
 
     @staticmethod
     def get_alphabet_from_texts(texts):
+        print("Getting Alphabet from texts")  # MIR
         all_characters = set()
 
         texts: List[str]  # MIR
