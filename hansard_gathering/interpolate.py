@@ -1,5 +1,6 @@
 from nltk.tokenize import TreebankWordTokenizer
 from nltk import ngrams
+from typing import List
 import os
 
 
@@ -14,7 +15,36 @@ def get_all_ne_data():
     return all_places, all_companies, all_people
 
 
-def interpolate_one(file_path, tokenizer, all_places, all_companies, all_people, n=4):
+def ngram_span_search_named_entities(ngram_span_window, text, all_places: List[str], all_companies: List[str], all_people: List[str]):
+    """
+    Take a window e.g.((0, 1), (2, 6), (7, 15), (16, 19)) from a text. Starting with the longest
+    suffix (0-19 here), and working back via middle (e.g. 0-15) to the first (0-1),
+    check all NE lists for the text bounded by these indices.
+    If matches, return where the match started and ended, and which NE it is.
+    Note that because we pad_right, later elements in the tuple might be None, e.g.:
+    ((98, 102), (102, 103), None, None)
+    :param ngram_span_window: As shown in example above, taken from span_tokenize.
+    :param all_places: NE list
+    :param all_companies: NE list
+    :param all_people: NE list
+    :return: match_start where match starts, match_end where match ends (half-open?), ne_type as int
+    where 1 = LOC, 2 = ORG, 3 = PER, 0 = null
+    """
+    start_index = ngram_span_window[0][0]
+    for end_index in reversed([tup[-1] for tup in ngram_span_window if tup is not None]):
+        print("Examining {}".format(text[start_index:end_index]))
+        if text[start_index:end_index] in all_places:
+            return start_index, end_index, 1
+        elif text[start_index:end_index] in all_companies:
+            return start_index, end_index, 2
+        elif text[start_index:end_index] in all_people:
+            return start_index, end_index, 3
+
+    return 0, 0, 0
+
+
+def interpolate_one(
+        file_path: str, tokenizer, all_places: List[str], all_companies: List[str], all_people: List[str], n=4):
     """
     file_path e.g. hansard_gathering/chunked_hansard_data/1943-09-21/Deaths of Members-chunk-1979.txt
     :param file_path: path to file to do interpolation on
@@ -27,8 +57,12 @@ def interpolate_one(file_path, tokenizer, all_places, all_companies, all_people,
         text = f.read()
         interpolated_text = "0" * len(text)
 
-    # ngrams for the text that capture their starting and ending indices
-    text_span_ngrams = ngrams(tokenizer.span_tokenize(text), n)
+    # ngrams for the text that capture their starting and ending indices.
+    # We pad right because we take the first word of the ngram and all its possible suffixes
+    # when looking for NEs.
+    text_span_ngrams = ngrams(tokenizer.span_tokenize(text), n, pad_right=True)
+
+    # Returns ngrams of text_spans e.g. [((0, 1), (2, 6), (7, 15), (16, 19)), ...]
 
     # For each ngram set, we want to try all possible suffixes against the NE lists,
     # from longest to shortest so we don't miss matches.
@@ -36,12 +70,11 @@ def interpolate_one(file_path, tokenizer, all_places, all_companies, all_people,
     for ngram_span_window in text_span_ngrams:
         match_start: int
         match_end: int
-        ne_type: int # 1 = LOC, 2 = ORG, 3 = PER, 0 = null
+        ne_type: int  # 1 = LOC, 2 = ORG, 3 = PER, 0 = null
         match_start, match_end, ne_type = ngram_span_search_named_entities(
-            ngram_span_window, all_places, all_companies, all_people)
+            ngram_span_window, text, all_places, all_companies, all_people)
         if ne_type is not 0:
             # Build new interpolated text by adding NE markers using concatenation
-            # TODO
             match_len = match_end - match_start
             interpolated_text = interpolated_text[:match_start] + ne_type * match_len + interpolated_text[match_end:]
 
