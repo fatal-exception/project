@@ -4,7 +4,7 @@ import numpy as np
 import os
 import pickle
 import sys
-from alphabet import CharBasedNERAlphabet
+from keras_character_based_ner.src.alphabet import CharBasedNERAlphabet
 from typing import List
 
 
@@ -26,8 +26,8 @@ def get_some_hansard_files(stage="processed"):
     Stage is processed or chunked.
     """
     print("Starting glob for some processed Hansard files")
-    for _file in glob.glob(
-            "hansard_gathering/{}_hansard_data/199*/*.txt".format(stage), recursive=True):
+    for _file in sorted(glob.glob(
+            "hansard_gathering/{}_hansard_data/1994*/*.txt".format(stage), recursive=True)):
         yield _file
 
 

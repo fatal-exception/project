@@ -3,7 +3,9 @@ from hansard_gathering import driver
 from hansard_gathering import preprocessing
 from hansard_gathering import chunk
 from hansard_gathering import interpolate
+from hansard_gathering import numerify
 from invoke import task
+from keras_character_based_ner.src import matt
 import pickle
 
 @task
@@ -53,7 +55,7 @@ def hansard_interpolate_all(ctx, starting_date):
 
 @task
 def hansard_numerify_one(cdx, filepath):
-    with open("keras_character_based_ner/src/some_alphabet.p") as f:
+    with open("keras_character_based_ner/src/some_alphabet.p", "rb") as f:
         alphabet = pickle.load(f)
     numerify.numerify_one(filepath, alphabet)
 
@@ -63,7 +65,7 @@ def enable_venv(ctx):
 
 @task(pre=[enable_venv])
 def hansard_max_sentence_length(ctx):
-    ctx.run("python keras_character_based_ner/src/matt.py max-sentence-length")
+    matt.get_max_sentence_length()
 
 @task
 def test(ctx):
@@ -90,16 +92,16 @@ def ne_data_places(ctx):
 
 @task
 def char_ner_get_alphabet(ctx):
-    ctx.run("python keras_character_based_ner/src/matt.py get-alphabet")
+    matt.get_alphabet()
 
 @task
 def char_ner_get_some_alphabet(ctx):
-    ctx.run("python keras_character_based_ner/src/matt.py get-some-alphabet")
+    matt.get_some_alphabet()
 
 @task
 def char_ner_pickle_some_alphabet(ctx):
-    ctx.run("python keras_character_based_ner/src/matt.py pickle-some-alphabet")
+    matt.pickle_some_alphabet()
 
 @task
 def char_ner_display_pickled_alphabet(ctx):
-    ctx.run("python keras_character_based_ner/src/matt.py display-pickled-alphabet")
+    matt.display_pickled_alphabet()
