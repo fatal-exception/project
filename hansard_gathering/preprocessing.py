@@ -34,6 +34,8 @@ def process_hansard_file(file_path):
     os.makedirs(os.path.dirname(dest_path), exist_ok=True)
     with open(dest_path, 'wb+') as f:
         f.write(processed_document_text)
+    # Clean up as we go along to save Matt's Hard Drive!
+    os.remove(file_path)
 
 
 def list_raw_hansard_files() -> List[str]:

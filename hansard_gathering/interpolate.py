@@ -1,6 +1,8 @@
 from nltk.tokenize import TreebankWordTokenizer
 from nltk import ngrams
 from typing import List
+import concurrent.futures
+import glob
 import os
 
 
@@ -32,7 +34,6 @@ def ngram_span_search_named_entities(ngram_span_window, text, all_places: List[s
     """
     start_index = ngram_span_window[0][0]
     for end_index in reversed([tup[-1] for tup in ngram_span_window if tup is not None]):
-        print("Examining {}".format(text[start_index:end_index]))
         if text[start_index:end_index] in all_places:
             return start_index, end_index, 1
         elif text[start_index:end_index] in all_companies:
@@ -53,6 +54,7 @@ def interpolate_one(
     :param n: number to use for ngramming
     :return: None (we write out to disk)
     """
+    print("Interpolating into {}".format(file_path))
     with open(file_path) as f:
         text: str = f.read()
         interpolated_text: str = "0" * len(text)
@@ -89,3 +91,15 @@ def interpolate_one(
 def interpolate_one_wrapper(file_path):
     t = TreebankWordTokenizer()
     interpolate_one(file_path, t, *get_all_ne_data())
+
+
+def list_chunked_hansard_files() -> List[str]:
+    print("Listing chunked Hansard files...")
+    for _file in glob.glob("hansard_gathering/chunked_hansard_data/**/*.txt", recursive=True):
+        yield _file
+
+
+def interpolate_all_hansard_files():
+    with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
+        for _file in list_chunked_hansard_files():
+            executor.submit(interpolate_one_wrapper, _file)

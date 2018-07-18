@@ -42,6 +42,10 @@ def hansard_interpolate_one(ctx, filepath):
     interpolate.interpolate_one_wrapper(filepath)
 
 @task
+def hansard_interpolate_one(ctx, filepath):
+    interpolate.interpolate_all_hansard_files()
+
+@task
 def hansard_chunk_all(ctx):
     chunk.chunk_all_hansard_files()
 
