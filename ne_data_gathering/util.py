@@ -68,7 +68,7 @@ def dbpedia_post_processing(src_list_file, dest_list_file):
             line = line.replace('"', '')
             # 2. Left-trim any whitespace
             line = line.lstrip()
-            if line == "":
+            if len(line) < 4:
                 continue
             # 3. Get rid of lines that are entirely numbers or symbols
             if re.match("""^\d+$""", line) or re.match("""^[!@£$%^&*()]+$""", line):

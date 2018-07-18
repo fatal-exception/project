@@ -54,8 +54,8 @@ def interpolate_one(
     :return: None (we write out to disk)
     """
     with open(file_path) as f:
-        text = f.read()
-        interpolated_text = "0" * len(text)
+        text: str = f.read()
+        interpolated_text: str = "0" * len(text)
 
     # ngrams for the text that capture their starting and ending indices.
     # We pad right because we take the first word of the ngram and all its possible suffixes
@@ -76,7 +76,9 @@ def interpolate_one(
         if ne_type is not 0:
             # Build new interpolated text by adding NE markers using concatenation
             match_len = match_end - match_start
-            interpolated_text = interpolated_text[:match_start] + ne_type * match_len + interpolated_text[match_end:]
+            interpolated_text = interpolated_text[:match_start] \
+                + str(ne_type) * match_len \
+                + interpolated_text[match_end:]
 
     interpolated_file_path = file_path.replace("chunked_hansard_data", "interpolated_hansard_data")
     os.makedirs(os.path.dirname(interpolated_file_path), exist_ok=True)
