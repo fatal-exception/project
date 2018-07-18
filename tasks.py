@@ -91,3 +91,7 @@ def char_ner_get_some_alphabet(ctx):
 @task
 def char_ner_pickle_some_alphabet(ctx):
     ctx.run("python keras_character_based_ner/src/matt.py pickle-some-alphabet")
+
+@task
+def char_ner_display_pickled_alphabet(ctx):
+    ctx.run("python keras_character_based_ner/src/matt.py display-pickled-alphabet")

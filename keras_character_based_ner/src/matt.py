@@ -27,7 +27,7 @@ def get_some_hansard_files(stage="processed"):
     """
     print("Starting glob for some processed Hansard files")
     for _file in glob.glob(
-            "hansard_gathering/{}_hansard_data/194*/*.txt".format(stage), recursive=True):
+            "hansard_gathering/{}_hansard_data/199*/*.txt".format(stage), recursive=True):
         yield _file
 
 
@@ -58,33 +58,66 @@ def pickle_some_alphabet():
         pickle.dump(alph, f)
 
 
+def display_pickled_alphabet():
+        print(get_pickled_alphabet())
+
+
+def get_pickled_alphabet():
+    my_directory = os.path.dirname(os.path.abspath(__file__))
+    with open("{}/some_alphabet.p".format(my_directory), "rb") as f:
+        return pickle.load(f)
+
+
 def get_labels():
     # 1 = LOC, 2 = ORG, 3 = PER, 0 = null
     return list(range(1, 4))
 
 
-def convert_letters_to_numbers_list(hansard_string):
+def convert_letters_to_numbers_list(hansard_string, alph):
+    """
+    Use alph.get_char_index to change a string to its numberical representation
+    :param hansard_string:
+    :return:
+    """
     pass
 
 
-def get_chunked_hansard_text(file_path):
+def get_chunked_hansard_texts(dataset_name):
+    """
+
+    :param dataset_name: dev, test or train
+    :return:
+    """
     pass
 
 
-def get_total_number_of_chunked_sentences():
+def get_total_number_of_chunked_files(dataset_name):
+    """
+    Get num of samples in a particular dataset, dev, test or train
+    :param dataset_name: must be dev, test or train
+    :return:
+    """
     pass
 
 
 def get_x_y():
     """
-    Returns a Python tuple of Numpy arrays!
+    Returns a Python tuple x and y, where x and y are Numpy arrays!
+                x: Array of shape (batch_size, sentence_maxlen).
+                Entries in dimension 1 are alphabet indices, index 0 is the padding symbol
+                y: Array of shape (batch_size, sentence_maxlen, self.num_labels).
+                Entries in dimension 2 are label indices, index 0 is the null label
     :return:
     """
     pass
-    batch_size = get_total_number_of_chunked_sentences()
-    x = np.zeros(batch_size)
-    for hansard_string in get_chunked_hansard_text(file_path):
-        numbers_list = convert_letters_to_numbers_list(hansard_string)
+
+    batch_size = get_total_number_of_chunked_files("train")
+    sentence_maxlen = get_max_sentence_length()[0]
+    alphabet = get_pickled_alphabet()
+
+    x = np.zeros(batch_size, sentence_maxlen)
+    for hansard_string in get_chunked_hansard_texts("train"):
+        numbers_list = convert_letters_to_numbers_list(hansard_string, alphabet)
         x.append(numbers_list)
 
 
@@ -100,7 +133,7 @@ def get_x_y_generator():
 def get_max_sentence_length():
     """
     By 'sentence' we really mean 'sample".
-    Here we find the sample which is longest of all that has been downloaded.
+    Here we find the sample which is longest of all that has been chunked.
     :return:
     """
     max_so_far = 0
@@ -122,3 +155,5 @@ if __name__ == "__main__":
         print(get_some_alphabet())
     elif sys.argv[1] == "pickle-some-alphabet":
         pickle_some_alphabet()
+    elif sys.argv[1] == "display-pickled-alphabet":
+        display_pickled_alphabet()

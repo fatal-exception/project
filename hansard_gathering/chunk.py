@@ -49,6 +49,7 @@ def chunk_hansard_debate_file_nltk(file_path, tokenizer):
         with open("{}-chunk-{}.txt"
                   .format(dest_file_path, sentence_number), "w+") as f:
             f.write(sentence)
+    os.remove(file_path)
 
 
 def list_processed_hansard_files() -> List[str]:
