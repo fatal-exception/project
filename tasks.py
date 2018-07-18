@@ -46,8 +46,9 @@ def hansard_interpolate_one(ctx, filepath):
     interpolate.interpolate_all_hansard_files()
 
 @task
-def hansard_chunk_all(ctx):
-    chunk.chunk_all_hansard_files()
+def hansard_chunk_all(ctx, starting_date):
+    # e.g. --starting-date 1919-01-01
+    chunk.chunk_all_hansard_files(starting_date)
 
 @task
 def enable_venv(ctx):
