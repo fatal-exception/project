@@ -4,6 +4,7 @@ import os
 
 
 def main() -> None:
+
     def dbpedia():
         file_path = '/places/dbpedia.txt'
         dbpedia_sparql_extract_places("{}{}".format("raw_ne_data", file_path))

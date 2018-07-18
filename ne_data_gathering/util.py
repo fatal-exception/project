@@ -61,18 +61,22 @@ def dbpedia_post_processing(src_list_file, dest_list_file):
 
     res_lines = []
     processed_list_file = dest_list_file
+
     with open(src_list_file, 'r+', encoding='utf-8') as f:
         lines: List[str] = sorted(set(f.readlines()))
-        for line in lines:
-            # 1. Remove double quotes
-            line = line.replace('"', '')
-            # 2. Left-trim any whitespace
-            line = line.lstrip()
-            if len(line) < 4:
-                continue
-            # 3. Get rid of lines that are entirely numbers or symbols
-            if re.match("""^\d+$""", line) or re.match("""^[!@£$%^&*()]+$""", line):
-                continue
-            res_lines.append(line)
+
+    for line in lines:
+        # 1. Remove double quotes
+        line = line.replace('"', '')
+        # 2. Left-trim any whitespace
+        line = line.lstrip()
+        # 3. Remove words shorter than 4 chars (they all have final newline)
+        if len(line) < 5:
+            continue
+        # 4. Get rid of lines that are entirely numbers or symbols
+        if re.match("""^\d+$""", line) or re.match("""^[!@£$%^&*()]+$""", line):
+            continue
+        res_lines.append(line)
+
     with open(processed_list_file, 'w+') as f:
         f.writelines(res_lines)
