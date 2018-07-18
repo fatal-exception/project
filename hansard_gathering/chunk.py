@@ -41,11 +41,6 @@ def chunk_hansard_debate_file_nltk(file_path, tokenizer):
         .replace("processed_hansard_data", "chunked_hansard_data") \
         .replace(".txt", "")
 
-    # Don't chunk if we've done it before, unless we're forcing re-chunking
-    if os.path.exists("{}-chunk-{}.txt".format(dest_file_path, 0)) and not force_rechunk:
-        print ("Skipping file which is already chunked: {}".format(file_path))
-        return
-
     with open(file_path) as f:
         debate_text = f.read()
 
