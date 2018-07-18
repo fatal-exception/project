@@ -11,6 +11,7 @@ matplotlib
 nltk
 pandas
 psycopg2-binary
+pyfakefs
 pytest
 pyyaml
 requests
