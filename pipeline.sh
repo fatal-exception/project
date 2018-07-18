@@ -5,4 +5,5 @@
 # hansard_process_all
 # char-ner-pickle-some-alphabet
 # hansard_chunk_all
-# hansard-interpolate-all
+# hansard-interpolate-all --> gives y
+# hansard-numerify-all --> gives x

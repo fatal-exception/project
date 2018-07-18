@@ -85,7 +85,7 @@ def nltk_get_tokenizer():
     # https://stackoverflow.com/questions/34805790/how-to-avoid-nltks-sentence-tokenizer-spliting-on-abbreviations
     punkt_param = PunktParameters()
     # 'hon. Gentleman' is very common in Hansard!
-    abbreviation = ['hon', 'mr', 'mrs']
+    abbreviation = ['hon', 'mr', 'mrs', 'no']
     punkt_param.abbrev_types = set(abbreviation)
     return PunktSentenceTokenizer(punkt_param)
 

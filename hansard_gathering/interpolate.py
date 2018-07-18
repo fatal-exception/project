@@ -7,6 +7,7 @@ import os
 
 
 def get_all_ne_data():
+    print("Gathering all Named Entity data")
     with open("ne_data_gathering/processed_ne_data/places/ALL.txt") as f:
         all_places = [line.rstrip() for line in f]
     with open("ne_data_gathering/processed_ne_data/companies/ALL.txt") as f:
@@ -54,7 +55,7 @@ def interpolate_one(
     :param n: number to use for ngramming
     :return: None (we write out to disk)
     """
-    print("Interpolating into {}".format(file_path))
+    print("Interpolating file {}".format(file_path))
     with open(file_path) as f:
         text: str = f.read()
         interpolated_text: str = "0" * len(text)
@@ -93,13 +94,24 @@ def interpolate_one_wrapper(file_path):
     interpolate_one(file_path, t, *get_all_ne_data())
 
 
-def list_chunked_hansard_files() -> List[str]:
+def list_chunked_hansard_files(starting_date) -> List[str]:
     print("Listing chunked Hansard files...")
-    for _file in glob.glob("hansard_gathering/chunked_hansard_data/**/*.txt", recursive=True):
+    files = sorted(glob.glob("hansard_gathering/chunked_hansard_data/**/*.txt", recursive=True))
+
+    # With thanks to
+    # https://stackoverflow.com/questions/33895760/python-idiomatic-way-to-drop-items-from-a-list-until-an-item-matches-a-conditio
+    def date_is_less_than_starting_date(file_path):
+        file_path_date = file_path.split("/")[2]
+        file_path_dt = datetime.strptime(file_path_date, "%Y-%M-%d")
+        starting_dt = datetime.strptime(starting_date, "%Y-%M-%d")
+        return file_path_dt < starting_dt
+
+    filtered_files = list(itertools.dropwhile(date_is_less_than_starting_date, files))
+    for _file in filtered_files:
         yield _file
 
 
-def interpolate_all_hansard_files():
+def interpolate_all_hansard_files(starting_date):
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
-        for _file in list_chunked_hansard_files():
+        for _file in list_chunked_hansard_files(starting_date):
             executor.submit(interpolate_one_wrapper, _file)

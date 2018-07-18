@@ -4,6 +4,7 @@ from hansard_gathering import preprocessing
 from hansard_gathering import chunk
 from hansard_gathering import interpolate
 from invoke import task
+import pickle
 
 @task
 def print_debate_titles(ctx, datestring):
@@ -38,17 +39,23 @@ def hansard_chunk_one(ctx, filepath):
     chunk.chunk_hansard_debate_file_nltk(filepath, tokenizer)
 
 @task
+def hansard_chunk_all(ctx, starting_date):
+    # e.g. --starting-date 1919-01-01
+    chunk.chunk_all_hansard_files(starting_date)
+
+@task
 def hansard_interpolate_one(ctx, filepath):
     interpolate.interpolate_one_wrapper(filepath)
 
 @task
-def hansard_interpolate_one(ctx, filepath):
+def hansard_interpolate_all(ctx, starting_date):
     interpolate.interpolate_all_hansard_files()
 
 @task
-def hansard_chunk_all(ctx, starting_date):
-    # e.g. --starting-date 1919-01-01
-    chunk.chunk_all_hansard_files(starting_date)
+def hansard_numerify_one(cdx, filepath):
+    with open("keras_character_based_ner/src/some_alphabet.p") as f:
+        alphabet = pickle.load(f)
+    numerify.numerify_one(filepath, alphabet)
 
 @task
 def enable_venv(ctx):
