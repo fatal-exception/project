@@ -38,7 +38,7 @@ class CharBasedNERDataset:
         # using ints to lookup the alphabet.
         # MIR y 1st dimension is for all samples,
         # 2nd dimension is for char-strings, 3rd dim is for streams of labels, by int
-        return matt.get_x_y()
+        return matt.get_x_y(sentence_maxlen, dataset_name)
 
     def get_x_y_generator(self, sentence_maxlen, dataset_name='all'):
         """ Implement with own data source.

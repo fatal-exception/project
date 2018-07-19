@@ -6,7 +6,6 @@ import pickle
 import sys
 from keras_character_based_ner.src.alphabet import CharBasedNERAlphabet
 from typing import List
-# from keras.preprocessing.sequence import pad_sequences
 
 
 def get_all_hansard_files(stage="processed"):
@@ -101,7 +100,7 @@ def get_total_number_of_chunked_files(dataset_name):
     pass
 
 
-def get_x_y():
+def get_x_y(sentence_maxlen, dataset_name):
     """
     Returns a Python tuple x and y, where x and y are Numpy arrays!
                 x: Array of shape (batch_size, sentence_maxlen).
@@ -110,16 +109,17 @@ def get_x_y():
                 Entries in dimension 2 are label indices, index 0 is the null label
     :return:
     """
-    pass
-
-    batch_size = get_total_number_of_chunked_files("train")
-    sentence_maxlen = get_max_sentence_length()[0]
+    from keras.preprocessing.sequence import pad_sequences
+    # TODO look at dataset_name
+    batch_size = get_total_number_of_chunked_files(dataset_name)
     alphabet = get_pickled_alphabet()
 
     x = np.zeros(batch_size, sentence_maxlen)
-    for idx, hansard_string in enumerate(get_chunked_hansard_texts("train")):
+    for idx, hansard_string in enumerate(get_chunked_hansard_texts(dataset_name)):
         numbers_list: List[int] = convert_letters_to_numbers_list(hansard_string, alphabet)
-        x[idx, :] = numbers_list
+        x[idx, :] = pad_sequences(numbers_list, maxlen=sentence_maxlen)
+
+    return (x, None)
 
 
 def get_x_y_generator():

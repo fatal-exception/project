@@ -14,6 +14,6 @@
 # hansard_download_all
 # hansard_process_all
 # char-ner-pickle-some-alphabet
+# Chunk by adding sentence-span files to processing directory
 # hansard-interpolate-all --> gives y
 # hansard-numerify-all --> gives x
-# Chunk as we load into keras??
