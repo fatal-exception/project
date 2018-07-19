@@ -6,6 +6,7 @@ import pickle
 import sys
 from keras_character_based_ner.src.alphabet import CharBasedNERAlphabet
 from typing import List
+from keras.preprocessing.sequence import pad_sequences
 
 
 def get_all_hansard_files(stage="processed"):
@@ -73,7 +74,7 @@ def get_labels():
     return list(range(1, 4))
 
 
-def convert_letters_to_numbers_list(hansard_string, alph):
+def convert_letters_to_numbers_list(hansard_string, alph) -> List[int]:
     """
     Use alph.get_char_index to change a string to its numberical representation
     :param hansard_string:
@@ -116,9 +117,9 @@ def get_x_y():
     alphabet = get_pickled_alphabet()
 
     x = np.zeros(batch_size, sentence_maxlen)
-    for hansard_string in get_chunked_hansard_texts("train"):
-        numbers_list = convert_letters_to_numbers_list(hansard_string, alphabet)
-        x.append(numbers_list)
+    for idx, hansard_string in enumerate(get_chunked_hansard_texts("train")):
+        numbers_list: List[int] = convert_letters_to_numbers_list(hansard_string, alphabet)
+        x[idx, :] = numbers_list
 
 
 def get_x_y_generator():
@@ -136,6 +137,7 @@ def get_max_sentence_length():
     Here we find the sample which is longest of all that has been chunked.
     :return:
     """
+    return None, 100  # Until chunking is finished, just hard-code it
     max_so_far = 0
     max_file = ""
     for _file in get_all_hansard_files("chunked"):

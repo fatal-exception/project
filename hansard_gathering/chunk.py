@@ -92,7 +92,9 @@ def nltk_get_tokenizer():
 
 def chunk_all_hansard_files(starting_date):
     tokenizer = nltk_get_tokenizer()
-    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
+    pool_implementation = concurrent.futures.ProcessPoolExecutor
+    # pool_implementation = concurrent.futures.ThreadPoolExecutor
+    with pool_implementation(max_workers=16) as executor:
         for _file in list_processed_hansard_files(starting_date):
             # TODO try other chunking approaches: fixed-length
             executor.submit(chunk_hansard_debate_file_nltk, _file, tokenizer)
