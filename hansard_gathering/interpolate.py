@@ -1,8 +1,10 @@
+from datetime import datetime
 from nltk.tokenize import TreebankWordTokenizer
 from nltk import ngrams
 from typing import List
 import concurrent.futures
 import glob
+import itertools
 import os
 
 
@@ -46,11 +48,12 @@ def ngram_span_search_named_entities(ngram_span_window, text, all_places: List[s
 
 
 def interpolate_one(
-        file_path: str, tokenizer, all_places: List[str], all_companies: List[str], all_people: List[str], n=4):
+        file_path: str, tokenizer, stage, all_places: List[str], all_companies: List[str], all_people: List[str], n=4):
     """
     file_path e.g. hansard_gathering/chunked_hansard_data/1943-09-21/Deaths of Members-chunk-1979.txt
     :param file_path: path to file to do interpolation on
     :param tokenizer: an NLTK tokenizer with span_tokenize method
+    :param stage: Whether to use source files from chunked or processed stage.
     :param all_*: files with lists of _all_ collected examples of that NE type, \n-separated
     :param n: number to use for ngramming
     :return: None (we write out to disk)
@@ -83,20 +86,23 @@ def interpolate_one(
                 + str(ne_type) * match_len \
                 + interpolated_text[match_end:]
 
-    interpolated_file_path = file_path.replace("chunked_hansard_data", "interpolated_hansard_data")
+    interpolated_file_path = file_path.replace("{}_hansard_data".format(stage), "interpolated_hansard_data")
     os.makedirs(os.path.dirname(interpolated_file_path), exist_ok=True)
     with open(interpolated_file_path, "w") as f:
         f.write(interpolated_text)
 
 
-def interpolate_one_wrapper(file_path):
+def interpolate_one_wrapper(file_path, stage="chunked"):
     t = TreebankWordTokenizer()
-    interpolate_one(file_path, t, *get_all_ne_data())
+    interpolate_one(file_path, t, stage, *get_all_ne_data())
 
 
-def list_chunked_hansard_files(starting_date) -> List[str]:
-    print("Listing chunked Hansard files...")
-    files = sorted(glob.glob("hansard_gathering/chunked_hansard_data/**/*.txt", recursive=True))
+def list_hansard_files(starting_date, stage) -> List[str]:
+    """
+    stage is chunked or processed
+    """
+    print("Listing {} Hansard files...".format(stage))
+    files = sorted(glob.glob("hansard_gathering/{}_hansard_data/**/*.txt".format(stage), recursive=True))
 
     # With thanks to
     # https://stackoverflow.com/questions/33895760/python-idiomatic-way-to-drop-items-from-a-list-until-an-item-matches-a-conditio
@@ -113,5 +119,5 @@ def list_chunked_hansard_files(starting_date) -> List[str]:
 
 def interpolate_all_hansard_files(starting_date):
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
-        for _file in list_chunked_hansard_files(starting_date):
+        for _file in list_hansard_files(starting_date, "processed"):
             executor.submit(interpolate_one_wrapper, _file)
