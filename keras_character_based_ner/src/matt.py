@@ -6,7 +6,7 @@ import pickle
 import sys
 from keras_character_based_ner.src.alphabet import CharBasedNERAlphabet
 from typing import List
-from keras.preprocessing.sequence import pad_sequences
+# from keras.preprocessing.sequence import pad_sequences
 
 
 def get_all_hansard_files(stage="processed"):

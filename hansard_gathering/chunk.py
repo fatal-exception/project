@@ -37,21 +37,18 @@ def chunk_hansard_debate_file_nltk(file_path, tokenizer):
     :param file_path: path of file to split up
     :param tokenizer: An NLTK tokenizer with customisations for Hansard
     """
-    dest_file_path = file_path \
-        .replace("processed_hansard_data", "chunked_hansard_data") \
-        .replace(".txt", "")
+    dest_file_path = file_path.replace(".txt", "-spans.txt")
 
     with open(file_path) as f:
         debate_text = f.read()
 
-    sents = tokenizer.tokenize(debate_text)
     print("Chunking up file: {}".format(file_path))
+    sent_spans = tokenizer.span_tokenize(debate_text)
+    sent_spans_str = "\n".join("({},{})".format(
+        sent_start, sent_end) for sent_start, sent_end in sent_spans)
     os.makedirs(os.path.dirname(dest_file_path), exist_ok=True)
-    for sentence_number, sentence in enumerate(sents):
-        with open("{}-chunk-{}.txt"
-                  .format(dest_file_path, sentence_number), "w+") as f:
-            f.write(sentence)
-    os.remove(file_path)
+    with open(dest_file_path, "w+") as f:
+        f.write(sent_spans_str)
 
 
 def list_processed_hansard_files(starting_date) -> List[str]:
