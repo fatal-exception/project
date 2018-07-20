@@ -14,16 +14,6 @@ def print_debate_titles(ctx, datestring):
     [print(title) for title in driver.get_hansard_titles(datestring, "Debates", "lords")]
 
 @task
-# Written Ministerial Statements
-def print_wms_titles(ctx, datestring):
-    [print(title) for title in driver.get_hansard_titles(datestring, "WMS")]
-
-@task
-# Written Answers
-def print_wrans_titles(ctx, datestring):
-    [print(title) for title in driver.get_hansard_titles(datestring, "Wrans")]
-
-@task
 def hansard_download_all(ctx, year=1919, month=1, day=1):
     driver.get_all_hansards(year, month, day)
 
@@ -46,6 +36,11 @@ def hansard_chunk_all(ctx, starting_date):
     chunk.chunk_all_hansard_files(starting_date)
 
 @task
+def hansard_display_chunked(ctx, filepath):
+    chunk.display_chunked_hansard(filepath)
+
+
+@task
 def hansard_interpolate_one(ctx, filepath):
     interpolate.interpolate_one_wrapper(filepath)
 
@@ -63,7 +58,7 @@ def hansard_numerify_one(cdx, filepath):
 def enable_venv(ctx):
     ctx.run("source ./masters_venv/bin/activate && pip install -r requirements.txt")
 
-@task(pre=[enable_venv])
+@task
 def hansard_max_sentence_length(ctx):
     matt.get_max_sentence_length()
 
