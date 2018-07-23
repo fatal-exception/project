@@ -81,7 +81,7 @@ def dbpedia_post_processing(src_list_file, dest_list_file):
             continue
 
         # 4. Get rid of lines that are entirely numbers or symbols
-        if re.match("""^\d+$""", line) or re.match("""^[!@£$%^&*()]+$""", line):
+        if re.match("""^[!@£$%^&*()0-9 ]+$""", line):
             print("DEBUG: Removing symbol lines {}".format(line)) if debug else None
             continue
 
@@ -90,12 +90,26 @@ def dbpedia_post_processing(src_list_file, dest_list_file):
             print("DEBUG: found bracketed line: {}".format(line)) if debug else None
             line = line[1:-2] + "\n"
 
-        # 6. If line start with more than one single quote, remove all the single quotes at start
+        # 6. If line starts with more than one single quote, remove all the single quotes at start
         match = re.match("""^'{2,}(.*)""", line)
         if match is not None:
             print("DEBUG: remove extraneous prefixed single quotes in line {}".format(line)) if debug\
                 else None
+            line = match.group(1)
+
+        # 7. If line ends with more than one single quote, remove all the single quotes at start
+        match = re.match("""(.*)'{2,}$""", line)
+        if match is not None:
+            print("DEBUG: remove extraneous suffixed single quotes in line {}".format(line)) if debug \
+                else None
             line = match.group(1) + "\n"
+
+        # 8. If line starts with just whitespace and/or asterisks, remove them
+        match = re.match("""^[* ]+(.*)""", line)
+        if match is not None:
+            print("DEBUG: remove extraneous prefixed spaces/asterisks in line {}".format(line)) \
+                if debug else None
+            line = match.group(1)
 
         res_lines.append(line)
 
