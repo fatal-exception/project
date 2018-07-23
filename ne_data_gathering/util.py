@@ -88,7 +88,14 @@ def dbpedia_post_processing(src_list_file, dest_list_file):
         # 5. If whole line is surrounded by brackets, remove those brackets
         if line.startswith("(") and line.endswith(")\n"):
             print("DEBUG: found bracketed line: {}".format(line)) if debug else None
-            line = line[1:-1]
+            line = line[1:-2] + "\n"
+
+        # 6. If line start with more than one single quote, remove all the single quotes at start
+        match = re.match("""^'{2,}(.*)""", line)
+        if match is not None:
+            print("DEBUG: remove extraneous prefixed single quotes in line {}".format(line)) if debug\
+                else None
+            line = match.group(1) + "\n"
 
         res_lines.append(line)
 
