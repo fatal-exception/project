@@ -60,11 +60,13 @@ def ngram_span_search_named_entities(ngram_span_window, text, all_places: List[s
 def interpolate_one(file_path: str, tokenizer, stage, all_places: List[str],
         all_companies: List[str], all_people: List[str], n=4):
     """
-    file_path e.g. hansard_gathering/chunked_hansard_data/1943-09-21/Deaths of Members-chunk-1979.txt
+    file_path e.g. hansard_gathering/processed_hansard_data/1943-09-21/Deaths of Members-chunk-1979.txt
     :param file_path: path to file to do interpolation on
     :param tokenizer: an NLTK tokenizer with span_tokenize method
     :param stage: Whether to use source files from chunked or processed stage.
-    :param all_*: files with lists of _all_ collected examples of that NE type, \n-separated
+    :param all_places: files with lists of _all_ collected examples of that NE type, \n-separated
+    :param all_companies: files with lists of _all_ collected examples of that NE type, \n-separated
+    :param all_people: files with lists of _all_ collected examples of that NE type, \n-separated
     :param n: number to use for ngramming
     :return: None (we write out to disk)
     """
@@ -102,7 +104,7 @@ def interpolate_one(file_path: str, tokenizer, stage, all_places: List[str],
         f.write(interpolated_text)
 
 
-def interpolate_one_wrapper(file_path, ne, stage="chunked"):
+def interpolate_one_wrapper(file_path, ne, stage="processed"):
     """
     :param file_path:
     :param stage:
@@ -119,6 +121,9 @@ def list_hansard_files(starting_date, stage) -> List[str]:
     """
     print("Listing {} Hansard files...".format(stage))
     files = sorted(glob.glob("hansard_gathering/{}_hansard_data/**/*.txt".format(stage), recursive=True))
+
+    # Don't interpolate our spans (chunking) files
+    files = filter(lambda elem: not elem.endswith("-spans.txt"), files)
 
     # With thanks to
     # https://stackoverflow.com/questions/33895760/python-idiomatic-way-to-drop-items-from-a-list-until-an-item-matches-a-conditio
@@ -137,4 +142,4 @@ def interpolate_all_hansard_files(starting_date):
     ne = NamedEntityData()
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
         for _file in list_hansard_files(starting_date, "processed"):
-            executor.submit(interpolate_one_wrapper, _file, ne)
+            executor.submit(interpolate_one_wrapper, _file, ne, "processed")
