@@ -1,21 +1,23 @@
 #!/usr/bin/env python
-import util
 import os
+import sys
+import util
 
 
-def main() -> None:
+def dbpedia(src_dir, file_path):
+    dbpedia_sparql_extract_places("{}{}".format(src_dir, file_path))
+    util.dbpedia_post_processing(
+        "{}{}".format("raw_ne_data", file_path), "{}{}".format("processed_ne_data", file_path))
 
-    def dbpedia():
-        file_path = '/places/dbpedia.txt'
-        dbpedia_sparql_extract_places("{}{}".format("raw_ne_data", file_path))
-        util.dbpedia_post_processing(
-            "{}{}".format("raw_ne_data", file_path), "{}{}".format("processed_ne_data", file_path))
 
-    def conll2003eng():
-        conll_places = util.process_conll_file(util.conll_file, 'LOC')
-        util.write_to_data_file(conll_places, "places", "conll_2003.txt")
+def conll2003eng():
+    conll_places = util.process_conll_file(util.conll_file, 'LOC')
+    util.write_to_data_file(conll_places, "places", "conll_2003.txt")
 
-    dbpedia()
+
+def main(src_dir, file_path) -> None:
+
+    dbpedia(src_dir, file_path)
     conll2003eng()
 
 
@@ -64,4 +66,11 @@ def dbpedia_sparql_extract_places(list_file):
 
 
 if __name__ == "__main__":
-    main()
+    global_file_path = "/places/dbpedia.txt"
+    global_src_dir = "raw_ne_data"
+    if sys.argv[1] == "main":
+        main(global_src_dir, global_file_path)
+    elif sys.argv[1] == "process":
+        util.dbpedia_post_processing(
+            "{}{}".format("raw_ne_data", global_file_path), "{}{}".format(
+                "processed_ne_data", global_file_path))

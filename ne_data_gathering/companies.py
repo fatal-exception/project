@@ -5,36 +5,39 @@ from typing import List
 from util import capitalise_text_list, write_to_data_file
 import util
 import os
+import sys
 
 import csv
 import requests
 
 
-def main() -> None:
-    # FTP companies data is too dirty to use :(
+# FTP companies data is too dirty to use :(
+def nasdaq():
+    nasdaq_csv_companies = dedup(process_nasdaq_csv())
+    write_to_data_file(nasdaq_csv_companies, "companies", "nasdaq_csv_companies.txt")
 
-    def nasdaq():
-        nasdaq_csv_companies = dedup(process_nasdaq_csv())
-        write_to_data_file(nasdaq_csv_companies, "companies", "nasdaq_csv_companies.txt")
 
-    def lse():
-        lse_data = process_lse_download()
-        write_to_data_file(lse_data, "companies", "lse_manual_download.txt")
+def lse():
+    lse_data = process_lse_download()
+    write_to_data_file(lse_data, "companies", "lse_manual_download.txt")
 
-    def dbpedia():
-        file_path = '/companies/dbpedia.txt'
-        src_dir = "raw_ne_data"
-        dbpedia_sparql_extract_companies("{}{}".format(src_dir, file_path))
-        util.dbpedia_post_processing(
-            "{}{}".format(src_dir, file_path), "processed_ne_data{}".format(file_path))
 
-    def conll2003eng():
-        conll_companies = util.process_conll_file(util.conll_file, 'ORG')
-        util.write_to_data_file(conll_companies, "companies", "conll_2003.txt")
+def dbpedia(src_dir, file_path):
+    dbpedia_sparql_extract_companies("{}{}".format(src_dir, file_path))
+    util.dbpedia_post_processing(
+        "{}{}".format(src_dir, file_path), "processed_ne_data{}".format(file_path))
+
+
+def conll2003eng():
+    conll_companies = util.process_conll_file(util.conll_file, 'ORG')
+    util.write_to_data_file(conll_companies, "companies", "conll_2003.txt")
+
+
+def main(src_dir, file_path) -> None:
 
     nasdaq()
     lse()
-    dbpedia()
+    dbpedia(src_dir, file_path)
     conll2003eng()
 
 
@@ -142,4 +145,14 @@ def process_lse_download() -> List[str]:
 
 
 if __name__ == "__main__":
-    main()
+
+    # Effective globals
+    global_file_path = '/companies/dbpedia.txt'
+    global_src_dir = "raw_ne_data"
+
+    if sys.argv[1] == "main":
+        main(global_src_dir, global_file_path)
+    if sys.argv[1] == "process":
+        util.dbpedia_post_processing(
+            "{}{}".format(global_src_dir, global_file_path), "processed_ne_data{}".format(
+                global_file_path))

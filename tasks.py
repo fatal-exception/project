@@ -71,18 +71,33 @@ def compile(ctx):
     ctx.run("find . -name '*.py' | grep -v masters_venv | xargs python -m py_compile")
 
 @task
-def ne_data_companies(ctx):
-    ctx.run("cd ne_data_gathering && python companies.py")
+def ne_data_companies_download_process(ctx):
+    ctx.run("cd ne_data_gathering && python companies.py main")
     ctx.run("cd ne_data_gathering/processed_ne_data/companies && cat * | sort > ALL.txt")
 
 @task
-def ne_data_people(ctx):
-    ctx.run("cd ne_data_gathering && python people.py")
+def ne_data_companies_process(ctx):
+    ctx.run("cd ne_data_gathering && python companies.py process")
+    ctx.run("cd ne_data_gathering/processed_ne_data/companies && cat * | sort > ALL.txt")
+
+@task
+def ne_data_people_download_process(ctx):
+    ctx.run("cd ne_data_gathering && python people.py main")
     ctx.run("cd ne_data_gathering/processed_ne_data/people && cat * | sort > ALL.txt")
 
 @task
-def ne_data_places(ctx):
-    ctx.run("cd ne_data_gathering && python places.py")
+def ne_data_people_process(ctx):
+    ctx.run("cd ne_data_gathering && python people.py process")
+    ctx.run("cd ne_data_gathering/processed_ne_data/people && cat * | sort > ALL.txt")
+
+@task
+def ne_data_places_download_process(ctx):
+    ctx.run("cd ne_data_gathering && python places.py main")
+    ctx.run("cd ne_data_gathering/processed_ne_data/places && cat * | sort > ALL.txt")
+
+@task
+def ne_data_places_process(ctx):
+    ctx.run("cd ne_data_gathering && python places.py process")
     ctx.run("cd ne_data_gathering/processed_ne_data/places && cat * | sort > ALL.txt")
 
 @task

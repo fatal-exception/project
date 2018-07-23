@@ -59,6 +59,8 @@ def remove_outer_brackets(_line: str) -> str:
 
 def dbpedia_post_processing(src_list_file, dest_list_file):
 
+    debug = True
+
     res_lines = []
     processed_list_file = dest_list_file
 
@@ -68,14 +70,26 @@ def dbpedia_post_processing(src_list_file, dest_list_file):
     for line in lines:
         # 1. Remove double quotes
         line = line.replace('"', '')
+
         # 2. Left-trim any whitespace
         line = line.lstrip()
+
         # 3. Remove words shorter than 4 chars (they all have final newline)
+        # These tend to be wrong words like 'the' and are low-value and hard to filter.
         if len(line) < 5:
+            print("DEBUG: Removing short line {}".format(line)) if debug else None
             continue
+
         # 4. Get rid of lines that are entirely numbers or symbols
         if re.match("""^\d+$""", line) or re.match("""^[!@£$%^&*()]+$""", line):
+            print("DEBUG: Removing symbol lines {}".format(line)) if debug else None
             continue
+
+        # 5. If whole line is surrounded by brackets, remove those brackets
+        if line.startswith("(") and line.endswith(")\n"):
+            print("DEBUG: found bracketed line: {}".format(line)) if debug else None
+            line = line[1:-1]
+
         res_lines.append(line)
 
     with open(processed_list_file, 'w+') as f:
