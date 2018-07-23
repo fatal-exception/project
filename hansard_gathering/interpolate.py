@@ -8,19 +8,28 @@ import itertools
 import os
 
 
-def get_all_ne_data():
-    print("Gathering all Named Entity data")
-    with open("ne_data_gathering/processed_ne_data/places/ALL.txt") as f:
-        all_places = [line.rstrip() for line in f]
-    with open("ne_data_gathering/processed_ne_data/companies/ALL.txt") as f:
-        all_companies = [line.rstrip() for line in f]
-    with open("ne_data_gathering/processed_ne_data/people/ALL.txt") as f:
-        all_people = [line.rstrip() for line in f]
+class NamedEntityData:
+    def __init__(self):
+        self.places, self.companies, self.people = self.read_in_all_ne_data()
 
-    return all_places, all_companies, all_people
+    @staticmethod
+    def read_in_all_ne_data():
+        print("Gathering all Named Entity data")
+        with open("ne_data_gathering/processed_ne_data/places/ALL.txt") as f:
+            all_places = [line.rstrip() for line in f]
+        with open("ne_data_gathering/processed_ne_data/companies/ALL.txt") as f:
+            all_companies = [line.rstrip() for line in f]
+        with open("ne_data_gathering/processed_ne_data/people/ALL.txt") as f:
+            all_people = [line.rstrip() for line in f]
+
+        return all_places, all_companies, all_people
+
+    def get_all(self):
+        return self.places, self.companies, self.people
 
 
-def ngram_span_search_named_entities(ngram_span_window, text, all_places: List[str], all_companies: List[str], all_people: List[str]):
+def ngram_span_search_named_entities(ngram_span_window, text, all_places: List[str],
+                                     all_companies: List[str], all_people: List[str]):
     """
     Take a window e.g.((0, 1), (2, 6), (7, 15), (16, 19)) from a text. Starting with the longest
     suffix (0-19 here), and working back via middle (e.g. 0-15) to the first (0-1),
@@ -29,6 +38,7 @@ def ngram_span_search_named_entities(ngram_span_window, text, all_places: List[s
     Note that because we pad_right, later elements in the tuple might be None, e.g.:
     ((98, 102), (102, 103), None, None)
     :param ngram_span_window: As shown in example above, taken from span_tokenize.
+    :param text: The debate text we are examining
     :param all_places: NE list
     :param all_companies: NE list
     :param all_people: NE list
@@ -47,8 +57,8 @@ def ngram_span_search_named_entities(ngram_span_window, text, all_places: List[s
     return 0, 0, 0
 
 
-def interpolate_one(
-        file_path: str, tokenizer, stage, all_places: List[str], all_companies: List[str], all_people: List[str], n=4):
+def interpolate_one(file_path: str, tokenizer, stage, all_places: List[str],
+        all_companies: List[str], all_people: List[str], n=4):
     """
     file_path e.g. hansard_gathering/chunked_hansard_data/1943-09-21/Deaths of Members-chunk-1979.txt
     :param file_path: path to file to do interpolation on
@@ -92,9 +102,15 @@ def interpolate_one(
         f.write(interpolated_text)
 
 
-def interpolate_one_wrapper(file_path, stage="chunked"):
+def interpolate_one_wrapper(file_path, ne, stage="chunked"):
+    """
+    :param file_path:
+    :param stage:
+    :param ne: a NamedEntityData object
+    :return:
+    """
     t = TreebankWordTokenizer()
-    interpolate_one(file_path, t, stage, *get_all_ne_data())
+    interpolate_one(file_path, t, stage, *ne.get_all())
 
 
 def list_hansard_files(starting_date, stage) -> List[str]:
@@ -118,6 +134,7 @@ def list_hansard_files(starting_date, stage) -> List[str]:
 
 
 def interpolate_all_hansard_files(starting_date):
+    ne = NamedEntityData()
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
         for _file in list_hansard_files(starting_date, "processed"):
-            executor.submit(interpolate_one_wrapper, _file)
+            executor.submit(interpolate_one_wrapper, _file, ne)

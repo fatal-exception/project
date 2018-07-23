@@ -46,7 +46,7 @@ def hansard_interpolate_one(ctx, filepath):
 
 @task
 def hansard_interpolate_all(ctx, starting_date):
-    interpolate.interpolate_all_hansard_files()
+    interpolate.interpolate_all_hansard_files(starting_date)
 
 @task
 def hansard_numerify_one(cdx, filepath):
