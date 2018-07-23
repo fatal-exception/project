@@ -8,7 +8,7 @@ jupyter
 keras
 lxml
 matplotlib
-nltk
+nltk==3.3
 pandas
 psycopg2-binary
 pyfakefs

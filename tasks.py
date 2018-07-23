@@ -39,10 +39,14 @@ def hansard_chunk_all(ctx, starting_date):
 def hansard_display_chunked(ctx, filepath):
     chunk.display_chunked_hansard(filepath)
 
+@task
+def hansard_display_interpolated_file(ctx, filepath):
+    interpolate.display_one_file_with_interpolations(filepath)
 
 @task
 def hansard_interpolate_one(ctx, filepath):
-    interpolate.interpolate_one_wrapper(filepath)
+    ne = interpolate.NamedEntityData()
+    interpolate.interpolate_one_wrapper(filepath, ne, "processed")
 
 @task
 def hansard_interpolate_all(ctx, starting_date):

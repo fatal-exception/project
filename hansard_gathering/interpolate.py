@@ -7,6 +7,11 @@ import glob
 import itertools
 import os
 
+# 0 = NULL
+# 1 = LOC
+# 2 = ORG
+# 3 = PER
+
 
 class NamedEntityData:
     def __init__(self):
@@ -57,8 +62,21 @@ def ngram_span_search_named_entities(ngram_span_window, text, all_places: List[s
     return 0, 0, 0
 
 
+def overlaps(ngram_span_window, recentest_match_end: int):
+    """
+    See if the current span window already has a matched NE ending in it.
+    :param ngram_span_window: e.g.((0, 1), (2, 6), (7, 15), (16, 19))
+    Note that because we pad_right, later elements in the tuple might be None, e.g.:
+    ((98, 102), (102, 103), None, None)
+    :param recentest_match_end:
+    :return: True if there would be an overlap
+    """
+    ngram_span_window_no_nones = [x for x in ngram_span_window if x is not None]
+    return ngram_span_window_no_nones[-1][-1] <= recentest_match_end
+
+
 def interpolate_one(file_path: str, tokenizer, stage, all_places: List[str],
-        all_companies: List[str], all_people: List[str], n=4):
+                    all_companies: List[str], all_people: List[str], n=4):
     """
     file_path e.g. hansard_gathering/processed_hansard_data/1943-09-21/Deaths of Members-chunk-1979.txt
     :param file_path: path to file to do interpolation on
@@ -82,16 +100,26 @@ def interpolate_one(file_path: str, tokenizer, stage, all_places: List[str],
 
     # Returns ngrams of text_spans e.g. [((0, 1), (2, 6), (7, 15), (16, 19)), ...]
 
+    # To solve Overlapping problem, we need to know when the end of the most recent match is
+    recentest_match_end: int = 0
+
     # For each ngram set, we want to try all possible suffixes against the NE lists,
     # from longest to shortest so we don't miss matches.
     # Once we find a match, move on to the next ngram.
     for ngram_span_window in text_span_ngrams:
+        print(ngram_span_window)
+        print(recentest_match_end)
+        if overlaps(ngram_span_window, recentest_match_end):
+            print("Overlap!")
+            continue
         match_start: int
         match_end: int
         ne_type: int  # 1 = LOC, 2 = ORG, 3 = PER, 0 = null
         match_start, match_end, ne_type = ngram_span_search_named_entities(
             ngram_span_window, text, all_places, all_companies, all_people)
         if ne_type is not 0:
+            # This is the recentest match
+            recentest_match_end = match_end
             # Build new interpolated text by adding NE markers using concatenation
             match_len = match_end - match_start
             interpolated_text = interpolated_text[:match_start] \
@@ -99,6 +127,7 @@ def interpolate_one(file_path: str, tokenizer, stage, all_places: List[str],
                 + interpolated_text[match_end:]
 
     interpolated_file_path = file_path.replace("{}_hansard_data".format(stage), "interpolated_hansard_data")
+    print("Writing out to {}".format(interpolated_file_path))
     os.makedirs(os.path.dirname(interpolated_file_path), exist_ok=True)
     with open(interpolated_file_path, "w") as f:
         f.write(interpolated_text)
@@ -143,3 +172,17 @@ def interpolate_all_hansard_files(starting_date):
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
         for _file in list_hansard_files(starting_date, "processed"):
             executor.submit(interpolate_one_wrapper, _file, ne, "processed")
+
+
+def display_one_file_with_interpolations(file_path):
+    with open(file_path) as f:
+        text = f.readlines()
+    with open(file_path.replace("processed_hansard_data", "interpolated_hansard_data")) as f:
+        interpolation_digits = f.read()
+
+    so_far = 0
+    for line in text:
+        length = len(line)
+        print(line, end='')
+        print(interpolation_digits[so_far:so_far + length], end='\n')
+        so_far += length
