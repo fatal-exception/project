@@ -59,7 +59,7 @@ def remove_outer_brackets(_line: str) -> str:
 
 def dbpedia_post_processing(src_list_file, dest_list_file):
 
-    debug = True
+    debug = False
 
     res_lines = []
     processed_list_file = dest_list_file

@@ -72,7 +72,7 @@ def overlaps(ngram_span_window, recentest_match_end: int):
     :return: True if there would be an overlap
     """
     ngram_span_window_no_nones = [x for x in ngram_span_window if x is not None]
-    return ngram_span_window_no_nones[-1][-1] <= recentest_match_end
+    return ngram_span_window_no_nones[0][0] <= recentest_match_end
 
 
 def interpolate_one(file_path: str, tokenizer, stage, all_places: List[str],
@@ -107,10 +107,7 @@ def interpolate_one(file_path: str, tokenizer, stage, all_places: List[str],
     # from longest to shortest so we don't miss matches.
     # Once we find a match, move on to the next ngram.
     for ngram_span_window in text_span_ngrams:
-        print(ngram_span_window)
-        print(recentest_match_end)
         if overlaps(ngram_span_window, recentest_match_end):
-            print("Overlap!")
             continue
         match_start: int
         match_end: int
