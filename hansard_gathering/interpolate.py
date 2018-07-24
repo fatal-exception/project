@@ -169,12 +169,15 @@ def list_hansard_files(starting_date, stage) -> List[str]:
 
 def interpolate_all_hansard_files(starting_date):
     ne = NamedEntityData()
-    with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=24) as executor:
         for _file in list_hansard_files(starting_date, "processed"):
             executor.submit(interpolate_one_wrapper, _file, ne, "processed")
 
 
 def display_one_file_with_interpolations(file_path):
+    assert "processed_hansard_data" in file_path, \
+        "We only support displaying interpolations on processed Hansard data"
+
     with open(file_path) as f:
         text = f.readlines()
     with open(file_path.replace("processed_hansard_data", "interpolated_hansard_data")) as f:
