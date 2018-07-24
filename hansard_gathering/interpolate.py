@@ -1,7 +1,7 @@
 from datetime import datetime
 from nltk.tokenize import TreebankWordTokenizer
 from nltk import ngrams
-from typing import List
+from typing import List, Set
 import concurrent.futures
 import glob
 import itertools
@@ -15,6 +15,9 @@ import os
 
 class NamedEntityData:
     def __init__(self):
+        self.places: Set[str]
+        self.companies: Set[str]
+        self.people: Set[str]
         self.places, self.companies, self.people = self.read_in_all_ne_data()
 
     @staticmethod
@@ -27,14 +30,14 @@ class NamedEntityData:
         with open("ne_data_gathering/processed_ne_data/people/ALL.txt") as f:
             all_people = [line.rstrip() for line in f]
 
-        return all_places, all_companies, all_people
+        return set(all_places), set(all_companies), set(all_people)
 
     def get_all(self):
         return self.places, self.companies, self.people
 
 
-def ngram_span_search_named_entities(ngram_span_window, text, all_places: List[str],
-                                     all_companies: List[str], all_people: List[str]):
+def ngram_span_search_named_entities(ngram_span_window, text, all_places: Set[str],
+                                     all_companies: Set[str], all_people: Set[str]):
     """
     Take a window e.g.((0, 1), (2, 6), (7, 15), (16, 19)) from a text. Starting with the longest
     suffix (0-19 here), and working back via middle (e.g. 0-15) to the first (0-1),
