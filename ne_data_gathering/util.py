@@ -1,7 +1,7 @@
-from typing import List
+from typing import List, Set, Generator, Dict, Any
 from os.path import realpath, dirname
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords  # type: ignore
+from nltk.tokenize import word_tokenize  # type: ignore
 
 import os
 import re
@@ -31,16 +31,16 @@ def write_to_data_file(data: List[str], category: str, file_name: str) -> None:
         f.write("\n")
 
 
-def dbpedia_do_sparql_query(sparql_query: str) -> str:
-    from SPARQLWrapper import SPARQLWrapper, JSON
+def dbpedia_do_sparql_query(sparql_query: str) -> Dict[Any, Any]:
+    from SPARQLWrapper import SPARQLWrapper, JSON  # type: ignore
     sparql = SPARQLWrapper("http://dbpedia.org/sparql")
     sparql.setQuery(sparql_query)
     sparql.setReturnFormat(JSON)
-    results: str = sparql.query().convert()
+    results: Dict[Any, Any] = sparql.query().convert()
     return results
 
 
-def process_conll_file(filepath, tag) -> List[str]:
+def process_conll_file(filepath, tag) -> Generator[str, None, None]:
     with open(filepath) as f:
         lines: List[str] = f.readlines()
         for line in lines:
@@ -59,8 +59,8 @@ def remove_outer_brackets(_line: str) -> str:
     return _line[1:-2] + _line[-1]
 
 
-def all_stop_words(line, stop_words) -> bool:
-    line_words = word_tokenize(line)
+def all_stop_words(line, stop_words: Set[str]) -> bool:
+    line_words: List[str] = word_tokenize(line)
     if all(word in stop_words for word in line_words):
         return True
     else:
@@ -69,12 +69,14 @@ def all_stop_words(line, stop_words) -> bool:
 
 def dbpedia_post_processing(src_list_file, dest_list_file):
 
+    src_list_file = "ne_data_gathering/{}".format(src_list_file)
+
     stop_words = set(stopwords.words('english'))
 
     debug = False
 
     res_lines = []
-    processed_list_file = dest_list_file
+    processed_list_file = "ne_data_gathering/{}".format(dest_list_file)
 
     with open(src_list_file, 'r+', encoding='utf-8') as f:
         lines: List[str] = sorted(set(f.readlines()))
@@ -124,7 +126,8 @@ def dbpedia_post_processing(src_list_file, dest_list_file):
             line = match.group(1)
 
         # 9. If all words in the line are stop words, remove the line
-        all_stop_words(line, stop_words)
+        if all_stop_words(line, stop_words):
+            continue
 
         res_lines.append(line)
 

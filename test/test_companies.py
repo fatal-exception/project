@@ -1,4 +1,4 @@
-from companies import capitalise_text_list
+from ne_data_gathering.companies import capitalise_text_list
 
 
 def test_capitalise_text():

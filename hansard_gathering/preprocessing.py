@@ -1,5 +1,5 @@
-from lxml import etree
-from typing import List
+from lxml import etree  # type: ignore
+from typing import Generator, List
 import glob
 import os
 
@@ -38,7 +38,7 @@ def process_hansard_file(file_path):
     os.remove(file_path)
 
 
-def list_raw_hansard_files() -> List[str]:
+def list_raw_hansard_files() -> Generator[str, None, None]:
     for _file in glob.glob("hansard_gathering/raw_hansard_data/**/*.xml", recursive=True):
         yield _file
 

@@ -1,11 +1,11 @@
 # MIR file added to provide integration with Keras
 import glob
-import numpy as np
+import numpy as np  # type: ignore
 import os
 import pickle
 import sys
 from keras_character_based_ner.src.alphabet import CharBasedNERAlphabet
-from typing import List
+from typing import Generator, List
 
 
 def get_all_hansard_files(stage="processed"):
@@ -31,13 +31,13 @@ def get_some_hansard_files(stage="processed"):
         yield _file
 
 
-def get_some_texts() -> List[str]:
+def get_some_texts() -> Generator[str, None, None]:
     for _file in get_some_hansard_files("processed"):
         print("Getting text from {}".format(_file))
         yield open(_file).read()
 
 
-def get_texts() -> List[str]:
+def get_texts() -> Generator[str, None, None]:
     for _file in get_all_hansard_files("processed"):
         print("Getting text from {}".format(_file))
         yield open(_file).read()
@@ -111,7 +111,7 @@ def get_x_y(sentence_maxlen, dataset_name):
                 I guess batch_size here refers to the WHOLE batch?
     :return:
     """
-    from keras.preprocessing.sequence import pad_sequences
+    from keras.preprocessing.sequence import pad_sequences  # type: ignore
     # TODO look at dataset_name
     batch_size = get_total_number_of_hansard_sentences(dataset_name)
     alphabet = get_pickled_alphabet()

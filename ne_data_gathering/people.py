@@ -1,9 +1,9 @@
 import csv
-from typing import List
+from typing import List, Generator
 
 import os
 import sys
-import util
+from ne_data_gathering import util
 
 
 def nyc():
@@ -27,13 +27,13 @@ def conll2003eng():
     util.write_to_data_file(conll_people, "people", "conll_2003.txt")
 
 
-def main(src_dir, file_path):
+def download_and_process(src_dir, file_path):
     nyc()
     dbpedia(src_dir, file_path)
     conll2003eng()
 
 
-def process_kaggle_nyc_baby_names() -> List[str]:
+def process_kaggle_nyc_baby_names() -> Generator[str, None, None]:
     with open('raw_ne_data/Most_Popular_Baby_Names_by_Sex_and_Mother_s_Ethnic_Group__New_York_City.csv') as f:
         data = f.readlines()
         for row in csv.reader(data):
@@ -84,16 +84,3 @@ def dbpedia_sparql_extract_people(people_list_file):
         print("Adding {count} to people list file".format(count=len(results)))
         with open(people_list_file, 'a') as f:
             f.writelines("\n".join(people_list))
-
-
-if __name__ == "__main__":
-    # Effective globals
-    global_file_path = '/people/dbpedia.txt'
-    global_src_dir = "raw_ne_data"
-    if sys.argv[1] == "main":
-        main(global_src_dir, global_file_path)
-    elif sys.argv[1] == "process":
-        util.dbpedia_post_processing(
-            "{}{}".format("raw_ne_data", global_file_path), "{}{}".format(
-                "processed_ne_data", global_file_path))
-

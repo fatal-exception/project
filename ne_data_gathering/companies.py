@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 
 from ftplib import FTP
-from typing import List
-from util import capitalise_text_list, write_to_data_file
-import util
+from typing import Any, List, Dict, Generator
+from ne_data_gathering.util import capitalise_text_list, write_to_data_file
+from ne_data_gathering import util
 import os
-import sys
 
 import csv
 import requests
@@ -33,7 +32,7 @@ def conll2003eng():
     util.write_to_data_file(conll_companies, "companies", "conll_2003.txt")
 
 
-def main(src_dir, file_path) -> None:
+def download_and_process(src_dir, file_path) -> None:
 
     nasdaq()
     lse()
@@ -74,7 +73,7 @@ def dedup(data: List[str]) -> List[str]:
     return list(set(data))
 
 
-def process_nasdaq_csv() -> List[str]:
+def process_nasdaq_csv() -> Generator[str, None, None]:
     nasdaq_exchanges = "AMEX NASDAQ NYSE".split()
     for exchange in nasdaq_exchanges:
         csv_url = "https://www.nasdaq.com/screening/companies-by-industry.aspx?exchange={}&render=download"\
@@ -100,7 +99,7 @@ def dbpedia_sparql_get_company_count() -> int:
             ?resource  rdf:type  dbo:Organisation .
     }
     """
-    res = util.dbpedia_do_sparql_query(sparql_query)
+    res: Dict[Any, Any] = util.dbpedia_do_sparql_query(sparql_query)
     return int(res['results']['bindings'][0]['callret-0']['value'])
 
 
@@ -139,20 +138,6 @@ def process_lse_download() -> List[str]:
     # http://www.londonstockexchange.com/statistics/companies-and-issuers/companies-defined-by-mifir-identifiers-list-on-lse.xlsx
     # Pandas cannot cope with this xlsx :(
     with open('raw_ne_data/lse_manual_download.txt') as f:
-        lse = f.readlines()
+        _lse = f.readlines()
 
-    return capitalise_text_list(lse)
-
-
-if __name__ == "__main__":
-
-    # Effective globals
-    global_file_path = '/companies/dbpedia.txt'
-    global_src_dir = "raw_ne_data"
-
-    if sys.argv[1] == "main":
-        main(global_src_dir, global_file_path)
-    if sys.argv[1] == "process":
-        util.dbpedia_post_processing(
-            "{}{}".format(global_src_dir, global_file_path), "processed_ne_data{}".format(
-                global_file_path))
+    return capitalise_text_list(_lse)

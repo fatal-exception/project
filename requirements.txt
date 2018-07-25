@@ -8,6 +8,7 @@ jupyter
 keras
 lxml
 matplotlib
+mypy
 nltk==3.3
 pandas
 psycopg2-binary

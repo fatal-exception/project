@@ -1,7 +1,6 @@
 from datetime import datetime
-from nltk.tokenize.punkt import PunktSentenceTokenizer, PunktParameters
-from textblob import TextBlob
-from typing import List
+from nltk.tokenize.punkt import PunktSentenceTokenizer, PunktParameters  # type: ignore
+from typing import Generator, List
 import concurrent.futures
 import glob
 import itertools
@@ -15,6 +14,8 @@ def chunk_hansard_debate_file_textblob(file_path):
     :param file_path:
     :return:
     """
+    from textblob import TextBlob  # type: ignore
+
     with open(file_path) as f:
         debate_text = f.read()
 
@@ -51,7 +52,7 @@ def chunk_hansard_debate_file_nltk(file_path, tokenizer):
         f.write(sent_spans_str)
 
 
-def list_processed_hansard_files(starting_date) -> List[str]:
+def list_processed_hansard_files(starting_date) -> Generator[str, None, None]:
     """
     Provide a starting_date as chunking takes a long time. This allows the process to be resumable.
     :param starting_date: e.g. 1919-01-01

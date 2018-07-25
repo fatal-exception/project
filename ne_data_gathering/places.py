@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import os
 import sys
-import util
+from ne_data_gathering import util
 
 
 def dbpedia(src_dir, file_path):
@@ -15,7 +15,7 @@ def conll2003eng():
     util.write_to_data_file(conll_places, "places", "conll_2003.txt")
 
 
-def main(src_dir, file_path) -> None:
+def download_and_process(src_dir, file_path) -> None:
 
     dbpedia(src_dir, file_path)
     conll2003eng()
@@ -64,13 +64,3 @@ def dbpedia_sparql_extract_places(list_file):
         with open(list_file, 'a') as f:
             f.writelines("\n".join(result_list))
 
-
-if __name__ == "__main__":
-    global_file_path = "/places/dbpedia.txt"
-    global_src_dir = "raw_ne_data"
-    if sys.argv[1] == "main":
-        main(global_src_dir, global_file_path)
-    elif sys.argv[1] == "process":
-        util.dbpedia_post_processing(
-            "{}{}".format("raw_ne_data", global_file_path), "{}{}".format(
-                "processed_ne_data", global_file_path))

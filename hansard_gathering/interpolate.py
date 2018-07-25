@@ -1,7 +1,7 @@
 from datetime import datetime
-from nltk.tokenize import TreebankWordTokenizer
-from nltk import ngrams
-from typing import List, Set
+from nltk.tokenize import TreebankWordTokenizer  # type: ignore
+from nltk import ngrams  # type: ignore
+from typing import List, Set, Generator, Tuple
 import concurrent.futures
 import glob
 import itertools
@@ -21,14 +21,14 @@ class NamedEntityData:
         self.places, self.companies, self.people = self.read_in_all_ne_data()
 
     @staticmethod
-    def read_in_all_ne_data():
+    def read_in_all_ne_data() -> Tuple[Set[str], Set[str], Set[str]]:
         print("Gathering all Named Entity data")
         with open("ne_data_gathering/processed_ne_data/places/ALL.txt") as f:
-            all_places = [line.rstrip() for line in f]
+            all_places: List[str] = [line.rstrip() for line in f]
         with open("ne_data_gathering/processed_ne_data/companies/ALL.txt") as f:
-            all_companies = [line.rstrip() for line in f]
+            all_companies: List[str]= [line.rstrip() for line in f]
         with open("ne_data_gathering/processed_ne_data/people/ALL.txt") as f:
-            all_people = [line.rstrip() for line in f]
+            all_people: List[str] = [line.rstrip() for line in f]
 
         return set(all_places), set(all_companies), set(all_people)
 
@@ -36,7 +36,7 @@ class NamedEntityData:
         return self.places, self.companies, self.people
 
 
-def ngram_span_search_named_entities(ngram_span_window, text, all_places: Set[str],
+def ngram_span_search_named_entities(ngram_span_window, text: str, all_places: Set[str],
                                      all_companies: Set[str], all_people: Set[str]):
     """
     Take a window e.g.((0, 1), (2, 6), (7, 15), (16, 19)) from a text. Starting with the longest
@@ -78,8 +78,8 @@ def overlaps(ngram_span_window, recentest_match_end: int):
     return ngram_span_window_no_nones[0][0] <= recentest_match_end
 
 
-def interpolate_one(file_path: str, tokenizer, stage, all_places: List[str],
-                    all_companies: List[str], all_people: List[str], n=4):
+def interpolate_one(file_path: str, tokenizer, stage, all_places: Set[str],
+                    all_companies: Set[str], all_people: Set[str], n=4):
     """
     file_path e.g. hansard_gathering/processed_hansard_data/1943-09-21/Deaths of Members-chunk-1979.txt
     :param file_path: path to file to do interpolation on
@@ -144,15 +144,15 @@ def interpolate_one_wrapper(file_path, ne, stage="processed"):
     interpolate_one(file_path, t, stage, *ne.get_all())
 
 
-def list_hansard_files(starting_date, stage) -> List[str]:
+def list_hansard_files(starting_date, stage) -> Generator[str, None, None]:
     """
     stage is chunked or processed
     """
     print("Listing {} Hansard files...".format(stage))
-    files = sorted(glob.glob("hansard_gathering/{}_hansard_data/**/*.txt".format(stage), recursive=True))
+    files: List[str] = sorted(glob.glob("hansard_gathering/{}_hansard_data/**/*.txt".format(stage), recursive=True))
 
     # Don't interpolate our spans (chunking) files
-    files = filter(lambda elem: not elem.endswith("-spans.txt"), files)
+    files = list(filter(lambda elem: not elem.endswith("-spans.txt"), files))
 
     # With thanks to
     # https://stackoverflow.com/questions/33895760/python-idiomatic-way-to-drop-items-from-a-list-until-an-item-matches-a-conditio

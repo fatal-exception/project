@@ -93,3 +93,6 @@ hansard_gathering/numerified_hansard_data/*
 
 # MSWord cache files
 ~\$*.docx
+
+# mypy
+.mypy_cache
