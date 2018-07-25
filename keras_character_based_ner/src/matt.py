@@ -6,7 +6,7 @@ import os
 import pickle
 import sys
 from keras_character_based_ner.src.alphabet import CharBasedNERAlphabet
-from typing import Dict, Generator, List, Set
+from typing import Dict, Generator, List, Set, Tuple
 from hansard_gathering import numerify
 
 
@@ -111,8 +111,7 @@ def get_some_alphabet():
 
 def pickle_some_alphabet():
     alph = get_some_alphabet()
-    my_directory = os.path.dirname(os.path.abspath(__file__))
-    with open("{}/some_alphabet.p".format(my_directory), "wb") as f:
+    with open("keras_character_based_ner/src/some_alphabet.p", "wb") as f:
         pickle.dump(alph, f)
 
 
@@ -124,8 +123,7 @@ def display_pickled_alphabet():
 
 
 def get_pickled_alphabet():
-    my_directory = os.path.dirname(os.path.abspath(__file__))
-    with open("{}/some_alphabet.p".format(my_directory), "rb") as f:
+    with open("keras_character_based_ner/src/some_alphabet.p", "rb") as f:
         return pickle.load(f)
 
 
@@ -136,7 +134,7 @@ def get_labels():
 
 def get_chunked_hansard_texts(dataset_name):
     """
-
+    TODO
     :param dataset_name: dev, test or train
     Some generator that goes over all Hansard debate files and returns their next sentence by spans file.
     :return:
@@ -192,13 +190,13 @@ def read_total_number_of_hansard_sentences_from_file(dataset_name) -> int:
     :param dataset_name: must be dev, test or train
     :return:
     """
-    with open("hansard_gathering/processed_hansard_data/{}_total_sentences_num".format(dataset_name), "w+") as f:
+    with open("hansard_gathering/processed_hansard_data/{}_total_sentences_num".format(dataset_name), "r") as f:
         sentences = f.read()
 
     return int(sentences)
 
 
-def get_x_y(sentence_maxlen, dataset_name):
+def get_x_y(sentence_maxlen, dataset_name) -> Tuple:
     """
     Returns a Python tuple x and y, where x and y are Numpy arrays!
                 x: Array of shape (batch_size, sentence_maxlen).
@@ -206,26 +204,25 @@ def get_x_y(sentence_maxlen, dataset_name):
                 y: Array of shape (batch_size, sentence_maxlen, self.num_labels).
                 Entries in dimension 2 are label indices, index 0 is the null label
                 I guess batch_size here refers to the WHOLE batch?
-    :return:
     """
     from keras.preprocessing.sequence import pad_sequences  # type: ignore
     total_batch_size = read_total_number_of_hansard_sentences_from_file(dataset_name)
     alphabet = get_pickled_alphabet()
 
-    x = np.zeros(total_batch_size, sentence_maxlen)
+    x = np.zeros((total_batch_size, sentence_maxlen), dtype=int)
     for idx, hansard_sentence in enumerate(get_chunked_hansard_texts(dataset_name)):
         numbers_list: List[int] = numerify.numerify_text(hansard_sentence, alphabet)
 
         # pad_sequences takes care of enforcing sentence_maxlen for us
         x[idx, :] = pad_sequences(numbers_list, maxlen=sentence_maxlen)
 
-    return (x, None)
+    return x, None
 
 
 def get_x_y_generator():
     """
     Generator that returns a tuple each time, of inputs/targets as Numpy arrays. Each tuple
-    is  batch used in training.
+    is a batch used in training.
     :return: Generator object that yields tuples (x, y), same as in get_x_y()
     """
     pass

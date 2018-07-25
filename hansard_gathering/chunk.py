@@ -98,14 +98,23 @@ def chunk_all_hansard_files(starting_date):
             executor.submit(chunk_hansard_debate_file_nltk, _file, tokenizer)
 
 
-def display_chunked_hansard(filepath):
-    with open(filepath) as f:
-        debate = f.read()
+def get_sentence_spans(filepath):
     with open("{}.txt".format(filepath.replace(".txt", "-spans"))) as f:
         sent_spans = f.read()
 
     for sent_span in sent_spans.split("\n"):
         sent_start, sent_end = sent_span.replace("(", "").replace(")", "").split(",")
+        yield sent_start, sent_end
+
+
+def display_chunked_hansard(filepath):
+    assert "processed_hansard_data" in filepath, \
+        "We only allow processed hansards to be displayed in chunks"
+
+    with open(filepath) as f:
+        debate = f.read()
+
+    for sent_start, sent_end in get_sentence_spans(filepath):
         print(debate[int(sent_start):int(sent_end)])
         print("@@@")
 
