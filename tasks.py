@@ -121,7 +121,7 @@ def ne_data_people_process(ctx):
 
 @task
 def ne_data_places_download_process(ctx):
-    people.download_and_process("raw_ne_data", "/places/dbpedia.txt")
+    places.download_and_process("raw_ne_data", "/places/dbpedia.txt")
     ctx.run("cd ne_data_gathering/processed_ne_data/places && cat * | sort > ALL.txt")
 
 
