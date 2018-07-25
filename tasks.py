@@ -82,8 +82,8 @@ def enable_venv(ctx):
 
 
 @task
-def hansard_max_sentence_length(ctx):
-    matt.get_max_sentence_length()
+def hansard_max_sentence_length_write(ctx):
+    matt.write_total_number_of_hansard_sentences_to_file("ALL")
 
 
 @task
@@ -151,6 +151,11 @@ def char_ner_pickle_some_alphabet(ctx):
 @task
 def char_ner_display_pickled_alphabet(ctx):
     matt.display_pickled_alphabet()
+
+
+@task
+def char_ner_rehash_datasets(ctx):
+    matt.rehash_datasets()
 
 
 @task(enable_venv)

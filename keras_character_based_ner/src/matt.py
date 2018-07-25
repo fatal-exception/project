@@ -1,22 +1,62 @@
 # MIR file added to provide integration with Keras
+from collections import defaultdict
 import glob
 import numpy as np  # type: ignore
 import os
 import pickle
 import sys
 from keras_character_based_ner.src.alphabet import CharBasedNERAlphabet
-from typing import Generator, List
+from typing import Dict, Generator, List, Set
 
 
-def get_all_hansard_files(stage="processed"):
+def rehash_datasets():
     """
-    Stage is processed or chunked
-    :param stage:
+    Hash all Hansard debates into 3 datasets:
+    train
+    test
+    dev
+    (ALL)
+    We take a hash of the date-and-debate-name part of each filepath, then use modulo to
+    bucket this.
+    """
+    # bucket allocations: 4 for train, 2 for dev, 2 for test
+    num_of_buckets: int = 8
+    debug: bool = True
+
+    os.makedirs("hansard_gathering/data_buckets", exist_ok=True)
+    Filepaths = Set[str]
+    BucketNumber = int
+    files_by_bucket: Dict[BucketNumber, Filepaths] = defaultdict(lambda: set())
+
+    file_list = sorted(glob.glob(
+        "hansard_gathering/processed_hansard_data/**/*.txt", recursive=True))
+
+    file_list = list(filter(lambda elem: not elem.endswith("-spans.txt"), file_list))
+
+    for _file in file_list:
+        date_filename_path: str = "/".join(_file.split("/")[2:])
+        hash_val: int = hash(date_filename_path)
+        bucket_num = hash_val % num_of_buckets
+        files_by_bucket[bucket_num].add(_file)
+        print("hashed {} into bucket {}".format(_file, bucket_num)) if debug else None
+
+    for bucket_num in files_by_bucket.keys():
+        with open("hansard_gathering/data_buckets/{}.txt".format(bucket_num), "w") as f:
+            filepaths = sorted(files_by_bucket[bucket_num])
+            for filepath in filepaths:
+                f.write(filepath + "\n")
+
+
+def get_all_hansard_files(dataset_name):
+    """
+    :param dataset_name: train, dev, test or ALL
     :return:
     """
     print("Starting glob for all processed Hansard files")
     for _file in glob.glob(
-            "hansard_gathering/{}_hansard_data/**/*.txt".format(stage), recursive=True):
+            "hansard_gathering/processed_hansard_data/**/*.txt", recursive=True):
+        date_filename_path = "/".join(_file.split("/")[2:])
+        hash(date_filename_path)
         yield _file
 
 
@@ -38,7 +78,7 @@ def get_some_texts() -> Generator[str, None, None]:
 
 
 def get_texts() -> Generator[str, None, None]:
-    for _file in get_all_hansard_files("processed"):
+    for _file in get_all_hansard_files("ALL"):
         print("Getting text from {}".format(_file))
         yield open(_file).read()
 
@@ -59,7 +99,10 @@ def pickle_some_alphabet():
 
 
 def display_pickled_alphabet():
-        print(get_pickled_alphabet())
+        alph = get_pickled_alphabet()
+        print(alph)
+        for i, ch in enumerate(alph):
+            print("{}: {}".format(i, ch))
 
 
 def get_pickled_alphabet():
@@ -73,15 +116,6 @@ def get_labels():
     return list(range(1, 4))
 
 
-def convert_letters_to_numbers_list(hansard_string, alph) -> List[int]:
-    """
-    Use alph.get_char_index to change a string to its numberical representation
-    :param hansard_string:
-    :return:
-    """
-    pass
-
-
 def get_chunked_hansard_texts(dataset_name):
     """
 
@@ -93,8 +127,8 @@ def get_chunked_hansard_texts(dataset_name):
 
 
 def get_hansard_span_files(dataset_name) -> Generator[str, None, None]:
-    print("Listing {} Hansard span files...".format(dataset_name))
-    files: List[str] = sorted(glob.glob("hansard_gathering/processed_hansard_data/*-spans.txt", recursive=True))
+    print("Listing Hansard span files from dataset {}...".format(dataset_name))
+    files: List[str] = sorted(glob.glob("hansard_gathering/processed_hansard_data/**/*-spans.txt", recursive=True))
     for _file in files:
         yield _file
 
@@ -109,16 +143,37 @@ def file_lines(fname):
     return i + 1
 
 
-def get_total_number_of_hansard_sentences(dataset_name):
+def write_total_number_of_hansard_sentences_to_file(dataset_name):
     """
-    Get num of samples in a particular dataset, dev, test or train
-    Also accept dataset_name 'ALL' while I work on dataset divisions
+    Get num of sentences in a particular dataset, dev, test or train.
+    Also accept dataset_name 'ALL' while I work on dataset divisions.
+    Count number of sentences in the -spans files and write this out to
+    disk to save time.
+
     :param dataset_name: must be dev, test or train
     :return:
     """
-    sentences_total: int = 0
-    for _file in get_hansard_span_files("ALL"):
-        sentences_total += file_lines(_file)
+    # Run on 25 July 2018 this was 182582013
+    sentences_total: int = 182582013
+    # for _file in get_hansard_span_files(dataset_name):
+    #     sentences_total += file_lines(_file)
+
+    with open("hansard_gathering/processed_hansard_data/{}_total_sentences_num".format(dataset_name), "w+") as f:
+        f.write(str(sentences_total))
+
+
+def read_total_number_of_hansard_sentences_from_file(dataset_name) -> int:
+    """
+    Get num of samples in a particular dataset, dev, test or train.
+    Also accept dataset_name 'ALL' while I work on dataset divisions.
+    Read this information from disk.
+    :param dataset_name: must be dev, test or train
+    :return:
+    """
+    with open("hansard_gathering/processed_hansard_data/{}_total_sentences_num".format(dataset_name), "w+") as f:
+        sentences = f.read()
+
+    return int(sentences)
 
 
 def get_x_y(sentence_maxlen, dataset_name):
@@ -133,10 +188,10 @@ def get_x_y(sentence_maxlen, dataset_name):
     """
     from keras.preprocessing.sequence import pad_sequences  # type: ignore
     # TODO look at dataset_name
-    batch_size = get_total_number_of_hansard_sentences(dataset_name)
+    total_batch_size = read_total_number_of_hansard_sentences_from_file(dataset_name)
     alphabet = get_pickled_alphabet()
 
-    x = np.zeros(batch_size, sentence_maxlen)
+    x = np.zeros(total_batch_size, sentence_maxlen)
     for idx, hansard_string in enumerate(get_chunked_hansard_texts(dataset_name)):
         numbers_list: List[int] = convert_letters_to_numbers_list(hansard_string, alphabet)
         x[idx, :] = pad_sequences(numbers_list, maxlen=sentence_maxlen)

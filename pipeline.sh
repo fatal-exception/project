@@ -15,5 +15,6 @@
 # hansard_process_all
 # char-ner-pickle-some-alphabet
 # Chunk by adding sentence-span files to processing directory
+# Split into datasets - charn-ner-rehash-dataset
 # hansard-interpolate-all --> gives y
 # hansard-numerify-all --> gives x
