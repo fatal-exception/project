@@ -92,13 +92,33 @@ def get_chunked_hansard_texts(dataset_name):
     pass
 
 
-def get_total_number_of_chunked_files(dataset_name):
+def get_hansard_span_files(dataset_name) -> Generator[str, None, None]:
+    print("Listing {} Hansard span files...".format(dataset_name))
+    files: List[str] = sorted(glob.glob("hansard_gathering/processed_hansard_data/*-spans.txt", recursive=True))
+    for _file in files:
+        yield _file
+
+
+def file_lines(fname):
+    # with thanks to
+    # https://stackoverflow.com/questions/845058/how-to-get-line-count-cheaply-in-python
+    with open(fname) as f:
+        i: int = 0
+        for i, l in enumerate(f):
+            pass
+    return i + 1
+
+
+def get_total_number_of_hansard_sentences(dataset_name):
     """
     Get num of samples in a particular dataset, dev, test or train
+    Also accept dataset_name 'ALL' while I work on dataset divisions
     :param dataset_name: must be dev, test or train
     :return:
     """
-    pass
+    sentences_total: int = 0
+    for _file in get_hansard_span_files("ALL"):
+        sentences_total += file_lines(_file)
 
 
 def get_x_y(sentence_maxlen, dataset_name):
@@ -136,18 +156,10 @@ def get_x_y_generator():
 def get_max_sentence_length():
     """
     By 'sentence' we really mean 'sample".
-    Here we find the sample which is longest of all that has been chunked.
+    Here we find the sample which is longest of all that has been chunked, using the -spans.txt files.
     :return:
     """
     return None, 100  # Until chunking is finished, just hard-code it
-    max_so_far = 0
-    max_file = ""
-    for _file in get_all_hansard_files("chunked"):
-        file_len = len(open(_file).read())
-        if file_len > max_so_far:
-            max_so_far = file_len
-            max_file = _file
-    return max_so_far, max_file
 
 
 if __name__ == "__main__":

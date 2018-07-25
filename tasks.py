@@ -77,6 +77,7 @@ def hansard_numerify_one(cdx, filepath):
 
 @task
 def enable_venv(ctx):
+    ctx.run("echo enabling venv...")
     ctx.run("source ./masters_venv/bin/activate && pip install -r requirements.txt >/dev/null")
 
 
@@ -154,6 +155,7 @@ def char_ner_display_pickled_alphabet(ctx):
 
 @task(enable_venv)
 def python_type_check(ctx):
+    ctx.run("echo mypy: checking Python static types...")
     ctx.run("mypy hansard_gathering")
     ctx.run("mypy ne_data_gathering")
     ctx.run("mypy keras_character_based_ner/src/matt.py")
@@ -161,4 +163,5 @@ def python_type_check(ctx):
 
 @task(python_type_check)
 def test(ctx):
+    ctx.run("echo pytest: running tests...")
     ctx.run("pytest test")

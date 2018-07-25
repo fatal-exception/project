@@ -82,50 +82,50 @@ def dbpedia_post_processing(src_list_file, dest_list_file):
         lines: List[str] = sorted(set(f.readlines()))
 
     for line in lines:
-        # 1. Remove double quotes
+        # Remove double quotes
         line = line.replace('"', '')
 
-        # 2. Left-trim any whitespace
+        # Left-trim any whitespace
         line = line.lstrip()
 
-        # 3. Remove words shorter than 4 chars (they all have final newline)
-        # These tend to be wrong words like 'the' and are low-value and hard to filter.
-        if len(line) < 5:
-            print("DEBUG: Removing short line {}".format(line)) if debug else None
-            continue
-
-        # 4. Get rid of lines that are entirely numbers or symbols
+        # Get rid of lines that are entirely numbers or symbols
         if re.match("""^[!@£$%^&*()0-9 ]+$""", line):
             print("DEBUG: Removing symbol lines {}".format(line)) if debug else None
             continue
 
-        # 5. If whole line is surrounded by brackets, remove those brackets
+        # If whole line is surrounded by brackets, remove those brackets
         if line.startswith("(") and line.endswith(")\n"):
             print("DEBUG: found bracketed line: {}".format(line)) if debug else None
             line = line[1:-2] + "\n"
 
-        # 6. If line starts with more than one single quote, remove all the single quotes at start
+        # If line starts with more than one single quote, remove all the single quotes at start
         match = re.match("""^'{2,}(.*)""", line)
         if match is not None:
             print("DEBUG: remove extraneous prefixed single quotes in line {}".format(line)) if debug\
                 else None
             line = match.group(1)
 
-        # 7. If line ends with more than one single quote, remove all the single quotes at start
+        # If line ends with more than one single quote, remove all the single quotes at start
         match = re.match("""(.*)'{2,}$""", line)
         if match is not None:
             print("DEBUG: remove extraneous suffixed single quotes in line {}".format(line)) if debug \
                 else None
             line = match.group(1) + "\n"
 
-        # 8. If line starts with just whitespace and/or asterisks, remove them
+        # If line starts with just whitespace and/or asterisks, remove them
         match = re.match("""^[* ]+(.*)""", line)
         if match is not None:
             print("DEBUG: remove extraneous prefixed spaces/asterisks in line {}".format(line)) \
                 if debug else None
             line = match.group(1)
 
-        # 9. If all words in the line are stop words, remove the line
+        # Remove words shorter than 4 chars (they all have final newline)
+        # These tend to be strange stub words like 'ar' which are low-value and hard to filter.
+        if len(line) < 5:
+            print("DEBUG: Removing short line {}".format(line)) if debug else None
+            continue
+
+        # If all words in the line are stop words, remove the line
         if all_stop_words(line, stop_words):
             continue
 

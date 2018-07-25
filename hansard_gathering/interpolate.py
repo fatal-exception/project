@@ -26,7 +26,7 @@ class NamedEntityData:
         with open("ne_data_gathering/processed_ne_data/places/ALL.txt") as f:
             all_places: List[str] = [line.rstrip() for line in f]
         with open("ne_data_gathering/processed_ne_data/companies/ALL.txt") as f:
-            all_companies: List[str]= [line.rstrip() for line in f]
+            all_companies: List[str] = [line.rstrip() for line in f]
         with open("ne_data_gathering/processed_ne_data/people/ALL.txt") as f:
             all_people: List[str] = [line.rstrip() for line in f]
 
