@@ -10,6 +10,7 @@ from ne_data_gathering import companies
 from ne_data_gathering import util
 from invoke import task
 from keras_character_based_ner.src import matt
+from keras_character_based_ner.src.config import Config
 import pickle
 
 
@@ -156,6 +157,11 @@ def char_ner_display_pickled_alphabet(ctx):
 @task
 def char_ner_rehash_datasets(ctx):
     matt.rehash_datasets()
+
+
+@task
+def char_ner_create_x(ctx, dataset_name):
+    matt.create_x(Config.sentence_max_length, dataset_name)
 
 
 @task(enable_venv)

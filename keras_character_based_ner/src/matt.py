@@ -204,6 +204,31 @@ def read_total_number_of_hansard_sentences_from_file(dataset_name) -> int:
     return int(sentences)
 
 
+def create_x(sentence_maxlen, dataset_name):
+    debug: bool = True
+
+    total_chunks: int = 0
+    if debug:
+        total_chunks = read_total_number_of_hansard_sentences_from_file(dataset_name)
+
+    from keras.preprocessing.sequence import pad_sequences  # type: ignore
+    alphabet = get_pickled_alphabet()
+
+    x_list: List[List[int]] = []
+    for idx, hansard_sentence in enumerate(get_chunked_hansard_texts(dataset_name)):
+        numbers_list: List[int] = numerify.numerify_text(hansard_sentence, alphabet)
+        x_list.append(numbers_list)
+        if debug:
+            print("Building x, progress {} %".format(idx / total_chunks)) if idx % 10000 == 0 else None
+
+    # pad_sequences takes care of enforcing sentence_maxlen for us
+    x_np = pad_sequences(x_list, maxlen=sentence_maxlen)
+
+    # Write X so we don't have to regenerate every time...
+    with open("keras_character_based_ner/src/x-{}.p".format(dataset_name), "wb") as f:
+        f.write(x_np)
+
+
 def get_x_y(sentence_maxlen, dataset_name) -> Tuple:
     """
     Returns a Python tuple x and y, where x and y are Numpy arrays!
@@ -213,16 +238,8 @@ def get_x_y(sentence_maxlen, dataset_name) -> Tuple:
                 Entries in dimension 2 are label indices, index 0 is the null label
                 I guess batch_size here refers to the WHOLE batch?
     """
-    from keras.preprocessing.sequence import pad_sequences  # type: ignore
-    alphabet = get_pickled_alphabet()
-
-    x_list: List[List[int]] = []
-    for hansard_sentence in get_chunked_hansard_texts(dataset_name):
-        numbers_list: List[int] = numerify.numerify_text(hansard_sentence, alphabet)
-        x_list.append(numbers_list)
-
-    # pad_sequences takes care of enforcing sentence_maxlen for us
-    x_np = pad_sequences(x_list, maxlen=sentence_maxlen)
+    with open("keras_character_based_ner/src/matt/x-{}.p".format(dataset_name), "rb") as f:
+        x_np = f.read()
 
     return x_np, None
 
