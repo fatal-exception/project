@@ -26,7 +26,7 @@ def test_interpolate_one(fs):
 
     with open(interpolated_file_path) as f:
         contents = f.read()
-        assert contents == "000000000000000003333333333333333300000000000000000000022222222220000111111"
+    assert contents == "000000000000000003333333333333333300000000000000000000022222222220000111111"
 
 
 def test_ngram_span_search_named_entities():

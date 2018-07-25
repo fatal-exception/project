@@ -94,13 +94,12 @@ def interpolate_one(file_path: str, tokenizer, stage, all_places: Set[str],
     print("Interpolating file {}".format(file_path))
     with open(file_path) as f:
         text: str = f.read()
-        interpolated_text: str = "0" * len(text)
         interpolated_text_list: List[int] = [0 for _ in range(len(text))]
 
     # ngrams for the text that capture their starting and ending indices.
     # We pad right because we take the first word of the ngram and all its possible suffixes
     # when looking for NEs.
-    text_span_ngrams = ngrams(tokenizer.span_tokenize(text), n, pad_right=True)
+    text_span_ngrams: Tuple = ngrams(tokenizer.span_tokenize(text), n, pad_right=True)
 
     # Returns ngrams of text_spans e.g. [((0, 1), (2, 6), (7, 15), (16, 19)), ...]
 
@@ -123,11 +122,10 @@ def interpolate_one(file_path: str, tokenizer, stage, all_places: Set[str],
             recentest_match_end = match_end
             # Build new interpolated text by adding NE markers using concatenation
             match_len = match_end - match_start
-            interpolated_text = interpolated_text[:match_start] \
-                + str(ne_type) * match_len \
-                + interpolated_text[match_end:]
+            interpolated_text_list[match_start:match_end] = [ne_type for _ in range(match_len)]
 
     interpolated_file_path = file_path.replace("{}_hansard_data".format(stage), "interpolated_hansard_data")
+    interpolated_text: str = "".join([str(elem) for elem in interpolated_text_list]).rstrip()
     print("Writing out to {}".format(interpolated_file_path))
     os.makedirs(os.path.dirname(interpolated_file_path), exist_ok=True)
     with open(interpolated_file_path, "w") as f:
