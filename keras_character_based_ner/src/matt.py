@@ -4,10 +4,9 @@ import glob
 import numpy as np  # type: ignore
 import os
 import pickle
-import sys
 from keras_character_based_ner.src.alphabet import CharBasedNERAlphabet
 from typing import Dict, Generator, List, Set, Tuple
-from hansard_gathering import numerify
+from hansard_gathering import numerify, chunk
 
 
 def get_bucket_numbers_for_dataset_name(dataset_name: str) -> List[int]:
@@ -25,6 +24,8 @@ def get_bucket_numbers_for_dataset_name(dataset_name: str) -> List[int]:
         return list(range(4, 6))
     elif dataset_name == "test":
         return list(range(6, 8))
+    else:
+        return []  # to keep mypy static type-checker happy
 
 
 def rehash_datasets():
@@ -65,16 +66,18 @@ def rehash_datasets():
                 f.write(filepath + "\n")
 
 
-def get_all_hansard_files(dataset_name):
+def get_all_hansard_files(dataset_name: str):
     """
     :param dataset_name: train, dev, test or ALL
     :return:
     """
-    print("Starting glob for all processed Hansard files")
-    for _file in glob.glob(
-            "hansard_gathering/processed_hansard_data/**/*.txt", recursive=True):
-        date_filename_path = "/".join(_file.split("/")[2:])
-        hash(date_filename_path)
+    print("Listing Hansard debate files from dataset {}...".format(dataset_name))
+    bucket_numbers: List[int] = get_bucket_numbers_for_dataset_name(dataset_name)
+    file_list = []
+    for bucket_number in bucket_numbers:
+        with open("hansard_gathering/data_buckets/{}.txt".format(bucket_number)) as f:
+            file_list.extend([filename.rstrip() for filename in f.readlines()])
+    for _file in file_list:
         yield _file
 
 
@@ -132,14 +135,19 @@ def get_labels():
     return list(range(1, 4))
 
 
-def get_chunked_hansard_texts(dataset_name):
+def get_chunked_hansard_texts(dataset_name: str) -> Generator[str, None, None]:
     """
-    TODO
     :param dataset_name: dev, test or train
-    Some generator that goes over all Hansard debate files and returns their next sentence by spans file.
+    Generator that goes over all Hansard debate files and returns their next sentence, using their spans file.
     :return:
     """
-    pass
+    for _file in get_all_hansard_files(dataset_name):
+        with open(_file) as f:
+            debate = f.read()
+            chunk_start: int
+            chunk_end: int
+        for chunk_start, chunk_end in chunk.get_sentence_spans(_file):
+            yield debate[chunk_start:chunk_end]
 
 
 def get_hansard_span_files(dataset_name: str) -> Generator[str, None, None]:
@@ -206,17 +214,17 @@ def get_x_y(sentence_maxlen, dataset_name) -> Tuple:
                 I guess batch_size here refers to the WHOLE batch?
     """
     from keras.preprocessing.sequence import pad_sequences  # type: ignore
-    total_batch_size = read_total_number_of_hansard_sentences_from_file(dataset_name)
     alphabet = get_pickled_alphabet()
 
-    x = np.zeros((total_batch_size, sentence_maxlen), dtype=int)
-    for idx, hansard_sentence in enumerate(get_chunked_hansard_texts(dataset_name)):
+    x_list: List[List[int]] = []
+    for hansard_sentence in get_chunked_hansard_texts(dataset_name):
         numbers_list: List[int] = numerify.numerify_text(hansard_sentence, alphabet)
+        x_list.append(numbers_list)
 
-        # pad_sequences takes care of enforcing sentence_maxlen for us
-        x[idx, :] = pad_sequences(numbers_list, maxlen=sentence_maxlen)
+    # pad_sequences takes care of enforcing sentence_maxlen for us
+    x_np = pad_sequences(x_list, maxlen=sentence_maxlen)
 
-    return x, None
+    return x_np, None
 
 
 def get_x_y_generator():
@@ -226,25 +234,3 @@ def get_x_y_generator():
     :return: Generator object that yields tuples (x, y), same as in get_x_y()
     """
     pass
-
-
-def get_max_sentence_length():
-    """
-    By 'sentence' we really mean 'sample".
-    Here we find the sample which is longest of all that has been chunked, using the -spans.txt files.
-    :return:
-    """
-    return None, 900  # Until chunking is finished, just hard-code it
-
-
-if __name__ == "__main__":
-    if sys.argv[1] == "max-sentence-length":
-        print(get_max_sentence_length())
-    elif sys.argv[1] == "get-alphabet":
-        print(get_alphabet())
-    elif sys.argv[1] == "get-some-alphabet":
-        print(get_some_alphabet())
-    elif sys.argv[1] == "pickle-some-alphabet":
-        pickle_some_alphabet()
-    elif sys.argv[1] == "display-pickled-alphabet":
-        display_pickled_alphabet()

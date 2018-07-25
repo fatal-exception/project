@@ -1,6 +1,6 @@
 from datetime import datetime
 from nltk.tokenize.punkt import PunktSentenceTokenizer, PunktParameters  # type: ignore
-from typing import Generator, List
+from typing import Generator, Tuple
 import concurrent.futures
 import glob
 import itertools
@@ -98,13 +98,13 @@ def chunk_all_hansard_files(starting_date):
             executor.submit(chunk_hansard_debate_file_nltk, _file, tokenizer)
 
 
-def get_sentence_spans(filepath):
+def get_sentence_spans(filepath) -> Generator[Tuple[int, int], None, None]:
     with open("{}.txt".format(filepath.replace(".txt", "-spans"))) as f:
         sent_spans = f.read()
 
     for sent_span in sent_spans.split("\n"):
         sent_start, sent_end = sent_span.replace("(", "").replace(")", "").split(",")
-        yield sent_start, sent_end
+        yield int(sent_start), int(sent_end)
 
 
 def display_chunked_hansard(filepath):
