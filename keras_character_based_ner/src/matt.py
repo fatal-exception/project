@@ -216,17 +216,21 @@ def create_x(sentence_maxlen, dataset_name):
 
     x_list: List[List[int]] = []
     for idx, hansard_sentence in enumerate(get_chunked_hansard_texts(dataset_name)):
-        numbers_list: List[int] = numerify.numerify_text(hansard_sentence, alphabet)
+        numbers_list: List[int] = numerify.numerify_text(hansard_sentence, alphabet, sentence_maxlen)
         x_list.append(numbers_list)
         if debug:
             print("Building x, progress {} %".format(idx / total_chunks)) if idx % 10000 == 0 else None
+
+    # Write X so we don't have to regenerate every time...
+    with open("keras_character_based_ner/src/x_list-{}.p".format(dataset_name), "wb") as f:
+        pickle.dump(x_list, f)
 
     # pad_sequences takes care of enforcing sentence_maxlen for us
     x_np = pad_sequences(x_list, maxlen=sentence_maxlen)
 
     # Write X so we don't have to regenerate every time...
-    with open("keras_character_based_ner/src/x-{}.p".format(dataset_name), "wb") as f:
-        f.write(x_np)
+    with open("keras_character_based_ner/src/x_np-{}.p".format(dataset_name), "wb") as f:
+        pickle.dump(x_np, f)
 
 
 def get_x_y(sentence_maxlen, dataset_name) -> Tuple:

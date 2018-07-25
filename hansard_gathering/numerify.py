@@ -2,7 +2,7 @@ from typing import List
 import os
 
 
-def numerify_one_to_file(filepath, alphabet):
+def numerify_one_to_file(filepath, alphabet, maxlen):
     """
     Convert a chunked hansard file's alphabet into numberical indices as required by the Keras implementation
     for char-ner
@@ -22,7 +22,7 @@ def numerify_one_to_file(filepath, alphabet):
     with open(filepath, "r") as f:
         text = f.read()
 
-    numerified_text_list: List[int] = numerify_text(text, alphabet)
+    numerified_text_list: List[int] = numerify_text(text, alphabet, maxlen)
     numerified_text: str = ",".join([str(elem) for elem in numerified_text_list])
 
     os.makedirs(os.path.dirname(dest_filepath), exist_ok=True)
@@ -31,7 +31,7 @@ def numerify_one_to_file(filepath, alphabet):
         f.write(numerified_text)
 
 
-def numerify_text(text, alphabet) -> List[int]:
+def numerify_text(text, alphabet, maxlen) -> List[int]:
     """
     Take a text and return its numerical representation as numbers in a List.
     :param text:
@@ -40,7 +40,9 @@ def numerify_text(text, alphabet) -> List[int]:
     """
     numerified_text_list: List[int] = []
 
-    for char in text:
+    for idx, char in enumerate(text):
+        if idx > maxlen:
+            break
         index: int = alphabet.get_char_index(char)
         numerified_text_list.append(index)
 
