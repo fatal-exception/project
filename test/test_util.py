@@ -1,6 +1,6 @@
 from ne_data_gathering.util import all_stop_words
 from ne_data_gathering.util import surrounded_by_chars
-from nltk.corpus import stopwords
+from nltk.corpus import stopwords  # type: ignore
 
 
 def test_surrounded_by_chars():

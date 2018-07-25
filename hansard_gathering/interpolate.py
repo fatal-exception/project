@@ -95,6 +95,7 @@ def interpolate_one(file_path: str, tokenizer, stage, all_places: Set[str],
     with open(file_path) as f:
         text: str = f.read()
         interpolated_text: str = "0" * len(text)
+        interpolated_text_list: List[int] = [0 for _ in range(len(text))]
 
     # ngrams for the text that capture their starting and ending indices.
     # We pad right because we take the first word of the ngram and all its possible suffixes

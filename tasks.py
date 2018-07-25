@@ -164,6 +164,7 @@ def python_type_check(ctx):
     ctx.run("mypy hansard_gathering")
     ctx.run("mypy ne_data_gathering")
     ctx.run("mypy keras_character_based_ner/src/matt.py")
+    ctx.run("mypy test")
 
 
 @task(python_type_check)
