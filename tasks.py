@@ -69,10 +69,10 @@ def hansard_interpolate_all(ctx, starting_date):
 
 
 @task
-def hansard_numerify_one(cdx, filepath):
+def hansard_numerify_one_to_file(cdx, filepath):
     with open("keras_character_based_ner/src/some_alphabet.p", "rb") as f:
         alphabet = pickle.load(f)
-    numerify.numerify_one(filepath, alphabet)
+    numerify.numerify_one_to_file(filepath, alphabet)
 
 
 @task
@@ -82,8 +82,8 @@ def enable_venv(ctx):
 
 
 @task
-def hansard_max_sentence_length_write(ctx):
-    matt.write_total_number_of_hansard_sentences_to_file("ALL")
+def hansard_write_total_number_of_sentences_to_file(ctx, dataset_name):
+    matt.write_total_number_of_hansard_sentences_to_file(dataset_name)
 
 
 @task

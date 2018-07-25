@@ -7,6 +7,24 @@ import pickle
 import sys
 from keras_character_based_ner.src.alphabet import CharBasedNERAlphabet
 from typing import Dict, Generator, List, Set
+from hansard_gathering import numerify
+
+
+def get_bucket_numbers_for_dataset_name(dataset_name: str) -> List[int]:
+    """
+    Function to control bucket quantities and relative sizes of datasets
+    :param dataset_name: ALL, train, dev or test
+    :return: a list of ints for the bucket numbers containing file lists
+    which, when unioned together, comprise that dataset.
+    """
+    if dataset_name == "ALL":
+        return list(range(8))
+    elif dataset_name == "train":
+        return list(range(0, 4))
+    elif dataset_name == "dev":
+        return list(range(4, 6))
+    elif dataset_name == "test":
+        return list(range(6, 8))
 
 
 def rehash_datasets():
@@ -20,7 +38,7 @@ def rehash_datasets():
     bucket this.
     """
     # bucket allocations: 4 for train, 2 for dev, 2 for test
-    num_of_buckets: int = 8
+    num_of_buckets: int = len(get_bucket_numbers_for_dataset_name("ALL"))
     debug: bool = True
 
     os.makedirs("hansard_gathering/data_buckets", exist_ok=True)
@@ -126,14 +144,18 @@ def get_chunked_hansard_texts(dataset_name):
     pass
 
 
-def get_hansard_span_files(dataset_name) -> Generator[str, None, None]:
+def get_hansard_span_files(dataset_name: str) -> Generator[str, None, None]:
     print("Listing Hansard span files from dataset {}...".format(dataset_name))
-    files: List[str] = sorted(glob.glob("hansard_gathering/processed_hansard_data/**/*-spans.txt", recursive=True))
-    for _file in files:
-        yield _file
+    bucket_numbers: List[int] = get_bucket_numbers_for_dataset_name(dataset_name)
+    file_list = []
+    for bucket_number in bucket_numbers:
+        with open("hansard_gathering/data_buckets/{}.txt".format(bucket_number)) as f:
+            file_list.extend([filename.rstrip().replace(".txt", "-spans.txt") for filename in f.readlines()])
+    for span_file in file_list:
+        yield span_file
 
 
-def file_lines(fname):
+def file_lines(fname: str) -> int:
     # with thanks to
     # https://stackoverflow.com/questions/845058/how-to-get-line-count-cheaply-in-python
     with open(fname) as f:
@@ -143,7 +165,7 @@ def file_lines(fname):
     return i + 1
 
 
-def write_total_number_of_hansard_sentences_to_file(dataset_name):
+def write_total_number_of_hansard_sentences_to_file(dataset_name: str):
     """
     Get num of sentences in a particular dataset, dev, test or train.
     Also accept dataset_name 'ALL' while I work on dataset divisions.
@@ -154,9 +176,9 @@ def write_total_number_of_hansard_sentences_to_file(dataset_name):
     :return:
     """
     # Run on 25 July 2018 this was 182582013
-    sentences_total: int = 182582013
-    # for _file in get_hansard_span_files(dataset_name):
-    #     sentences_total += file_lines(_file)
+    sentences_total: int = 0
+    for span_file in get_hansard_span_files(dataset_name):
+        sentences_total += file_lines(span_file)
 
     with open("hansard_gathering/processed_hansard_data/{}_total_sentences_num".format(dataset_name), "w+") as f:
         f.write(str(sentences_total))
@@ -187,13 +209,14 @@ def get_x_y(sentence_maxlen, dataset_name):
     :return:
     """
     from keras.preprocessing.sequence import pad_sequences  # type: ignore
-    # TODO look at dataset_name
     total_batch_size = read_total_number_of_hansard_sentences_from_file(dataset_name)
     alphabet = get_pickled_alphabet()
 
     x = np.zeros(total_batch_size, sentence_maxlen)
-    for idx, hansard_string in enumerate(get_chunked_hansard_texts(dataset_name)):
-        numbers_list: List[int] = convert_letters_to_numbers_list(hansard_string, alphabet)
+    for idx, hansard_sentence in enumerate(get_chunked_hansard_texts(dataset_name)):
+        numbers_list: List[int] = numerify.numerify_text(hansard_sentence, alphabet)
+
+        # pad_sequences takes care of enforcing sentence_maxlen for us
         x[idx, :] = pad_sequences(numbers_list, maxlen=sentence_maxlen)
 
     return (x, None)
@@ -214,7 +237,7 @@ def get_max_sentence_length():
     Here we find the sample which is longest of all that has been chunked, using the -spans.txt files.
     :return:
     """
-    return None, 100  # Until chunking is finished, just hard-code it
+    return None, 900  # Until chunking is finished, just hard-code it
 
 
 if __name__ == "__main__":
