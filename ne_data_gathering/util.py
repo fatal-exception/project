@@ -1,5 +1,7 @@
 from typing import List
 from os.path import realpath, dirname
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
 
 import os
 import re
@@ -57,7 +59,17 @@ def remove_outer_brackets(_line: str) -> str:
     return _line[1:-2] + _line[-1]
 
 
+def all_stop_words(line, stop_words) -> bool:
+    line_words = word_tokenize(line)
+    if all(word in stop_words for word in line_words):
+        return True
+    else:
+        return False
+
+
 def dbpedia_post_processing(src_list_file, dest_list_file):
+
+    stop_words = set(stopwords.words('english'))
 
     debug = False
 
@@ -110,6 +122,9 @@ def dbpedia_post_processing(src_list_file, dest_list_file):
             print("DEBUG: remove extraneous prefixed spaces/asterisks in line {}".format(line)) \
                 if debug else None
             line = match.group(1)
+
+        # 9. If all words in the line are stop words, remove the line
+        all_stop_words(line, stop_words)
 
         res_lines.append(line)
 

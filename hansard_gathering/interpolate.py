@@ -169,7 +169,7 @@ def list_hansard_files(starting_date, stage) -> List[str]:
 
 def interpolate_all_hansard_files(starting_date):
     ne = NamedEntityData()
-    with concurrent.futures.ThreadPoolExecutor(max_workers=24) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=16) as executor:
         for _file in list_hansard_files(starting_date, "processed"):
             executor.submit(interpolate_one_wrapper, _file, ne, "processed")
 
