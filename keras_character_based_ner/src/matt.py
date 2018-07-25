@@ -86,6 +86,7 @@ def get_chunked_hansard_texts(dataset_name):
     """
 
     :param dataset_name: dev, test or train
+    Some generator that goes over all Hansard debate files and returns their next sentence by spans file.
     :return:
     """
     pass
@@ -107,11 +108,12 @@ def get_x_y(sentence_maxlen, dataset_name):
                 Entries in dimension 1 are alphabet indices, index 0 is the padding symbol
                 y: Array of shape (batch_size, sentence_maxlen, self.num_labels).
                 Entries in dimension 2 are label indices, index 0 is the null label
+                I guess batch_size here refers to the WHOLE batch?
     :return:
     """
     from keras.preprocessing.sequence import pad_sequences
     # TODO look at dataset_name
-    batch_size = get_total_number_of_chunked_files(dataset_name)
+    batch_size = get_total_number_of_hansard_sentences(dataset_name)
     alphabet = get_pickled_alphabet()
 
     x = np.zeros(batch_size, sentence_maxlen)
@@ -126,7 +128,7 @@ def get_x_y_generator():
     """
     Generator that returns a tuple each time, of inputs/targets as Numpy arrays. Each tuple
     is  batch used in training.
-    :return:
+    :return: Generator object that yields tuples (x, y), same as in get_x_y()
     """
     pass
 

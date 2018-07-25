@@ -158,8 +158,8 @@ def list_hansard_files(starting_date, stage) -> List[str]:
     # https://stackoverflow.com/questions/33895760/python-idiomatic-way-to-drop-items-from-a-list-until-an-item-matches-a-conditio
     def date_is_less_than_starting_date(file_path):
         file_path_date = file_path.split("/")[2]
-        file_path_dt = datetime.strptime(file_path_date, "%Y-%M-%d")
-        starting_dt = datetime.strptime(starting_date, "%Y-%M-%d")
+        file_path_dt = datetime.strptime(file_path_date, "%Y-%m-%d")
+        starting_dt = datetime.strptime(starting_date, "%Y-%m-%d")
         return file_path_dt < starting_dt
 
     filtered_files = list(itertools.dropwhile(date_is_less_than_starting_date, files))
