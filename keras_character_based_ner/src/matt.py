@@ -289,7 +289,7 @@ def get_median_sentence_length(dataset_name) -> int:
     :return:
     """
     sentence_lengths: List[int] = []
-    for _file in get_hansard_span_files(dataset_name):
+    for _file in get_all_hansard_files(dataset_name):
         for span_start, span_end in chunk.get_sentence_spans(_file):
             span_len = span_end - span_start
             sentence_lengths.append(span_len)
