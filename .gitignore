@@ -89,6 +89,7 @@ hansard_gathering/interpolated_hansard_data/*
 hansard_gathering/numerified_hansard_data/*
 # Data buckets from Hansard hashing
 hansard_gathering/data_buckets
+hansard_gathering/data_buckets_archive
 
 # Pytest
 .pytest_cache
@@ -98,3 +99,6 @@ hansard_gathering/data_buckets
 
 # mypy
 .mypy_cache
+
+# pickled files
+*.p

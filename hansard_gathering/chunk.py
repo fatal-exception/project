@@ -99,8 +99,22 @@ def chunk_all_hansard_files(starting_date):
 
 
 def get_sentence_spans(filepath) -> Generator[Tuple[int, int], None, None]:
+    """
+    Given a filepath, yield the first and last position of each sentence in that filepath
+    :param filepath:
+    :return:
+    """
+    debug: bool = False
+
     with open("{}.txt".format(filepath.replace(".txt", "-spans"))) as f:
         sent_spans = f.read()
+
+    if debug:
+        print("DEBUG: spans file is {}".format(filepath))
+
+    # Some debates have no content, and hence no sentences. Seems to be a TWFY bug.
+    if len(sent_spans) == 0:
+        return
 
     for sent_span in sent_spans.split("\n"):
         sent_start, sent_end = sent_span.replace("(", "").replace(")", "").split(",")

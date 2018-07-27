@@ -5,8 +5,9 @@ import numpy as np  # type: ignore
 import os
 import pickle
 from keras_character_based_ner.src.alphabet import CharBasedNERAlphabet
-from typing import Dict, Generator, List, Set, Tuple
+from typing import Dict, Generator, List, Set, Tuple, Any
 from hansard_gathering import numerify, chunk
+from statistics import median
 
 
 def get_total_number_of_buckets() -> int:
@@ -223,6 +224,37 @@ def read_total_number_of_hansard_sentences_from_file(dataset_name) -> int:
     return int(sentences)
 
 
+def unpickle_large_file(filepath) -> Any:
+    """
+    See https://stackoverflow.com/questions/31468117/python-3-can-pickle-handle-byte-objects-larger-than-4gb
+    MacOS has a bug which stops objects larger than 4GB from being written out to file. What a pain!
+    :param filepath:
+    :return:
+    """
+    max_bytes = 2**31 - 1
+    bytes_in = bytearray(0)
+    input_size = os.path.getsize(filepath)
+    with open(filepath, 'rb') as f_in:
+        for _ in range(0, input_size, max_bytes):
+            bytes_in += f_in.read(max_bytes)
+    return pickle.loads(bytes_in)
+
+
+def pickle_large_file(data_structure, filepath):
+    """
+    See https://stackoverflow.com/questions/31468117/python-3-can-pickle-handle-byte-objects-larger-than-4gb
+    MacOS has a bug which stops objects larger than 4GB from being written out to file. What a pain!
+    :param data_structure:
+    :param filepath:
+    :return:
+    """
+    max_bytes = 2**31 - 1
+    bytes_out = pickle.dumps(data_structure)
+    with open(filepath, 'wb') as f_out:
+        for idx in range(0, len(bytes_out), max_bytes):
+            f_out.write(bytes_out[idx:idx+max_bytes])
+
+
 def create_x(sentence_maxlen, dataset_name):
     debug: bool = True
 
@@ -238,18 +270,30 @@ def create_x(sentence_maxlen, dataset_name):
         numbers_list: List[int] = numerify.numerify_text(hansard_sentence, alphabet, sentence_maxlen)
         x_list.append(numbers_list)
         if debug:
-            print("Building x, progress {} %".format(idx / total_chunks)) if idx % 10000 == 0 else None
+            print("Building x, progress {} %".format((idx / total_chunks) * 100)) if idx % 10000 == 0 else None
 
     # Write X so we don't have to regenerate every time...
-    with open("keras_character_based_ner/src/x_list-{}.p".format(dataset_name), "wb") as f:
-        pickle.dump(x_list, f)
+    pickle_large_file(x_list, "keras_character_based_ner/src/x_list-{}.p".format(dataset_name))
 
     # pad_sequences takes care of enforcing sentence_maxlen for us
     x_np = pad_sequences(x_list, maxlen=sentence_maxlen)
 
     # Write X so we don't have to regenerate every time...
-    with open("keras_character_based_ner/src/x_np-{}.p".format(dataset_name), "wb") as f:
-        pickle.dump(x_np, f)
+    pickle_large_file(x_np, "keras_character_based_ner/src/x_np-{}.p".format(dataset_name))
+
+
+def get_median_sentence_length(dataset_name) -> int:
+    """
+    Find median length of all sentences in the corpus - so we can make sensible decisions about chunking for tensors.
+    :param dataset_name:
+    :return:
+    """
+    sentence_lengths: List[int] = []
+    for _file in get_hansard_span_files(dataset_name):
+        for span_start, span_end in chunk.get_sentence_spans(_file):
+            span_len = span_end - span_start
+            sentence_lengths.append(span_len)
+    return median(sentence_lengths)
 
 
 def get_x_y(sentence_maxlen, dataset_name) -> Tuple:

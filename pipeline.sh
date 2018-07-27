@@ -16,5 +16,6 @@
 # char-ner-pickle-some-alphabet
 # Chunk by adding sentence-span files to processing directory
 # Split into datasets - charn-ner-rehash-dataset
+# Write out num of sentences -  inv hansard-write-total-number-of-sentences-to-file --dataset-name <DS>
 # hansard-interpolate-all --> gives y
 # hansard-numerify-all --> gives x

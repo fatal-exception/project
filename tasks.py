@@ -164,6 +164,11 @@ def char_ner_create_x(ctx, dataset_name):
     matt.create_x(Config.sentence_max_length, dataset_name)
 
 
+@task
+def char_ner_display_median_sentence_length(ctx, dataset_name):
+    print(matt.get_median_sentence_length(dataset_name))
+
+
 @task(enable_venv)
 def python_type_check(ctx):
     ctx.run("echo mypy: checking Python static types...")
