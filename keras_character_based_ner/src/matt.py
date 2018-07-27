@@ -9,6 +9,10 @@ from typing import Dict, Generator, List, Set, Tuple
 from hansard_gathering import numerify, chunk
 
 
+def get_total_number_of_buckets() -> int:
+    return 320
+
+
 def get_bucket_numbers_for_dataset_name(dataset_name: str) -> List[int]:
     """
     Function to control bucket quantities and relative sizes of datasets
@@ -28,6 +32,18 @@ def get_bucket_numbers_for_dataset_name(dataset_name: str) -> List[int]:
         return []  # to keep mypy static type-checker happy
 
 
+def archive_old_bucket_allocations():
+    """
+    Move old bucket files in hansard_gathering/data_buckets to an archive so they're not lost
+    """
+    os.makedirs("hansard_gathering/data_buckets_archive", exist_ok=True)
+
+    file_list = sorted(glob.glob("hansard_gathering/data_buckets/*.txt"))
+    for _file in file_list:
+        new_dest = _file.replace("data_buckets", "data_buckets_archive")
+        os.rename(_file, new_dest)
+
+
 def rehash_datasets():
     """
     Hash all Hansard debates into 3 datasets:
@@ -38,8 +54,11 @@ def rehash_datasets():
     We take a hash of the date-and-debate-name part of each filepath, then use modulo to
     bucket this.
     """
+
+    archive_old_bucket_allocations()
+
     # bucket allocations: 4 for train, 2 for dev, 2 for test
-    num_of_buckets: int = len(get_bucket_numbers_for_dataset_name("ALL"))
+    num_of_buckets: int = get_total_number_of_buckets()
     debug: bool = True
 
     os.makedirs("hansard_gathering/data_buckets", exist_ok=True)

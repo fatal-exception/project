@@ -2,7 +2,6 @@ from config_util.config_parser import parse_config
 from datetime import datetime, timedelta
 from hansard_gathering.exception import SiblingNotFoundException
 import concurrent.futures
-import html
 import json
 import os
 import requests
