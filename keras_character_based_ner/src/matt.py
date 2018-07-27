@@ -170,6 +170,16 @@ def get_chunked_hansard_texts(dataset_name: str) -> Generator[str, None, None]:
             yield debate[chunk_start:chunk_end]
 
 
+def get_chunked_hansard_interpolations(dataset_name: str) -> Generator[str, None, None]:
+    """
+    :param dataset_name: dev, test or train
+    Generator that goes over all Hansard debate files and returns their next sentence worth of interpolation-numbers,
+    using a span file.
+    :return:
+    """
+    # TODO
+
+
 def get_hansard_span_files(dataset_name: str) -> Generator[str, None, None]:
     print("Listing Hansard span files from dataset {}...".format(dataset_name))
     bucket_numbers: List[int] = get_bucket_numbers_for_dataset_name(dataset_name)
@@ -282,6 +292,28 @@ def create_x(sentence_maxlen, dataset_name):
     pickle_large_file(x_np, "keras_character_based_ner/src/x_np-{}.p".format(dataset_name))
 
 
+def create_y(dataset_name):
+    debug: bool = True
+
+    from keras.preprocessing.sequence import pad_sequences  # type: ignore
+
+    y_list: List[List[int]] = []
+    for idx, hansard_sentence in enumerate(get_chunked_hansard_texts(dataset_name)):
+        numbers_list: List[int] = numerify.numerify_text(hansard_sentence, alphabet, sentence_maxlen)
+        x_list.append(numbers_list)
+        if debug:
+            print("Building x, progress {} %".format((idx / total_chunks) * 100)) if idx % 10000 == 0 else None
+
+    # Write X so we don't have to regenerate every time...
+    pickle_large_file(x_list, "keras_character_based_ner/src/x_list-{}.p".format(dataset_name))
+
+    # pad_sequences takes care of enforcing sentence_maxlen for us
+    x_np = pad_sequences(x_list, maxlen=sentence_maxlen)
+
+    # Write X so we don't have to regenerate every time...
+    pickle_large_file(x_np, "keras_character_based_ner/src/x_np-{}.p".format(dataset_name))
+
+
 def get_median_sentence_length(dataset_name) -> int:
     """
     Find median length of all sentences in the corpus - so we can make sensible decisions about chunking for tensors.
@@ -305,10 +337,13 @@ def get_x_y(sentence_maxlen, dataset_name) -> Tuple:
                 Entries in dimension 2 are label indices, index 0 is the null label
                 I guess batch_size here refers to the WHOLE batch?
     """
-    with open("keras_character_based_ner/src/matt/x-{}.p".format(dataset_name), "rb") as f:
+    with open("keras_character_based_ner/src/matt/x_np-{}.p".format(dataset_name), "rb") as f:
         x_np = f.read()
 
-    return x_np, None
+    with open("keras_character_based_ner/src/matt/y_np-{}.p".format(dataset_name), "rb") as f:
+        y_np = f.read()
+
+    return x_np, y_np
 
 
 def get_x_y_generator():
