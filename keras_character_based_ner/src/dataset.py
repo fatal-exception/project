@@ -1,6 +1,6 @@
 import numpy as np
 from alphabet import CharBasedNERAlphabet
-import matt
+import keras_character_based_ner.src.matt as matt
 from typing import List
 
 
@@ -20,7 +20,7 @@ class CharBasedNERDataset:
 
     def get_texts(self) -> List[str]:
         """ Implement with own data source. """
-        return matt.get_texts()
+        return matt.model_integration.get_texts()
 
     def get_x_y(self, sentence_maxlen, dataset_name='all'):
         """ Implement with own data source.

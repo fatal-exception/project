@@ -9,7 +9,7 @@ from ne_data_gathering import people
 from ne_data_gathering import companies
 from ne_data_gathering import util
 from invoke import task
-from keras_character_based_ner.src import matt
+from keras_character_based_ner.src.matt import alphabet_management, file_management, model_integration, dataset_hashing
 from keras_character_based_ner.src.config import Config
 import pickle
 
@@ -72,8 +72,8 @@ def hansard_interpolate_all(ctx, starting_date):
 @task
 def hansard_numerify_one_to_file(cdx, filepath):
     with open("keras_character_based_ner/src/some_alphabet.p", "rb") as f:
-        alphabet = pickle.load(f)
-    numerify.numerify_one_to_file(filepath, alphabet, maxlen=Config.sentence_max_length)
+        alph = pickle.load(f)
+    numerify.numerify_one_to_file(filepath, alph, maxlen=Config.sentence_max_length)
 
 
 @task
@@ -84,7 +84,7 @@ def enable_venv(ctx):
 
 @task
 def hansard_write_total_number_of_sentences_to_file(ctx, dataset_name):
-    matt.write_total_number_of_hansard_sentences_to_file(dataset_name)
+    file_management.write_total_number_of_hansard_sentences_to_file(dataset_name)
 
 
 @task
@@ -136,37 +136,37 @@ def ne_data_places_process(ctx):
 
 @task
 def char_ner_get_alphabet(ctx):
-    matt.get_alphabet()
+    alphabet_management.get_alphabet()
 
 
 @task
 def char_ner_get_some_alphabet(ctx):
-    matt.get_some_alphabet()
+    alphabet_management.get_some_alphabet()
 
 
 @task
 def char_ner_pickle_some_alphabet(ctx):
-    matt.pickle_some_alphabet()
+    alphabet_management.pickle_some_alphabet()
 
 
 @task
 def char_ner_display_pickled_alphabet(ctx):
-    matt.display_pickled_alphabet()
+    alphabet_management.display_pickled_alphabet()
 
 
 @task
 def char_ner_rehash_datasets(ctx):
-    matt.rehash_datasets()
+    dataset_hashing.rehash_datasets()
 
 
 @task
 def char_ner_create_x(ctx, dataset_name):
-    matt.create_x(Config.sentence_max_length, dataset_name)
+    model_integration.create_x(Config.sentence_max_length, dataset_name)
 
 
 @task
 def char_ner_display_median_sentence_length(ctx, dataset_name):
-    print(matt.get_median_sentence_length(dataset_name))
+    print(model_integration.get_median_sentence_length(dataset_name))
 
 
 @task(enable_venv)
