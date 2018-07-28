@@ -4,6 +4,7 @@ from keras_character_based_ner.src.matt.file_management import get_all_hansard_f
 from keras_character_based_ner.src.matt.file_management import pickle_large_file
 from keras_character_based_ner.src.matt.file_management import read_total_number_of_hansard_sentences_from_file
 from keras_character_based_ner.src.matt.file_management import get_chunked_hansard_texts
+from keras_character_based_ner.src.matt.file_management import get_chunked_hansard_interpolations
 from typing import List, Tuple
 from hansard_gathering import numerify, chunk
 from statistics import median
@@ -72,19 +73,20 @@ def create_y(sentence_maxlen, dataset_name):
         total_chunks = read_total_number_of_hansard_sentences_from_file(dataset_name)
 
     y_list: List[List[int]] = []
-    for idx, hansard_sentence in enumerate(get_chunked_hansard_texts(dataset_name)):
-        y_list.append(None)
+    for idx, interpolated_hansard_sentence in enumerate(
+            get_chunked_hansard_interpolations(dataset_name)):
+        y_list.append([int(num) for num in interpolated_hansard_sentence])
         if debug:
-            print("Building x, progress {} %".format((idx / total_chunks) * 100)) if idx % 10000 == 0 else None
+            print("Building y, progress {} %".format((idx / total_chunks) * 100)) if idx % 10000 == 0 else None
 
-    # Write X so we don't have to regenerate every time...
-    pickle_large_file(y_list, "keras_character_based_ner/src/x_list-{}.p".format(dataset_name))
+    # Write Y so we don't have to regenerate every time...
+    pickle_large_file(y_list, "keras_character_based_ner/src/y_list-{}.p".format(dataset_name))
 
     # pad_sequences takes care of enforcing sentence_maxlen for us
-    x_np = pad_sequences(y_list, maxlen=sentence_maxlen)
+    y_np = pad_sequences(y_list, maxlen=sentence_maxlen)
 
     # Write X so we don't have to regenerate every time...
-    pickle_large_file(x_np, "keras_character_based_ner/src/x_np-{}.p".format(dataset_name))
+    pickle_large_file(y_np, "keras_character_based_ner/src/y_np-{}.p".format(dataset_name))
 
 
 def get_median_sentence_length(dataset_name) -> float:

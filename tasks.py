@@ -160,6 +160,11 @@ def char_ner_create_x(ctx, dataset_name):
 
 
 @task
+def char_ner_create_y(ctx, dataset_name):
+    model_integration.create_y(Config.sentence_max_length, dataset_name)
+
+
+@task
 def char_ner_display_median_sentence_length(ctx, dataset_name):
     print(model_integration.get_median_sentence_length(dataset_name))
 
