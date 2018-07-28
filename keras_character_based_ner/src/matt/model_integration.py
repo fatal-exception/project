@@ -10,11 +10,26 @@ from statistics import median
 
 
 def get_labels():
+    """
+    Return list of different labels used for NEs in the dataset.
+    :return:
+    """
     # 1 = LOC, 2 = ORG, 3 = PER, 0 = null
     return list(range(1, 4))
 
 
 def create_x(sentence_maxlen, dataset_name):
+    """
+    Create X tensor by reading in all debates in the current dataset,
+    taking them chunk by chunk, converting the letters to numbers, and
+    building a list-of-lists-of-ints structure.
+    Then use keras pad_sequences to ensure uniform length (len == sentence_maxlen)
+    wit-hand-side padding, and write out both the list object and pad_sequences'
+    resulting numpy array to pickled files.
+    :param sentence_maxlen:
+    :param dataset_name:
+    :return:
+    """
     from keras.preprocessing.sequence import pad_sequences  # type: ignore
     debug: bool = True
 
@@ -41,6 +56,13 @@ def create_x(sentence_maxlen, dataset_name):
 
 
 def create_y(sentence_maxlen, dataset_name):
+    """"
+    Create Y tensor by reading in the required spans of each chunk of the debates
+    in the current dataset, and returning the equivalent list of NE numbers
+    from the interpolated file for that debate.
+    As per create_x, we make a Python list-of-lists-of-ints, pickle it, then
+    use pad_sequences to make a numpy array, which we also pickle.
+    """
     from keras.preprocessing.sequence import pad_sequences  # type: ignore
 
     debug: bool = True
@@ -101,6 +123,10 @@ def get_x_y_generator():
     """
     Generator that returns a tuple each time, of inputs/targets as Numpy arrays. Each tuple
     is a batch used in training.
+    Given the size of data we are dealing with, I think this will be necessary
+    to integrate with the keras. We should probably decide a batch size B *within*
+    out dataset, then dynamically do a create_x and create_y on that batch-size
+    within the dataset's debates, and yield (short) x and y tensors.
     :return: Generator object that yields tuples (x, y), same as in get_x_y()
     """
     pass

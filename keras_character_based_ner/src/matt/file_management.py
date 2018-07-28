@@ -1,4 +1,5 @@
 from typing import List, Generator, Any
+import os
 import pickle
 from keras_character_based_ner.src.matt.dataset_hashing import get_bucket_numbers_for_dataset_name
 from hansard_gathering import chunk
@@ -22,7 +23,8 @@ def get_all_hansard_files(dataset_name: str) -> Generator[str, None, None]:
 
 def get_hansard_span_files(dataset_name: str) -> Generator[str, None, None]:
     """
-
+    For a given dataset name, yield just the span files (list of sentence starts
+    and stops) for each debate in that dataset.
     :param dataset_name:
     :return:
     """
@@ -139,7 +141,9 @@ def get_texts() -> Generator[str, None, None]:
 def get_chunked_hansard_texts(dataset_name: str) -> Generator[str, None, None]:
     """
     :param dataset_name: dev, test or train
-    Generator that goes over all Hansard debate files and returns their next sentence, using their spans file.
+    Generator that goes over all Hansard debate files and returns their next sentence,
+     using their spans file. This is required to build the X tensor - the resulting
+    sentence-spans are each numerified before being turned into numpy arrays.
     :return:
     """
     for _file in get_all_hansard_files(dataset_name):
