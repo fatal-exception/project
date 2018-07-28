@@ -3,12 +3,12 @@ from keras_character_based_ner.src.matt.file_management import get_texts
 import pickle
 
 
-def get_alphabet():
+def generate_alphabet():
     return CharBasedNERAlphabet.get_alphabet_from_texts(get_texts())
 
 
 def pickle_alphabet():
-    alph = get_alphabet()
+    alph = generate_alphabet()
     with open("keras_character_based_ner/src/alphabet.p", "wb") as f:
         pickle.dump(alph, f)
 
