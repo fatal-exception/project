@@ -71,7 +71,7 @@ def hansard_interpolate_all(ctx, starting_date):
 
 @task
 def hansard_numerify_one_to_file(cdx, filepath):
-    with open("keras_character_based_ner/src/some_alphabet.p", "rb") as f:
+    with open("keras_character_based_ner/src/alphabet.p", "rb") as f:
         alph = pickle.load(f)
     numerify.numerify_one_to_file(filepath, alph, maxlen=Config.sentence_max_length)
 
@@ -140,13 +140,8 @@ def char_ner_get_alphabet(ctx):
 
 
 @task
-def char_ner_get_some_alphabet(ctx):
-    alphabet_management.get_some_alphabet()
-
-
-@task
-def char_ner_pickle_some_alphabet(ctx):
-    alphabet_management.pickle_some_alphabet()
+def char_ner_pickle_alphabet(ctx):
+    alphabet_management.pickle_alphabet()
 
 
 @task

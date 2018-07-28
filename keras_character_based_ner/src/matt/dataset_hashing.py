@@ -15,6 +15,7 @@ def get_bucket_numbers_for_dataset_name(dataset_name: str) -> List[int]:
     :return: a list of ints for the bucket numbers containing file lists
     which, when unioned together, comprise that dataset.
     """
+    # Keeping ALL artificially small for now while we get the model working.
     if dataset_name == "ALL":
         return list(range(8))
     elif dataset_name == "train":
@@ -23,8 +24,11 @@ def get_bucket_numbers_for_dataset_name(dataset_name: str) -> List[int]:
         return list(range(4, 6))
     elif dataset_name == "test":
         return list(range(6, 8))
+    # Small set of debates to build an alphabet off
+    elif dataset_name == "alphabet-sample":
+        return [0]
     else:
-        return []  # to keep mypy static type-checker happy
+        return []
 
 
 def archive_old_bucket_allocations():

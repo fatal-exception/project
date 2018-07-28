@@ -1,4 +1,4 @@
-# Byte-compiled / optimized / DLL files
+it# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
@@ -100,5 +100,6 @@ hansard_gathering/data_buckets_archive
 # mypy
 .mypy_cache
 
-# pickled files
-*.p
+# pickled files for tensors
+x_*.p
+y_*.p

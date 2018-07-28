@@ -1,6 +1,9 @@
 import numpy as np
 from alphabet import CharBasedNERAlphabet
-import keras_character_based_ner.src.matt as matt
+from matt.file_management import get_texts as matt_get_texts
+from matt.model_integration import get_x_y as matt_get_x_y
+from matt.model_integration import get_x_y_generator as matt_get_x_y_generator
+from matt.model_integration import get_labels as matt_get_labels
 from typing import List
 
 
@@ -20,7 +23,7 @@ class CharBasedNERDataset:
 
     def get_texts(self) -> List[str]:
         """ Implement with own data source. """
-        return matt.model_integration.get_texts()
+        return list(matt_get_texts())
 
     def get_x_y(self, sentence_maxlen, dataset_name='all'):
         """ Implement with own data source.
@@ -38,14 +41,14 @@ class CharBasedNERDataset:
         # using ints to lookup the alphabet.
         # MIR y 1st dimension is for all samples,
         # 2nd dimension is for char-strings, 3rd dim is for streams of labels, by int
-        return matt.get_x_y(sentence_maxlen, dataset_name)
+        return matt_get_x_y(dataset_name)
 
     def get_x_y_generator(self, sentence_maxlen, dataset_name='all'):
         """ Implement with own data source.
 
         :return: Generator object that yields tuples (x, y), same as in get_x_y()
         """
-        return matt.get_x_y_generator()
+        return matt_get_x_y_generator()
 
     def get_labels(self):
         """ Implement with own data source.
@@ -53,7 +56,7 @@ class CharBasedNERDataset:
         :return: List of labels (classes) to predict, e.g. 'PER', 'LOC', not including the null label '0'.
         """
         # 1 = LOC, 2 = ORG, 3 = PER, 0 = null
-        return matt.get_labels()
+        return matt_get_labels()
 
     def str_to_x(self, s: str, maxlen: int):
         x: np.ndarray = np.zeros(maxlen)

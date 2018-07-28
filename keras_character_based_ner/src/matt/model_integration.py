@@ -3,7 +3,8 @@ from keras_character_based_ner.src.matt.alphabet_management import get_pickled_a
 from keras_character_based_ner.src.matt.file_management import get_all_hansard_files
 from keras_character_based_ner.src.matt.file_management import pickle_large_file
 from keras_character_based_ner.src.matt.file_management import read_total_number_of_hansard_sentences_from_file
-from typing import Generator, List, Tuple
+from keras_character_based_ner.src.matt.file_management import get_chunked_hansard_texts
+from typing import List, Tuple
 from hansard_gathering import numerify, chunk
 from statistics import median
 
@@ -13,29 +14,13 @@ def get_labels():
     return list(range(1, 4))
 
 
-def get_chunked_hansard_texts(dataset_name: str) -> Generator[str, None, None]:
-    """
-    :param dataset_name: dev, test or train
-    Generator that goes over all Hansard debate files and returns their next sentence, using their spans file.
-    :return:
-    """
-    for _file in get_all_hansard_files(dataset_name):
-        with open(_file) as f:
-            debate = f.read()
-            chunk_start: int
-            chunk_end: int
-        for chunk_start, chunk_end in chunk.get_sentence_spans(_file):
-            yield debate[chunk_start:chunk_end]
-
-
 def create_x(sentence_maxlen, dataset_name):
+    from keras.preprocessing.sequence import pad_sequences  # type: ignore
     debug: bool = True
 
     total_chunks: int = 0
     if debug:
         total_chunks = read_total_number_of_hansard_sentences_from_file(dataset_name)
-
-    from keras.preprocessing.sequence import pad_sequences  # type: ignore
     alphabet = get_pickled_alphabet()
 
     x_list: List[List[int]] = []
@@ -55,25 +40,29 @@ def create_x(sentence_maxlen, dataset_name):
     pickle_large_file(x_np, "keras_character_based_ner/src/x_np-{}.p".format(dataset_name))
 
 
-# def create_y(dataset_name):
-#     debug: bool = True
-#
-#     from keras.preprocessing.sequence import pad_sequences  # type: ignore
-#
-#     y_list: List[List[int]] = []
-#     for idx, hansard_sentence in enumerate(get_chunked_hansard_texts(dataset_name)):
-#         y_list.append(None)
-#         if debug:
-#             print("Building x, progress {} %".format((idx / total_chunks) * 100)) if idx % 10000 == 0 else None
-#
-#     # Write X so we don't have to regenerate every time...
-#     pickle_large_file(y_list, "keras_character_based_ner/src/x_list-{}.p".format(dataset_name))
-#
-#     # pad_sequences takes care of enforcing sentence_maxlen for us
-#     x_np = pad_sequences(y_list, maxlen=sentence_maxlen)
-#
-#     # Write X so we don't have to regenerate every time...
-#     pickle_large_file(x_np, "keras_character_based_ner/src/x_np-{}.p".format(dataset_name))
+def create_y(sentence_maxlen, dataset_name):
+    from keras.preprocessing.sequence import pad_sequences  # type: ignore
+
+    debug: bool = True
+
+    total_chunks: int = 0
+    if debug:
+        total_chunks = read_total_number_of_hansard_sentences_from_file(dataset_name)
+
+    y_list: List[List[int]] = []
+    for idx, hansard_sentence in enumerate(get_chunked_hansard_texts(dataset_name)):
+        y_list.append(None)
+        if debug:
+            print("Building x, progress {} %".format((idx / total_chunks) * 100)) if idx % 10000 == 0 else None
+
+    # Write X so we don't have to regenerate every time...
+    pickle_large_file(y_list, "keras_character_based_ner/src/x_list-{}.p".format(dataset_name))
+
+    # pad_sequences takes care of enforcing sentence_maxlen for us
+    x_np = pad_sequences(y_list, maxlen=sentence_maxlen)
+
+    # Write X so we don't have to regenerate every time...
+    pickle_large_file(x_np, "keras_character_based_ner/src/x_np-{}.p".format(dataset_name))
 
 
 def get_median_sentence_length(dataset_name) -> int:
@@ -90,7 +79,7 @@ def get_median_sentence_length(dataset_name) -> int:
     return median(sentence_lengths)
 
 
-def get_x_y(sentence_maxlen, dataset_name) -> Tuple:
+def get_x_y(dataset_name) -> Tuple:
     """
     Returns a Python tuple x and y, where x and y are Numpy arrays!
                 x: Array of shape (batch_size, sentence_maxlen).

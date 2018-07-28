@@ -1,10 +1,12 @@
 from typing import List, Generator, Any
 import pickle
 from keras_character_based_ner.src.matt.dataset_hashing import get_bucket_numbers_for_dataset_name
+from hansard_gathering import chunk
 
 
-def get_all_hansard_files(dataset_name: str):
+def get_all_hansard_files(dataset_name: str) -> Generator[str, None, None]:
     """
+    Return generator of all file names in a given dataset.
     :param dataset_name: train, dev, test or ALL
     :return:
     """
@@ -19,6 +21,11 @@ def get_all_hansard_files(dataset_name: str):
 
 
 def get_hansard_span_files(dataset_name: str) -> Generator[str, None, None]:
+    """
+
+    :param dataset_name:
+    :return:
+    """
     print("Listing Hansard span files from dataset {}...".format(dataset_name))
     bucket_numbers: List[int] = get_bucket_numbers_for_dataset_name(dataset_name)
     file_list = []
@@ -30,6 +37,12 @@ def get_hansard_span_files(dataset_name: str) -> Generator[str, None, None]:
 
 
 def file_lines(fname: str) -> int:
+    """
+    Fast implementation to get number of lines in a file - useful with span files,
+    to count total number of different sentences.
+    :param fname:
+    :return:
+    """
     # with thanks to
     # https://stackoverflow.com/questions/845058/how-to-get-line-count-cheaply-in-python
     with open(fname) as f:
@@ -114,8 +127,25 @@ def pickle_large_file(data_structure, filepath):
 
 
 def get_texts() -> Generator[str, None, None]:
-    for _file in get_all_hansard_files("ALL"):
-        print("Getting text from {}".format(_file))
-        yield open(_file).read()
+    """
+    Return the texts from hansard files, without chunking into sentences. This
+    is only required for the keras dataset to build an alphabet, so we only need
+    to return a small subset. We make a bucket set called alphabet-sample for this.
+    :return:
+    """
+    return get_chunked_hansard_texts("alphabet-sample")
 
 
+def get_chunked_hansard_texts(dataset_name: str) -> Generator[str, None, None]:
+    """
+    :param dataset_name: dev, test or train
+    Generator that goes over all Hansard debate files and returns their next sentence, using their spans file.
+    :return:
+    """
+    for _file in get_all_hansard_files(dataset_name):
+        with open(_file) as f:
+            debate = f.read()
+            chunk_start: int
+            chunk_end: int
+        for chunk_start, chunk_end in chunk.get_sentence_spans(_file):
+            yield debate[chunk_start:chunk_end]
