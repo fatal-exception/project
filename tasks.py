@@ -9,7 +9,7 @@ from ne_data_gathering import people
 from ne_data_gathering import companies
 from ne_data_gathering import util
 from invoke import task
-from keras_character_based_ner.src.matt import alphabet_management, file_management, model_integration, dataset_hashing
+from keras_character_based_ner.src.matt import alphabet_management, file_management, model_integration, dataset_hashing, train
 from keras_character_based_ner.src.config import Config
 import pickle
 
@@ -182,3 +182,8 @@ def python_type_check(ctx):
 def test(ctx):
     ctx.run("echo pytest: running tests...")
     ctx.run("pytest test")
+
+
+@task
+def model_train_toy(ctx):
+    train.toy_dataset_fit()
