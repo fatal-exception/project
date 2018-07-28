@@ -31,10 +31,10 @@ class CharacterBasedLSTMModel:
 
         for _ in range(self.config.recurrent_stack_depth):
             model.add(Bidirectional(LSTM(self.config.num_lstm_units, return_sequences=True)))
-            # MIR return_sequences means return full sequence, not just last output
+            # MIR return_sequences means return full sequence, not just last output
 
         model.add(Dropout(self.config.output_dropout))
-        # MIR Does the paper have both input- and output-dropout?
+        # MIR Does the paper have both input- and output-dropout?
         model.add(TimeDistributed(Dense(num_labels, activation='softmax')))
 
         # TODO Add Viterbi decoder here, see Kuru et al.
