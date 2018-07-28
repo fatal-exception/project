@@ -169,7 +169,7 @@ def python_type_check(ctx):
     ctx.run("echo mypy: checking Python static types...")
     ctx.run("mypy hansard_gathering")
     ctx.run("mypy ne_data_gathering")
-    ctx.run("mypy keras_character_based_ner/src/matt.py")
+    ctx.run("mypy keras_character_based_ner/src/matt")
     ctx.run("mypy test")
 
 

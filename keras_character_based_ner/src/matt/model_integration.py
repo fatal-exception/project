@@ -87,7 +87,7 @@ def create_y(sentence_maxlen, dataset_name):
     pickle_large_file(x_np, "keras_character_based_ner/src/x_np-{}.p".format(dataset_name))
 
 
-def get_median_sentence_length(dataset_name) -> int:
+def get_median_sentence_length(dataset_name) -> float:
     """
     Find median length of all sentences in the corpus - so we can make sensible decisions about chunking for tensors.
     :param dataset_name:

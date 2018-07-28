@@ -1,4 +1,4 @@
-from keras_character_based_ner.src.matt import file_lines
+from keras_character_based_ner.src.matt.file_management import file_lines
 
 
 def test_file_lines(fs):

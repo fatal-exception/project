@@ -113,6 +113,7 @@ def get_sentence_spans(filepath) -> Generator[Tuple[int, int], None, None]:
         print("DEBUG: spans file is {}".format(filepath))
 
     # Some debates have no content, and hence no sentences. Seems to be a TWFY bug.
+    # TODO investigate, if there's time.
     if len(sent_spans) == 0:
         return
 

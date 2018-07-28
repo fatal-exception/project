@@ -24,7 +24,8 @@ def get_all_hansard_files(dataset_name: str) -> Generator[str, None, None]:
 def get_hansard_span_files(dataset_name: str) -> Generator[str, None, None]:
     """
     For a given dataset name, yield just the span files (list of sentence starts
-    and stops) for each debate in that dataset.
+    and stops) for each debate in that dataset. Only used to get the total
+    number of sentences in the dataset at present.
     :param dataset_name:
     :return:
     """
@@ -94,7 +95,16 @@ def get_chunked_hansard_interpolations(dataset_name: str) -> Generator[str, None
     using a span file.
     :return:
     """
-    # TODO
+    _file: str
+    for _file in get_all_hansard_files(dataset_name):
+        interpolations_file: str = _file.replace(
+            "processed_hansard_data", "interpolated_hansard_data")
+        with open(interpolations_file, "r") as f:
+            interpolations_data: str = f.read()
+            span_start: int
+            span_end: int
+            for span_start, span_end in chunk.get_sentence_spans(_file):
+                yield interpolations_data[span_start:span_end]
 
 
 def unpickle_large_file(filepath) -> Any:
