@@ -8,7 +8,7 @@ from ne_data_gathering import places
 from ne_data_gathering import people
 from ne_data_gathering import companies
 from ne_data_gathering import util
-from invoke import task
+from invoke import task, call
 from keras_character_based_ner.src.matt import alphabet_management, file_management, model_integration, dataset_hashing, train
 from keras_character_based_ner.src.config import Config
 import pickle
@@ -135,11 +135,6 @@ def ne_data_places_process(ctx):
 
 
 @task
-def char_ner_get_alphabet(ctx):
-    alphabet_management.get_alphabet()
-
-
-@task
 def char_ner_pickle_alphabet(ctx):
     alphabet_management.pickle_alphabet()
 
@@ -149,7 +144,12 @@ def char_ner_display_pickled_alphabet(ctx):
     alphabet_management.display_pickled_alphabet()
 
 
-@task
+@task(post=[call(hansard_write_total_number_of_sentences_to_file, "train"),
+            call(hansard_write_total_number_of_sentences_to_file, "dev"),
+            call(hansard_write_total_number_of_sentences_to_file, "test"),
+            call(hansard_write_total_number_of_sentences_to_file, "alphabet-sample"),
+            call(hansard_write_total_number_of_sentences_to_file, "ALL"),
+            ])
 def char_ner_rehash_datasets(ctx):
     dataset_hashing.rehash_datasets()
 

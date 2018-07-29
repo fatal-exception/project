@@ -58,7 +58,7 @@ def rehash_datasets():
 
     # bucket allocations: 4 for train, 2 for dev, 2 for test
     num_of_buckets: int = get_total_number_of_buckets()
-    debug: bool = True
+    debug: bool = False
 
     os.makedirs("hansard_gathering/data_buckets", exist_ok=True)
     Filepaths = Set[str]
