@@ -1,7 +1,7 @@
 # MIR file added to provide integration with Keras
 from keras_character_based_ner.src.matt.alphabet_management import get_pickled_alphabet
 from keras_character_based_ner.src.matt.file_management import get_all_hansard_files
-from keras_character_based_ner.src.matt.file_management import pickle_large_file
+from keras_character_based_ner.src.matt.file_management import pickle_large_file, unpickle_large_file
 from keras_character_based_ner.src.matt.file_management import read_total_number_of_hansard_sentences_from_file
 from keras_character_based_ner.src.matt.file_management import get_chunked_hansard_texts
 from keras_character_based_ner.src.matt.file_management import get_chunked_hansard_interpolations
@@ -112,11 +112,8 @@ def get_x_y(dataset_name) -> Tuple:
                 Entries in dimension 2 are label indices, index 0 is the null label
                 I guess batch_size here refers to the WHOLE batch?
     """
-    with open("keras_character_based_ner/src/x_np-{}.p".format(dataset_name), "rb") as f:
-        x_np = f.read()
-
-    with open("keras_character_based_ner/src/y_np-{}.p".format(dataset_name), "rb") as f:
-        y_np = f.read()
+    x_np = unpickle_large_file("keras_character_based_ner/src/x_np-{}.p".format(dataset_name))
+    y_np = unpickle_large_file("keras_character_based_ner/src/y_np-{}.p".format(dataset_name))
 
     return x_np, y_np
 
