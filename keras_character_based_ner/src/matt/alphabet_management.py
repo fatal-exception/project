@@ -4,7 +4,7 @@ import pickle
 
 
 def generate_alphabet():
-    return CharBasedNERAlphabet.get_alphabet_from_texts(get_texts())
+    return CharBasedNERAlphabet(get_texts())
 
 
 def pickle_alphabet():
