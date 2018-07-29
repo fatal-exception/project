@@ -25,7 +25,7 @@ def create_x(sentence_maxlen, dataset_name):
     taking them chunk by chunk, converting the letters to numbers, and
     building a list-of-lists-of-ints structure.
     Then use keras pad_sequences to ensure uniform length (len == sentence_maxlen)
-    wit-hand-side padding, and write out both the list object and pad_sequences'
+    with left-hand-side padding, and write out both the list object and pad_sequences'
     resulting numpy array to pickled files.
     :param sentence_maxlen:
     :param dataset_name:
@@ -112,10 +112,10 @@ def get_x_y(dataset_name) -> Tuple:
                 Entries in dimension 2 are label indices, index 0 is the null label
                 I guess batch_size here refers to the WHOLE batch?
     """
-    with open("keras_character_based_ner/src/matt/x_np-{}.p".format(dataset_name), "rb") as f:
+    with open("keras_character_based_ner/src/x_np-{}.p".format(dataset_name), "rb") as f:
         x_np = f.read()
 
-    with open("keras_character_based_ner/src/matt/y_np-{}.p".format(dataset_name), "rb") as f:
+    with open("keras_character_based_ner/src/y_np-{}.p".format(dataset_name), "rb") as f:
         y_np = f.read()
 
     return x_np, y_np

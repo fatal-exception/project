@@ -185,5 +185,12 @@ def test(ctx):
 
 
 @task
-def model_train_toy(ctx):
+def model_train_toy(ctx, regenerate_tensors=False):
+    if regenerate_tensors:
+        call(char_ner_create_x, "train")
+        call(char_ner_create_x, "test")
+        call(char_ner_create_x, "dev")
+        call(char_ner_create_y, "train")
+        call(char_ner_create_y, "test")
+        call(char_ner_create_y, "dev")
     train.toy_dataset_fit()
