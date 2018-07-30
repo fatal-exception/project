@@ -56,7 +56,7 @@ def create_x(sentence_maxlen, dataset_name):
     pickle_large_file(x_np, "keras_character_based_ner/src/x_np-{}.p".format(dataset_name))
 
 
-def onehot(i: int, maxlen) -> List[int]:
+def onehot(i: int, maxlen: int) -> List[int]:
     """
     Turn an integer into a onehot vector for that integer
     :param i: Int to change to onehot

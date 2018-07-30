@@ -1,4 +1,4 @@
-import numpy as np
+import numpy as np  # type: ignore
 from keras_character_based_ner.src.alphabet import CharBasedNERAlphabet
 from keras_character_based_ner.src.matt.file_management import get_texts as matt_get_texts
 from keras_character_based_ner.src.matt.model_integration import get_x_y as matt_get_x_y

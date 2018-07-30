@@ -1,10 +1,10 @@
-import tensorflow as tf
-from keras import backend as K
-from keras.optimizers import Adam
-from keras.models import Sequential
-from keras.layers.wrappers import TimeDistributed
-from keras.callbacks import EarlyStopping, ModelCheckpoint
-from keras.layers import Dense, Dropout, Embedding, LSTM, Bidirectional
+import tensorflow as tf  # type: ignore
+from keras import backend as K  # type: ignore
+from keras.optimizers import Adam  # type: ignore
+from keras.models import Sequential  # type: ignore
+from keras.layers.wrappers import TimeDistributed  # type: ignore
+from keras.callbacks import EarlyStopping, ModelCheckpoint  # type: ignore
+from keras.layers import Dense, Dropout, Embedding, LSTM, Bidirectional  # type: ignore
 
 
 class CharacterBasedLSTMModel:
