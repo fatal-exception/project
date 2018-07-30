@@ -84,7 +84,7 @@ def create_y(sentence_maxlen, dataset_name):
         total_chunks = read_total_number_of_hansard_sentences_from_file(dataset_name)
 
     y_list: List[List[List[int]]] = []
-    onehot_vector_length: int = len(get_labels())
+    onehot_vector_length: int = len(get_labels()) + 1  # list of labels plus one extra for non-NE
 
     for idx, interpolated_hansard_sentence in enumerate(
             get_chunked_hansard_interpolations(dataset_name)):
