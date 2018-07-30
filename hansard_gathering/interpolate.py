@@ -91,10 +91,13 @@ def interpolate_one(file_path: str, tokenizer, stage, all_places: Set[str],
     :param n: number to use for ngramming
     :return: None (we write out to disk)
     """
+    assert stage in file_path, "{} must be present in file_path".format(stage)
+
     print("Interpolating file {}".format(file_path))
     with open(file_path) as f:
         text: str = f.read()
         interpolated_text_list: List[int] = [0 for _ in range(len(text))]
+
 
     # ngrams for the text that capture their starting and ending indices.
     # We pad right because we take the first word of the ngram and all its possible suffixes
