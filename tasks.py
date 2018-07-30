@@ -70,6 +70,11 @@ def hansard_interpolate_all(ctx, starting_date):
 
 
 @task
+def hansard_fix_uninterpolated(ctx, starting_date):
+    interpolate.fix_uninterpolated_hansards(starting_date)
+
+
+@task
 def hansard_numerify_one_to_file(cdx, filepath):
     with open("keras_character_based_ner/src/alphabet.p", "rb") as f:
         alph = pickle.load(f)

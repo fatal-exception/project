@@ -191,3 +191,23 @@ def display_one_file_with_interpolations(file_path):
         print(line, end='')
         print(interpolation_digits[so_far:so_far + length], end='\n')
         so_far += length
+
+
+def fix_uninterpolated_hansards(starting_date):
+    """
+    Fix a bug in the Hansard interpolations - Hansards with unbalanced double quotes cannot be span_tokenized...
+    :param starting_date:
+    :return:
+    """
+    debug: bool = True
+    ne: NamedEntityData = NamedEntityData()
+    _file: str
+    for _file in list_hansard_files(starting_date, "processed"):
+        interpolated_file_path: str = _file.replace("processed_hansard_data", "interpolated_hansard_data")
+        if not os.path.exists(interpolated_file_path):
+            if debug:
+                print("Found uninterpolated file: {}".format(_file))
+            with open(_file, "w+") as f:
+                text = f.read()
+                f.write(text.replace('"', "'"))
+            interpolate_one_wrapper(_file, ne, "processed")
