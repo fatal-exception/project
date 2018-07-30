@@ -56,6 +56,17 @@ def create_x(sentence_maxlen, dataset_name):
     pickle_large_file(x_np, "keras_character_based_ner/src/x_np-{}.p".format(dataset_name))
 
 
+def onehot(i: int, maxlen) -> List[int]:
+    """
+    Turn an integer into a onehot vector for that integer
+    :param i: Int to change to onehot
+    :param maxlen: length of the onehot vector
+    """
+    onehot_vector = [0 for _ in range(maxlen)]
+    onehot_vector[i] = 1
+    return onehot_vector
+
+
 def create_y(sentence_maxlen, dataset_name):
     """"
     Create Y tensor by reading in the required spans of each chunk of the debates
@@ -72,10 +83,12 @@ def create_y(sentence_maxlen, dataset_name):
     if debug:
         total_chunks = read_total_number_of_hansard_sentences_from_file(dataset_name)
 
-    y_list: List[List[int]] = []
+    y_list: List[List[List[int]]] = []
+    onehot_vector_length: int = len(get_labels())
+
     for idx, interpolated_hansard_sentence in enumerate(
             get_chunked_hansard_interpolations(dataset_name)):
-        y_list.append([int(num) for num in interpolated_hansard_sentence])
+        y_list.append([onehot(int(num), onehot_vector_length) for num in interpolated_hansard_sentence])
         if debug:
             print("Building y, progress {} %".format((idx / total_chunks) * 100)) if idx % 10000 == 0 else None
 
