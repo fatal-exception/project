@@ -132,7 +132,7 @@ def pickle_large_file(data_structure, filepath):
     :return:
     """
     max_bytes = 2**31 - 1
-    bytes_out = pickle.dumps(data_structure)
+    bytes_out = pickle.dumps(data_structure, protocol=4)
     with open(filepath, 'wb') as f_out:
         for idx in range(0, len(bytes_out), max_bytes):
             f_out.write(bytes_out[idx:idx+max_bytes])
