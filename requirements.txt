@@ -14,6 +14,7 @@ pandas
 psycopg2-binary
 pyfakefs
 pytest
+python-digitalocean
 pyyaml
 requests
 sklearn

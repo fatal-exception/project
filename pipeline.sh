@@ -18,4 +18,5 @@
 # Split into datasets - charn-ner-rehash-dataset
 # Write out num of sentences -  inv hansard-write-total-number-of-sentences-to-file --dataset-name <DS>
 # hansard-interpolate-all --> gives y
+# fix all uninterpolated - due to sentence_span bugs
 # hansard-numerify-all --> gives x
