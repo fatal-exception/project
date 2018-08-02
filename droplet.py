@@ -44,6 +44,7 @@ def create_droplet():
         action.load()
         print(action.status)
 
+
 def get_ip_address():
     droplets = manager.get_all_droplets()
     droplet = droplets[0]

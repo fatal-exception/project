@@ -11,3 +11,4 @@ def toy_dataset_fit():
     model.fit()
     model.evaluate()
     print(model.predict_str('My name is Margaret Thatcher, and I greatly enjoy shopping at Tesco when I am in Birmingham!'))
+    model.save("keras_character_based_ner/src/toy_dataset.keras")

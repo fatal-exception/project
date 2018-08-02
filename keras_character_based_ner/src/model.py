@@ -141,3 +141,11 @@ class CharacterBasedLSTMModel:
 
     def get_custom_objects(self):
         return {'non_null_label_accuracy': self.non_null_label_accuracy}
+
+    def save(self, filepath):
+        """
+        MIR Added method to save model to disk
+        :param filepath: file path under which to save
+        :return:
+        """
+        self.model.save(filepath)
