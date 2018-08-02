@@ -120,7 +120,7 @@ def unpickle_large_file(filepath) -> Any:
     with open(filepath, 'rb') as f_in:
         for _ in range(0, input_size, max_bytes):
             bytes_in += f_in.read(max_bytes)
-    return pickle.loads(bytes_in)
+    return pickle.loads(bytes_in)  # may need protocol=4 ?
 
 
 def pickle_large_file(data_structure, filepath):

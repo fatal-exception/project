@@ -103,3 +103,6 @@ hansard_gathering/data_buckets_archive
 # pickled files for tensors
 x_*.p
 y_*.p
+
+# env file for passwords
+.env

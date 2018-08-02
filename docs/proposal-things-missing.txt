@@ -1,0 +1,2 @@
+As well as eval of just char-ner, need eval of system as a whole
+More detailed risk assessment would be good

@@ -14,6 +14,8 @@ def main():
     if len(my_droplets) == 0:
         create_droplet()
 
+    get_ip_address()
+
 
 def create_key():
     user_ssh_key = open('/Users/mralph/.ssh/bbk_id_rsa.pub').read()
@@ -41,9 +43,6 @@ def create_droplet():
     for action in actions:
         action.load()
         print(action.status)
-
-    get_ip_address()
-
 
 def get_ip_address():
     droplets = manager.get_all_droplets()
