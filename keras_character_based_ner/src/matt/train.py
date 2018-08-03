@@ -17,6 +17,7 @@ def toy_dataset_fit():
             :return:
             """
             return matt_get_x_y(dataset_name, "toy")
+
     dataset = ToyCharBasedNERDataset()
     model = CharacterBasedLSTMModel(config, dataset)
 
@@ -27,7 +28,13 @@ def toy_dataset_fit():
 
 
 def mini_dataset_fit():
-    config = Config()
+    class MiniConfig(Config):
+        """
+        Override Config with something suitable for quick testing - i.e. only a few epochs
+        """
+        max_epochs = 2
+
+    config = MiniConfig()
 
     class MiniCharBasedNERDataset(CharBasedNERDataset):
         def get_x_y(self, sentence_maxlen, dataset_name='all'):
