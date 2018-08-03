@@ -4,6 +4,19 @@ from keras_character_based_ner.src.model import CharacterBasedLSTMModel
 from keras_character_based_ner.src.matt.model_integration import get_x_y as matt_get_x_y
 
 
+class SavedCharacterBasedLSTMModel(CharacterBasedLSTMModel):
+    def __init__(self, config, dataset):
+        super().__init__(config, dataset)
+
+    def save(self, filepath):
+        """
+        MIR Added method to save model to disk
+        :param filepath: file path under which to save
+        :return:
+        """
+        self.model.save(filepath)
+
+
 def toy_dataset_fit():
     config = Config()
 
@@ -19,7 +32,7 @@ def toy_dataset_fit():
             return matt_get_x_y(dataset_name, "toy")
 
     dataset = ToyCharBasedNERDataset()
-    model = CharacterBasedLSTMModel(config, dataset)
+    model = SavedCharacterBasedLSTMModel(config, dataset)
 
     model.fit()
     model.evaluate()
@@ -48,7 +61,7 @@ def mini_dataset_fit():
             return matt_get_x_y(dataset_name, "mini")
 
     dataset = MiniCharBasedNERDataset()
-    model = CharacterBasedLSTMModel(config, dataset)
+    model = SavedCharacterBasedLSTMModel(config, dataset)
 
     model.fit()
     model.evaluate()
