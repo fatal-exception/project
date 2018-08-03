@@ -20,3 +20,7 @@
 # hansard-interpolate-all --> gives y
 # fix all uninterpolated - due to sentence_span bugs
 # hansard-numerify-all --> gives x
+
+# char-ner-create-x - test,dev,train --> makes toy dataset
+# char-ner-create-y - test,dev,train --> makes toy dataset
+# model-minify --> make smaller copies of toy dataset
