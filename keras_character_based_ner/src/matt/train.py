@@ -42,10 +42,11 @@ def toy_dataset_fit():
     model = SavedCharacterBasedLSTMModel(config, dataset)
 
     history = model.fit()
+    history_dict = history.history
     model.evaluate()
     print(model.predict_str('My name is Margaret Thatcher, and I greatly enjoy shopping at Tesco when I am in Birmingham!'))
     model.save("keras_character_based_ner/src/toy_dataset.keras.h5")
-    pickle_large_file(history, "keras_character_based_ner/src/toy_dataset.history.p")
+    pickle_large_file(history_dict, "keras_character_based_ner/src/toy_dataset.history.p")
 
 
 def mini_dataset_fit():
@@ -72,7 +73,8 @@ def mini_dataset_fit():
     model = SavedCharacterBasedLSTMModel(config, dataset)
 
     history = model.fit()
+    history_dict = history.history
     model.evaluate()
     print(model.predict_str('My name is Margaret Thatcher, and I greatly enjoy shopping at Tesco when I am in Birmingham!'))
     model.save("keras_character_based_ner/src/mini_dataset.keras.h5")
-    pickle_large_file(history, "keras_character_based_ner/src/mini_dataset.history.p")
+    pickle_large_file(history_dict, "keras_character_based_ner/src/mini_dataset.history.p")
