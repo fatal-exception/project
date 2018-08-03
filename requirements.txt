@@ -2,6 +2,7 @@ bs4
 bleach
 django
 gunicorn
+h5py
 invoke
 ipython
 jupyter
