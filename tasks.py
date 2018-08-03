@@ -204,3 +204,7 @@ def model_train_toy(ctx, regenerate_tensors=False):
         call(char_ner_create_y, "test")
         call(char_ner_create_y, "dev")
     train.toy_dataset_fit()
+
+@task
+def model_train_mini(ctx):
+    train.mini_dataset_fit()

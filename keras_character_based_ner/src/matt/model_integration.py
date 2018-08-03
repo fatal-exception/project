@@ -10,6 +10,13 @@ from hansard_gathering import numerify, chunk
 from statistics import median
 
 
+class NoDatasetSizeFoundException(Exception):
+    """
+    Exception to raise if use asks for a dataset size that does not exist
+    """
+    pass
+
+
 def get_labels():
     """
     Return list of different labels used for NEs in the dataset.
@@ -116,7 +123,7 @@ def get_median_sentence_length(dataset_name) -> float:
     return median(sentence_lengths)
 
 
-def get_x_y(dataset_name) -> Tuple:
+def get_x_y(dataset_name, dataset_size="toy") -> Tuple:
     """
     Returns a Python tuple x and y, where x and y are Numpy arrays!
                 x: Array of shape (batch_size, sentence_maxlen).
@@ -125,8 +132,14 @@ def get_x_y(dataset_name) -> Tuple:
                 Entries in dimension 2 are label indices, index 0 is the null label
                 I guess batch_size here refers to the WHOLE batch?
     """
-    x_np = unpickle_large_file("keras_character_based_ner/src/x_np-{}.p".format(dataset_name))
-    y_np = unpickle_large_file("keras_character_based_ner/src/y_np-{}.p".format(dataset_name))
+    if dataset_size == "toy":
+        x_np = unpickle_large_file("keras_character_based_ner/src/x_np-{}.p".format(dataset_name))
+        y_np = unpickle_large_file("keras_character_based_ner/src/y_np-{}.p".format(dataset_name))
+    elif dataset_size == "mini":
+        x_np = unpickle_large_file("keras_character_based_ner/src/x_np-{}-mini.p".format(dataset_name))
+        y_np = unpickle_large_file("keras_character_based_ner/src/y_np-{}-mini.p".format(dataset_name))
+    else:
+        raise NoDatasetSizeFoundException()
 
     return x_np, y_np
 
