@@ -6,7 +6,7 @@ from keras_character_based_ner.src.config import Config
 from keras.preprocessing.sequence import pad_sequences  # type: ignore
 from typing import List
 
-MAX_BATCH: int = 400000
+MAX_BATCH: int = 4000
 
 
 def minify(path_to_list_file):
