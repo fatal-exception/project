@@ -106,3 +106,6 @@ y_*.p
 
 # env file for passwords
 .env
+
+# h5 for saved out models from keras
+*.h5

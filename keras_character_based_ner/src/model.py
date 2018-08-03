@@ -59,7 +59,8 @@ class CharacterBasedLSTMModel:
                                        verbose=1,
                                        save_best_only=True)
 
-        self.model.fit(x_train,
+        # MIR add 'return' so we have access to the training accuracy history
+        return self.model.fit(x_train,
                        y_train,
                        batch_size=self.config.batch_size,
                        epochs=self.config.max_epochs,
@@ -77,7 +78,8 @@ class CharacterBasedLSTMModel:
         early_stopping = EarlyStopping(patience=self.config.early_stopping,
                                        verbose=1)
 
-        self.model.fit_generator(train_data_generator,
+        # MIR add 'return' so we have access to the training accuracy history
+        return self.model.fit_generator(train_data_generator,
                                  steps_per_epoch=self.dataset.num_train_docs / self.config.batch_size,
                                  epochs=self.config.max_epochs,
                                  validation_data=dev_data_generator,

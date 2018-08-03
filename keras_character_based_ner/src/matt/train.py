@@ -2,6 +2,7 @@ from keras_character_based_ner.src.config import Config
 from keras_character_based_ner.src.dataset import CharBasedNERDataset
 from keras_character_based_ner.src.model import CharacterBasedLSTMModel
 from keras_character_based_ner.src.matt.model_integration import get_x_y as matt_get_x_y
+from keras_character_based_ner.src.matt.file_management import pickle_large_file
 
 
 class SavedCharacterBasedLSTMModel(CharacterBasedLSTMModel):
@@ -14,11 +15,17 @@ class SavedCharacterBasedLSTMModel(CharacterBasedLSTMModel):
         :param filepath: file path under which to save
         :return:
         """
-        self.model.save(filepath)
+        return self.model.save(filepath)
 
 
 def toy_dataset_fit():
-    config = Config()
+    class ToyConfig(Config):
+        """
+        Override Config with something suitable for toy testing - i.e. only a few epochs
+        """
+        max_epochs = 4
+
+    config = ToyConfig()
 
     class ToyCharBasedNERDataset(CharBasedNERDataset):
         def get_x_y(self, sentence_maxlen, dataset_name='all'):
@@ -34,10 +41,11 @@ def toy_dataset_fit():
     dataset = ToyCharBasedNERDataset()
     model = SavedCharacterBasedLSTMModel(config, dataset)
 
-    model.fit()
+    history = model.fit()
     model.evaluate()
     print(model.predict_str('My name is Margaret Thatcher, and I greatly enjoy shopping at Tesco when I am in Birmingham!'))
-    model.save("keras_character_based_ner/src/toy_dataset.keras")
+    model.save("keras_character_based_ner/src/toy_dataset.keras.h5")
+    pickle_large_file(history, "keras_character_based_ner/src/toy_dataset.history.p")
 
 
 def mini_dataset_fit():
@@ -63,7 +71,8 @@ def mini_dataset_fit():
     dataset = MiniCharBasedNERDataset()
     model = SavedCharacterBasedLSTMModel(config, dataset)
 
-    model.fit()
+    history = model.fit()
     model.evaluate()
     print(model.predict_str('My name is Margaret Thatcher, and I greatly enjoy shopping at Tesco when I am in Birmingham!'))
-    model.save("keras_character_based_ner/src/mini_dataset.keras")
+    model.save("keras_character_based_ner/src/mini_dataset.keras.h5")
+    pickle_large_file(history, "keras_character_based_ner/src/mini_dataset.history.p")
