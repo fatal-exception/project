@@ -9,7 +9,7 @@ from ne_data_gathering import people
 from ne_data_gathering import companies
 from ne_data_gathering import util
 from invoke import task, call
-from keras_character_based_ner.src.matt import alphabet_management, file_management, model_integration, dataset_hashing, train, minify_dataset
+from keras_character_based_ner.src.matt import alphabet_management, file_management, model_integration, dataset_hashing, train, minify_dataset, history
 from keras_character_based_ner.src.config import Config
 import pickle
 
@@ -205,6 +205,12 @@ def model_train_toy(ctx, regenerate_tensors=False):
         call(char_ner_create_y, "dev")
     train.toy_dataset_fit()
 
+
 @task
 def model_train_mini(ctx):
     train.mini_dataset_fit()
+
+
+@task
+def model_history_mini(ctx):
+    history.graph_model_history("keras_character_based_ner/src/mini_dataset.history.p", "mini_graph.png")
