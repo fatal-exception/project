@@ -36,13 +36,13 @@ def dbpedia_do_sparql_query(sparql_query: str) -> Dict[Any, Any]:
     sparql = SPARQLWrapper("http://dbpedia.org/sparql")
     sparql.setQuery(sparql_query)
     sparql.setReturnFormat(JSON)
-    results: Dict[Any, Any] = sparql.query().convert()
+    results = sparql.query().convert()
     return results
 
 
 def process_conll_file(filepath, tag) -> Generator[str, None, None]:
     with open(filepath) as f:
-        lines: List[str] = f.readlines()
+        lines = f.readlines()
         for line in lines:
             contents = line.split(" ")
             if contents[0] == tag:
@@ -60,7 +60,7 @@ def remove_outer_brackets(_line: str) -> str:
 
 
 def all_stop_words(line, stop_words: Set[str]) -> bool:
-    line_words: List[str] = word_tokenize(line)
+    line_words = word_tokenize(line)
     if all(word in stop_words for word in line_words):
         return True
     else:
@@ -79,7 +79,7 @@ def dbpedia_post_processing(src_list_file, dest_list_file):
     processed_list_file = "ne_data_gathering/{}".format(dest_list_file)
 
     with open(src_list_file, 'r+', encoding='utf-8') as f:
-        lines: List[str] = sorted(set(f.readlines()))
+        lines = sorted(set(f.readlines()))
 
     for line in lines:
         # Remove double quotes

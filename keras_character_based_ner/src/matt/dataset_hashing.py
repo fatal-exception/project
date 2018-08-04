@@ -57,13 +57,11 @@ def rehash_datasets():
     archive_old_bucket_allocations()
 
     # bucket allocations: 4 for train, 2 for dev, 2 for test
-    num_of_buckets: int = get_total_number_of_buckets()
-    debug: bool = False
+    num_of_buckets = get_total_number_of_buckets()
+    debug = False
 
     os.makedirs("hansard_gathering/data_buckets", exist_ok=True)
-    Filepaths = Set[str]
-    BucketNumber = int
-    files_by_bucket: Dict[BucketNumber, Filepaths] = defaultdict(lambda: set())
+    files_by_bucket = defaultdict(lambda: set())
 
     file_list = sorted(glob.glob(
         "hansard_gathering/processed_hansard_data/**/*.txt", recursive=True))
@@ -71,8 +69,8 @@ def rehash_datasets():
     file_list = list(filter(lambda elem: not elem.endswith("-spans.txt"), file_list))
 
     for _file in file_list:
-        date_filename_path: str = "/".join(_file.split("/")[2:])
-        hash_val: int = hash(date_filename_path)
+        date_filename_path = "/".join(_file.split("/")[2:])
+        hash_val = hash(date_filename_path)
         bucket_num = hash_val % num_of_buckets
         files_by_bucket[bucket_num].add(_file)
         print("hashed {} into bucket {}".format(_file, bucket_num)) if debug else None

@@ -6,7 +6,7 @@ from keras_character_based_ner.src.config import Config
 from keras.preprocessing.sequence import pad_sequences  # type: ignore
 from typing import List
 
-MAX_BATCH: int = 4000
+MAX_BATCH = 4000
 
 
 def minify(path_to_list_file):
@@ -21,7 +21,7 @@ def minify(path_to_list_file):
 
     print("Minifying {}".format(path_to_list_file))
 
-    list_obj: List = unpickle_large_file(path_to_list_file)
+    list_obj = unpickle_large_file(path_to_list_file)
     truncated_list_obj = list_obj[:MAX_BATCH]
     return pad_sequences(truncated_list_obj, maxlen=Config.sentence_max_length)
 
@@ -31,7 +31,7 @@ def minify_all():
     Make a mini-version of all tensors in the 'toy' dataset
     :return:
     """
-    files: List[str] = ["x_list-dev.p", "x_list-test.p", "x_list-train.p",
+    files = ["x_list-dev.p", "x_list-test.p", "x_list-train.p",
                         "y_list-dev.p", "y_list-test.p", "y_list-train.p"]
     for _file in files:
         mini_data = minify("keras_character_based_ner/src/{}".format(_file))

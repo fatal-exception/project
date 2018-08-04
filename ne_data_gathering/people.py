@@ -64,7 +64,7 @@ def dbpedia_sparql_extract_people(people_list_file):
         os.unlink(people_list_file)
     # total_people = dbpedia_sparql_get_people_count()
     total_people = 2109301
-    for i in range(0, total_people, 10_000):
+    for i in range(0, total_people, 10000):
         people_list = []
         offset = str(i)
         print("We're at {sofar} out of {total}".format(sofar=offset, total=total_people))

@@ -22,8 +22,8 @@ def numerify_one_to_file(filepath, alphabet, maxlen):
     with open(filepath, "r") as f:
         text = f.read()
 
-    numerified_text_list: List[int] = numerify_text(text, alphabet, maxlen)
-    numerified_text: str = ",".join([str(elem) for elem in numerified_text_list])
+    numerified_text_list = numerify_text(text, alphabet, maxlen)
+    numerified_text = ",".join([str(elem) for elem in numerified_text_list])
 
     os.makedirs(os.path.dirname(dest_filepath), exist_ok=True)
 
@@ -38,12 +38,12 @@ def numerify_text(text, alphabet, maxlen) -> List[int]:
     :param alphabet:
     :return:
     """
-    numerified_text_list: List[int] = []
+    numerified_text_list = []
 
     for idx, char in enumerate(text):
         if idx > maxlen:
             break
-        index: int = alphabet.get_char_index(char)
+        index = alphabet.get_char_index(char)
         numerified_text_list.append(index)
 
     return numerified_text_list

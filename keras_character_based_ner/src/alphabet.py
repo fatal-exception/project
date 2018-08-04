@@ -16,7 +16,7 @@ class CharBasedNERAlphabet:
     def get_alphabet_from_texts(texts):
         all_characters = set()
 
-        texts: List[str]  # MIR
+        texts
         for t in texts:
             text_characters = set(t)
             all_characters |= text_characters  # union

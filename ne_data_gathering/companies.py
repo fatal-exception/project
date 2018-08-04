@@ -99,7 +99,7 @@ def dbpedia_sparql_get_company_count() -> int:
             ?resource  rdf:type  dbo:Organisation .
     }
     """
-    res: Dict[Any, Any] = util.dbpedia_do_sparql_query(sparql_query)
+    res = util.dbpedia_do_sparql_query(sparql_query)
     return int(res['results']['bindings'][0]['callret-0']['value'])
 
 
@@ -111,7 +111,7 @@ def dbpedia_sparql_extract_companies(company_list_file):
     if os.path.exists(company_list_file):
         os.unlink(company_list_file)
     total = dbpedia_sparql_get_company_count()
-    for i in range(0, total, 10_000):
+    for i in range(0, total, 10000):
         result_list = []
         offset = str(i)
         print("We're at {sofar} out of {total}".format(sofar=offset, total=total))

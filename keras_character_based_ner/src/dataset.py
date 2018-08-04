@@ -12,12 +12,12 @@ class CharBasedNERDataset:
     BASE_LABELS = [NULL_LABEL]
 
     def __init__(self):
-        self.texts: List[str] = self.get_texts()
-        self.alphabet: CharBasedNERAlphabet = CharBasedNERAlphabet(self.texts)
-        self.labels: List[int] = self.BASE_LABELS + self.get_labels()
-        self.num_labels: int = len(self.labels)
-        self.num_to_label: dict = {}
-        self.label_to_num: dict = {}
+        self.texts = self.get_texts()
+        self.alphabet = CharBasedNERAlphabet(self.texts)
+        self.labels = self.BASE_LABELS + self.get_labels()
+        self.num_labels = len(self.labels)
+        self.num_to_label = {}
+        self.label_to_num = {}
 
         self.init_mappings()
 
@@ -59,9 +59,7 @@ class CharBasedNERDataset:
         return matt_get_labels()
 
     def str_to_x(self, s: str, maxlen: int):
-        x: np.ndarray = np.zeros(maxlen)
-        c: int
-        char: str
+        x = np.zeros(maxlen)
         for c, char in enumerate(s[:maxlen]):
             x[c] = self.alphabet.get_char_index(char)
         # -1 means infer the length
