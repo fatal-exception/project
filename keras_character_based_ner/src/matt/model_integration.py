@@ -39,16 +39,16 @@ def create_x(sentence_maxlen, dataset_name):
     :return:
     """
     from keras.preprocessing.sequence import pad_sequences  # type: ignore
-    debug: bool = True
+    debug = True
 
-    total_chunks: int = 0
+    total_chunks = 0
     if debug:
         total_chunks = read_total_number_of_hansard_sentences_from_file(dataset_name)
     alphabet = get_pickled_alphabet()
 
-    x_list: List[List[int]] = []
+    x_list = []
     for idx, hansard_sentence in enumerate(get_chunked_hansard_texts(dataset_name)):
-        numbers_list: List[int] = numerify.numerify_text(hansard_sentence, alphabet, sentence_maxlen)
+        numbers_list = numerify.numerify_text(hansard_sentence, alphabet, sentence_maxlen)
         x_list.append(numbers_list)
         if debug:
             print("Building x, progress {} %".format((idx / total_chunks) * 100)) if idx % 10000 == 0 else None
@@ -84,14 +84,14 @@ def create_y(sentence_maxlen, dataset_name):
     """
     from keras.preprocessing.sequence import pad_sequences  # type: ignore
 
-    debug: bool = True
+    debug = True
 
-    total_chunks: int = 0
+    total_chunks = 0
     if debug:
         total_chunks = read_total_number_of_hansard_sentences_from_file(dataset_name)
 
-    y_list: List[List[List[int]]] = []
-    onehot_vector_length: int = len(get_labels()) + 1  # list of labels plus one extra for non-NE
+    y_list = []
+    onehot_vector_length = len(get_labels()) + 1  # list of labels plus one extra for non-NE
 
     for idx, interpolated_hansard_sentence in enumerate(
             get_chunked_hansard_interpolations(dataset_name)):
@@ -115,7 +115,7 @@ def get_median_sentence_length(dataset_name) -> float:
     :param dataset_name:
     :return:
     """
-    sentence_lengths: List[int] = []
+    sentence_lengths = []
     for _file in get_all_hansard_files(dataset_name):
         for span_start, span_end in chunk.get_sentence_spans(_file):
             span_len = span_end - span_start

@@ -43,7 +43,7 @@ def dbpedia_sparql_extract_places(list_file):
     if os.path.exists(list_file):
         os.unlink(list_file)
     total = dbpedia_sparql_get_place_count()
-    for i in range(0, total, 10_000):
+    for i in range(0, total, 10000):
         result_list = []
         offset = str(i)
         print("We're at {sofar} out of {total}".format(sofar=offset, total=total))

@@ -15,20 +15,17 @@ import os
 
 class NamedEntityData:
     def __init__(self):
-        self.places: Set[str]
-        self.companies: Set[str]
-        self.people: Set[str]
         self.places, self.companies, self.people = self.read_in_all_ne_data()
 
     @staticmethod
     def read_in_all_ne_data() -> Tuple[Set[str], Set[str], Set[str]]:
         print("Gathering all Named Entity data")
         with open("ne_data_gathering/processed_ne_data/places/ALL.txt") as f:
-            all_places: List[str] = [line.rstrip() for line in f]
+            all_places = [line.rstrip() for line in f]
         with open("ne_data_gathering/processed_ne_data/companies/ALL.txt") as f:
-            all_companies: List[str] = [line.rstrip() for line in f]
+            all_companies = [line.rstrip() for line in f]
         with open("ne_data_gathering/processed_ne_data/people/ALL.txt") as f:
-            all_people: List[str] = [line.rstrip() for line in f]
+            all_people = [line.rstrip() for line in f]
 
         return set(all_places), set(all_companies), set(all_people)
 
@@ -95,19 +92,19 @@ def interpolate_one(file_path: str, tokenizer, stage, all_places: Set[str],
 
     print("Interpolating file {}".format(file_path))
     with open(file_path) as f:
-        text: str = f.read()
-        interpolated_text_list: List[int] = [0 for _ in range(len(text))]
+        text = f.read()
+        interpolated_text_list = [0 for _ in range(len(text))]
 
 
     # ngrams for the text that capture their starting and ending indices.
     # We pad right because we take the first word of the ngram and all its possible suffixes
     # when looking for NEs.
-    text_span_ngrams: Tuple = ngrams(tokenizer.span_tokenize(text), n, pad_right=True)
+    text_span_ngrams = ngrams(tokenizer.span_tokenize(text), n, pad_right=True)
 
     # Returns ngrams of text_spans e.g. [((0, 1), (2, 6), (7, 15), (16, 19)), ...]
 
     # To solve Overlapping problem, we need to know when the end of the most recent match is
-    recentest_match_end: int = 0
+    recentest_match_end = 0
 
     # For each ngram set, we want to try all possible suffixes against the NE lists,
     # from longest to shortest so we don't miss matches.
@@ -115,9 +112,7 @@ def interpolate_one(file_path: str, tokenizer, stage, all_places: Set[str],
     for ngram_span_window in text_span_ngrams:
         if overlaps(ngram_span_window, recentest_match_end):
             continue
-        match_start: int
-        match_end: int
-        ne_type: int  # 1 = LOC, 2 = ORG, 3 = PER, 0 = null
+        ne_type = 0  # 1 = LOC, 2 = ORG, 3 = PER, 0 = null
         match_start, match_end, ne_type = ngram_span_search_named_entities(
             ngram_span_window, text, all_places, all_companies, all_people)
         if ne_type is not 0:
@@ -128,7 +123,7 @@ def interpolate_one(file_path: str, tokenizer, stage, all_places: Set[str],
             interpolated_text_list[match_start:match_end] = [ne_type for _ in range(match_len)]
 
     interpolated_file_path = file_path.replace("{}_hansard_data".format(stage), "interpolated_hansard_data")
-    interpolated_text: str = "".join([str(elem) for elem in interpolated_text_list]).rstrip()
+    interpolated_text = "".join([str(elem) for elem in interpolated_text_list]).rstrip()
     print("Writing out to {}".format(interpolated_file_path))
     os.makedirs(os.path.dirname(interpolated_file_path), exist_ok=True)
     with open(interpolated_file_path, "w") as f:
@@ -151,7 +146,7 @@ def list_hansard_files(starting_date, stage) -> Generator[str, None, None]:
     stage is chunked or processed
     """
     print("Listing {} Hansard files...".format(stage))
-    files: List[str] = sorted(glob.glob("hansard_gathering/{}_hansard_data/**/*.txt".format(stage), recursive=True))
+    files = sorted(glob.glob("hansard_gathering/{}_hansard_data/**/*.txt".format(stage), recursive=True))
 
     # Don't interpolate our spans (chunking) files
     files = list(filter(lambda elem: not elem.endswith("-spans.txt"), files))
@@ -199,11 +194,10 @@ def fix_uninterpolated_hansards(starting_date):
     :param starting_date:
     :return:
     """
-    debug: bool = True
-    ne: NamedEntityData = NamedEntityData()
-    _file: str
+    debug = True
+    ne = NamedEntityData()
     for _file in list_hansard_files(starting_date, "processed"):
-        interpolated_file_path: str = _file.replace("processed_hansard_data", "interpolated_hansard_data")
+        interpolated_file_path = _file.replace("processed_hansard_data", "interpolated_hansard_data")
         if not os.path.exists(interpolated_file_path):
             if debug:
                 print("Found uninterpolated file: {}".format(_file))

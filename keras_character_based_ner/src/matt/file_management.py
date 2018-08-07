@@ -12,7 +12,7 @@ def get_all_hansard_files(dataset_name: str) -> Generator[str, None, None]:
     :return:
     """
     print("Listing Hansard debate files from dataset {}...".format(dataset_name))
-    bucket_numbers: List[int] = get_bucket_numbers_for_dataset_name(dataset_name)
+    bucket_numbers = get_bucket_numbers_for_dataset_name(dataset_name)
     file_list = []
     for bucket_number in bucket_numbers:
         with open("hansard_gathering/data_buckets/{}.txt".format(bucket_number)) as f:
@@ -30,7 +30,7 @@ def get_hansard_span_files(dataset_name: str) -> Generator[str, None, None]:
     :return:
     """
     print("Listing Hansard span files from dataset {}...".format(dataset_name))
-    bucket_numbers: List[int] = get_bucket_numbers_for_dataset_name(dataset_name)
+    bucket_numbers = get_bucket_numbers_for_dataset_name(dataset_name)
     file_list = []
     for bucket_number in bucket_numbers:
         with open("hansard_gathering/data_buckets/{}.txt".format(bucket_number)) as f:
@@ -49,7 +49,7 @@ def file_lines(fname: str) -> int:
     # with thanks to
     # https://stackoverflow.com/questions/845058/how-to-get-line-count-cheaply-in-python
     with open(fname) as f:
-        i: int = 0
+        i = 0
         for i, l in enumerate(f):
             pass
     return i + 1
@@ -66,7 +66,7 @@ def write_total_number_of_hansard_sentences_to_file(dataset_name: str):
     :return:
     """
     # Run on 25 July 2018 this was 182582013
-    sentences_total: int = 0
+    sentences_total = 0
     for span_file in get_hansard_span_files(dataset_name):
         sentences_total += file_lines(span_file)
 
@@ -95,14 +95,11 @@ def get_chunked_hansard_interpolations(dataset_name: str) -> Generator[str, None
     using a span file.
     :return:
     """
-    _file: str
     for _file in get_all_hansard_files(dataset_name):
-        interpolations_file: str = _file.replace(
+        interpolations_file = _file.replace(
             "processed_hansard_data", "interpolated_hansard_data")
         with open(interpolations_file, "r") as f:
-            interpolations_data: str = f.read()
-            span_start: int
-            span_end: int
+            interpolations_data = f.read()
             for span_start, span_end in chunk.get_sentence_spans(_file):
                 yield interpolations_data[span_start:span_end]
 
@@ -159,7 +156,5 @@ def get_chunked_hansard_texts(dataset_name: str) -> Generator[str, None, None]:
     for _file in get_all_hansard_files(dataset_name):
         with open(_file) as f:
             debate = f.read()
-            chunk_start: int
-            chunk_end: int
         for chunk_start, chunk_end in chunk.get_sentence_spans(_file):
             yield debate[chunk_start:chunk_end]
