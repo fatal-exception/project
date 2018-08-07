@@ -12,7 +12,7 @@ def graph_model_history(filepath, dest_file_name):
     import matplotlib
     matplotlib.use('TkAgg')
     import matplotlib.pyplot as plt
-    history_dict: Dict = unpickle_large_file(filepath)
+    history_dict = unpickle_large_file(filepath)
 
     cat_acc = history_dict['categorical_accuracy']
     non_null_label_acc = history_dict['non_null_label_accuracy']
