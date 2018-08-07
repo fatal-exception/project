@@ -54,13 +54,13 @@ def create_x(sentence_maxlen, dataset_name):
             print("Building x, progress {} %".format((idx / total_chunks) * 100)) if idx % 10000 == 0 else None
 
     # Write X so we don't have to regenerate every time...
-    pickle_large_file(x_list, "keras_character_based_ner/src/x_list-{}.p".format(dataset_name))
+    pickle_large_file(x_list, "keras_character_based_ner/src/x_list-{}-toy.p".format(dataset_name))
 
     # pad_sequences takes care of enforcing sentence_maxlen for us
     x_np = pad_sequences(x_list, maxlen=sentence_maxlen)
 
     # Write X so we don't have to regenerate every time...
-    pickle_large_file(x_np, "keras_character_based_ner/src/x_np-{}.p".format(dataset_name))
+    pickle_large_file(x_np, "keras_character_based_ner/src/x_np-{}-toy.p".format(dataset_name))
 
 
 def onehot(i: int, maxlen: int) -> List[int]:
@@ -100,13 +100,13 @@ def create_y(sentence_maxlen, dataset_name):
             print("Building y, progress {} %".format((idx / total_chunks) * 100)) if idx % 10000 == 0 else None
 
     # Write Y so we don't have to regenerate every time...
-    pickle_large_file(y_list, "keras_character_based_ner/src/y_list-{}.p".format(dataset_name))
+    pickle_large_file(y_list, "keras_character_based_ner/src/y_list-{}-toy.p".format(dataset_name))
 
     # pad_sequences takes care of enforcing sentence_maxlen for us
     y_np = pad_sequences(y_list, maxlen=sentence_maxlen)
 
     # Write X so we don't have to regenerate every time...
-    pickle_large_file(y_np, "keras_character_based_ner/src/y_np-{}.p".format(dataset_name))
+    pickle_large_file(y_np, "keras_character_based_ner/src/y_np-{}-toy.p".format(dataset_name))
 
 
 def get_median_sentence_length(dataset_name) -> float:
@@ -133,8 +133,8 @@ def get_x_y(dataset_name, dataset_size="toy") -> Tuple:
                 I guess batch_size here refers to the WHOLE batch?
     """
     if dataset_size == "toy":
-        x_np = unpickle_large_file("keras_character_based_ner/src/x_np-{}.p".format(dataset_name))
-        y_np = unpickle_large_file("keras_character_based_ner/src/y_np-{}.p".format(dataset_name))
+        x_np = unpickle_large_file("keras_character_based_ner/src/x_np-{}-toy.p".format(dataset_name))
+        y_np = unpickle_large_file("keras_character_based_ner/src/y_np-{}-toy.p".format(dataset_name))
     elif dataset_size == "mini":
         x_np = unpickle_large_file("keras_character_based_ner/src/x_np-{}-mini.p".format(dataset_name))
         y_np = unpickle_large_file("keras_character_based_ner/src/y_np-{}-mini.p".format(dataset_name))

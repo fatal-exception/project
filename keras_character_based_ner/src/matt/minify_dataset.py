@@ -31,9 +31,9 @@ def minify_all():
     Make a mini-version of all tensors in the 'toy' dataset
     :return:
     """
-    files: List[str] = ["x_list-dev.p", "x_list-test.p", "x_list-train.p",
-                        "y_list-dev.p", "y_list-test.p", "y_list-train.p"]
+    files: List[str] = ["x_list-dev-toy.p", "x_list-test-toy.p", "x_list-train-toy.p",
+                        "y_list-dev-toy.p", "y_list-test-toy.p", "y_list-train-toy.p"]
     for _file in files:
         mini_data = minify("keras_character_based_ner/src/{}".format(_file))
-        mini_file_name = _file.replace(".p", "-mini.p").replace("_list", "_np")
+        mini_file_name = _file.replace("-toy.p", "-mini.p").replace("_list", "_np")
         pickle_large_file(mini_data, "keras_character_based_ner/src/{}".format(mini_file_name))
