@@ -18,10 +18,6 @@ def unxml_hansard_document(document_text):
     return notags
 
 
-def interpolate_nes(document_text):
-    pass
-
-
 def process_hansard_file(file_path):
     """
     file_path e.g. "hansard_gathering/raw_hansard_data/1919-02-04/MyDebate.xml"

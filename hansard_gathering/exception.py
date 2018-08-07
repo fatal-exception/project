@@ -1,2 +1,0 @@
-class SiblingNotFoundException(Exception):
-    pass
