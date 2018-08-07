@@ -160,13 +160,13 @@ def char_ner_rehash_datasets(ctx):
 
 
 @task
-def char_ner_create_x(ctx, dataset_name):
-    model_integration.create_x(Config.sentence_max_length, dataset_name)
+def char_ner_create_x_toy(ctx, dataset_name):
+    model_integration.create_x_toy(Config.sentence_max_length, dataset_name)
 
 
 @task
-def char_ner_create_y(ctx, dataset_name):
-    model_integration.create_y(Config.sentence_max_length, dataset_name)
+def char_ner_create_y_toy(ctx, dataset_name):
+    model_integration.create_y_toy(Config.sentence_max_length, dataset_name)
 
 
 @task

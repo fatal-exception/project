@@ -26,7 +26,7 @@ def get_labels():
     return list(range(1, 4))
 
 
-def create_x(sentence_maxlen, dataset_name):
+def create_x_toy(sentence_maxlen, dataset_name):
     """
     Create X tensor by reading in all debates in the current dataset,
     taking them chunk by chunk, converting the letters to numbers, and
@@ -74,7 +74,7 @@ def onehot(i: int, maxlen: int) -> List[int]:
     return onehot_vector
 
 
-def create_y(sentence_maxlen, dataset_name):
+def create_y_toy(sentence_maxlen, dataset_name):
     """"
     Create Y tensor by reading in the required spans of each chunk of the debates
     in the current dataset, and returning the equivalent list of NE numbers

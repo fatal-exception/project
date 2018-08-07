@@ -105,7 +105,6 @@ def get_sentence_spans(filepath) -> Generator[Tuple[int, int], None, None]:
     :return:
     """
     debug = False
-
     with open("{}.txt".format(filepath.replace(".txt", "-spans"))) as f:
         sent_spans = f.read()
 
