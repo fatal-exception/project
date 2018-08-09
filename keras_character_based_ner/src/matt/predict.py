@@ -6,6 +6,38 @@ from typing import Callable, Dict
 from keras_character_based_ner.src.alphabet import CharBasedNERAlphabet
 
 
+class LoadedModel:
+    """
+    A CharacterBasedLSTMModel keras model loaded in off disk
+    """
+    def __init__(self, model_path):
+        custom_objects: Dict[str, Callable] = {
+            'non_null_label_accuracy': CharacterBasedLSTMModel.non_null_label_accuracy
+        }
+        self.model: Sequential = load_model(model_path, custom_objects=custom_objects)
+        self.alph: CharBasedNERAlphabet = unpickle_large_file("keras_character_based_ner/src/alphabet.p")
+
+    @staticmethod
+    def y_to_labels(y):
+        new_y = []
+        for row in y:
+            new_y.append([np.argmax(one_hot_labels) for one_hot_labels in row])
+        return new_y
+
+    def predict_str(self, string_data):
+        # Reworked from model.py and dataset.py. If time, this repetition should be refactored.
+        x = np.zeros(len(string_data))
+        for c, char in enumerate(string_data):
+            x[c] = self.alph.get_char_index(char)
+        x = x.reshape((-1, len(string_data)))
+
+        predicted_classes = self.model.predict(x, batch_size=1)
+
+        chars = [[self.alph.num_to_char[i] for i in row] for row in x]
+        labels = LoadedModel.y_to_labels(predicted_classes)
+        return list(zip(chars[0], labels[0]))
+
+
 def model_predict_file(model_path, file_path: str):
     """
     Take a saved Keras model, load it and use it to predict the named entities in a file of text.
@@ -14,32 +46,10 @@ def model_predict_file(model_path, file_path: str):
     :param file_path: path to a text file to predict
     :return:
     """
-    custom_objects: Dict[str, Callable] = {
-        'non_null_label_accuracy': CharacterBasedLSTMModel.non_null_label_accuracy
-    }
-    model: Sequential = load_model(model_path, custom_objects=custom_objects)
 
     with open(file_path) as f:
         file_contents = f.read()
 
-    # Reworked from model.py and dataset.py. If time, this repetition should be refactored.
-    alph: CharBasedNERAlphabet = unpickle_large_file("keras_character_based_ner/src/alphabet.p")
-    x = np.zeros(len(file_contents))
-    for c, char in enumerate(file_contents):
-        x[c] = alph.get_char_index(char)
+    lm = LoadedModel(model_path)
 
-    x = x.reshape((-1, len(file_contents)))
-
-    predicted_classes = model.predict(x, batch_size=1)
-
-    chars = [[alph.num_to_char[i] for i in row] for row in x]
-
-    def y_to_labels(y):
-        new_y = []
-        for row in y:
-            new_y.append([np.argmax(one_hot_labels) for one_hot_labels in row])
-        return new_y
-
-    labels = y_to_labels(predicted_classes)
-
-    return list(zip(chars[0], labels[0]))
+    return lm.predict_str(file_contents)
