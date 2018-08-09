@@ -117,7 +117,7 @@ def interpolate_one(file_path: str, tokenizer, stage, all_places: Set[str],
         if ne_type is not 0:
             # This is the recentest match
             recentest_match_end = match_end
-            # Build new interpolated text by adding NE markers using concatenation
+            # Build new interpolated text by adding NE markers using list slicing
             match_len = match_end - match_start
             interpolated_text_list[match_start:match_end] = [ne_type for _ in range(match_len)]
 
