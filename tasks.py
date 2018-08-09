@@ -9,7 +9,7 @@ from ne_data_gathering import people
 from ne_data_gathering import companies
 from ne_data_gathering import util
 from invoke import task, call
-from keras_character_based_ner.src.matt import alphabet_management, file_management, model_integration, dataset_hashing, train, minify_dataset, history
+from keras_character_based_ner.src.matt import alphabet_management, file_management, model_integration, dataset_hashing, train, minify_dataset, history, predict
 from keras_character_based_ner.src.config import Config
 import pickle
 
@@ -219,3 +219,8 @@ def model_history_mini(ctx):
 @task
 def model_history_toy(ctx):
     history.graph_model_history("keras_character_based_ner/src/toy_dataset.history.p", "toy")
+
+
+@task
+def model_predict_file(ctx, model, file):
+    print(predict.model_predict_file(model, file))
