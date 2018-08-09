@@ -197,12 +197,12 @@ def model_minify_toy(ctx):
 @task
 def model_train_toy(ctx, regenerate_tensors=False):
     if regenerate_tensors:
-        call(char_ner_create_x, "train")
-        call(char_ner_create_x, "test")
-        call(char_ner_create_x, "dev")
-        call(char_ner_create_y, "train")
-        call(char_ner_create_y, "test")
-        call(char_ner_create_y, "dev")
+        call(char_ner_create_x_toy, "train")
+        call(char_ner_create_x_toy, "test")
+        call(char_ner_create_x_toy, "dev")
+        call(char_ner_create_y_toy, "train")
+        call(char_ner_create_y_toy, "test")
+        call(char_ner_create_y_toy, "dev")
     train.toy_dataset_fit()
 
 
@@ -213,4 +213,9 @@ def model_train_mini(ctx):
 
 @task
 def model_history_mini(ctx):
-    history.graph_model_history("keras_character_based_ner/src/mini_dataset.history.p", "mini_graph.png")
+    history.graph_model_history("keras_character_based_ner/src/mini_dataset.history.p", "mini")
+
+
+@task
+def model_history_toy(ctx):
+    history.graph_model_history("keras_character_based_ner/src/toy_dataset.history.p", "toy")

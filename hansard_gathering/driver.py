@@ -1,6 +1,5 @@
 from config_util.config_parser import parse_config
 from datetime import datetime, timedelta
-from hansard_gathering.exception import SiblingNotFoundException
 import concurrent.futures
 import json
 import os
@@ -95,32 +94,6 @@ def get_hansard_titles(datestring, content_type, house="commons"):
                 titles.append((entry["body"], make_twfy_html_url(entry["listurl"]),
                                make_twfy_xml_url(entry["listurl"], content_type)))
         return titles
-
-
-def has_sibling(elem, tag_name):
-    """
-    return True if the given LXML Etree Element has a sibling with the given tag:
-    :param elem: Element being examined
-    :param tag_name:
-    :return: True if the elem has >= 1 sibling with tag_name
-    """
-    for sibling in elem.itersiblings():
-        if sibling.tag == tag_name:
-            return True
-    return False
-
-
-def get_sibling(elem, tag_name):
-    """
-    return True if the given LXML Etree Element has a sibling with the given tag:
-    :param elem: Element being examined
-    :param tag_name:
-    :return: True if the elem has >= 1 sibling with tag_name
-    """
-    for sibling in elem.itersiblings():
-        if sibling.tag == tag_name:
-            return sibling
-    raise SiblingNotFoundException
 
 
 def make_twfy_html_url(text):

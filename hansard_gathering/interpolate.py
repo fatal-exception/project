@@ -1,7 +1,7 @@
 from datetime import datetime
 from nltk.tokenize import TreebankWordTokenizer  # type: ignore
 from nltk import ngrams  # type: ignore
-from typing import List, Set, Generator, Tuple
+from typing import Set, Generator, Tuple
 import concurrent.futures
 import glob
 import itertools
@@ -94,7 +94,6 @@ def interpolate_one(file_path: str, tokenizer, stage, all_places: Set[str],
     with open(file_path) as f:
         text = f.read()
         interpolated_text_list = [0 for _ in range(len(text))]
-
 
     # ngrams for the text that capture their starting and ending indices.
     # We pad right because we take the first word of the ngram and all its possible suffixes
