@@ -207,6 +207,11 @@ def model_train_toy(ctx, regenerate_tensors=False):
 
 
 @task
+def model_retrain_toy(ctx):
+    train.toy_dataset_refit()
+
+
+@task
 def model_train_mini(ctx):
     train.mini_dataset_fit()
 
