@@ -42,8 +42,6 @@ def graph_model_history(filepath, dest_file_name):
 
     plt.savefig('keras_character_based_ner/graphs/{}-acc.png'.format(dest_file_name))
 
-    print("BLAH")
-
     plt.figure(2)
 
     plt.plot(epochs, loss, 'bo', label='Training loss')

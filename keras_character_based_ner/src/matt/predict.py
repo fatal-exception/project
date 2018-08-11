@@ -34,7 +34,7 @@ class LoadedModel:
         predicted_classes = self.model.predict(x, batch_size=1)
 
         chars = [[self.alph.num_to_char[i] for i in row] for row in x]
-        labels = LoadedModel.y_to_labels(predicted_classes)
+        labels = self.y_to_labels(predicted_classes)
         return list(zip(chars[0], labels[0]))
 
 
