@@ -1,22 +1,8 @@
 from keras_character_based_ner.src.config import Config
 from keras_character_based_ner.src.dataset import CharBasedNERDataset
-from keras_character_based_ner.src.model import CharacterBasedLSTMModel
 from keras_character_based_ner.src.matt.model_integration import get_x_y as matt_get_x_y
 from keras_character_based_ner.src.matt.file_management import pickle_large_file
-from keras_character_based_ner.src.matt.predict import LoadedToyModel
-
-
-class SavedCharacterBasedLSTMModel(CharacterBasedLSTMModel):
-    def __init__(self, config, dataset):
-        super().__init__(config, dataset)
-
-    def save(self, filepath):
-        """
-        MIR Added method to save model to disk
-        :param filepath: file path under which to save
-        :return:
-        """
-        return self.model.save(filepath)
+from keras_character_based_ner.src.matt.persist import LoadedToyModel, SavedCharacterBasedLSTMModel
 
 
 class ToyConfig(Config):
@@ -53,7 +39,7 @@ def toy_dataset_fit():
 
 def toy_dataset_refit():
     """
-    Continue training on toy dataset
+    Continue training on toy dataset after loading in from disk
     :return:
     """
     config = ToyConfig()
