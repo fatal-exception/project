@@ -2,8 +2,7 @@ from keras_character_based_ner.src.config import Config
 from keras_character_based_ner.src.dataset import CharBasedNERDataset
 from keras_character_based_ner.src.matt.model_integration import get_x_y as matt_get_x_y
 from keras_character_based_ner.src.matt.file_management import pickle_large_file
-from keras_character_based_ner.src.matt.predict import LoadedToyModel
-from keras_character_based_ner.src.matt.save import SavedCharacterBasedLSTMModel
+from keras_character_based_ner.src.matt.persist import LoadedToyModel, SavedCharacterBasedLSTMModel
 
 
 class ToyConfig(Config):
