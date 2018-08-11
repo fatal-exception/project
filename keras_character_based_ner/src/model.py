@@ -84,7 +84,8 @@ class CharacterBasedLSTMModel:
                                  epochs=self.config.max_epochs,
                                  validation_data=dev_data_generator,
                                  validation_steps=self.dataset.num_dev_docs / self.config.batch_size,
-                                 callbacks=[early_stopping]
+                                 # MIR Remove early_stopping while we investigate NaN validation scores
+                                 # callbacks=[early_stopping]
                                  )
 
     def evaluate(self):
