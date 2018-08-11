@@ -39,7 +39,7 @@ def toy_dataset_fit():
 
 def toy_dataset_refit():
     """
-    Continue training on toy dataset
+    Continue training on toy dataset after loading in from disk
     :return:
     """
     config = ToyConfig()

@@ -27,6 +27,7 @@ class LoadedToyModel(SavedCharacterBasedLSTMModel):
             'non_null_label_accuracy': SavedCharacterBasedLSTMModel.non_null_label_accuracy
         }
         self.model: Sequential = load_model(model_path, custom_objects=custom_objects)
+        print("Completed loading in model from previous training of Toy dataset")
 
 
 class LoadedMiniModel(SavedCharacterBasedLSTMModel):

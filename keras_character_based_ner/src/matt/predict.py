@@ -1,5 +1,5 @@
 from keras_character_based_ner.src.config import Config
-from keras_character_based_ner.src.matt.load import LoadedToyModel, LoadedMiniModel
+from keras_character_based_ner.src.matt.persist import LoadedToyModel, LoadedMiniModel
 from keras_character_based_ner.src.dataset import CharBasedNERDataset
 
 
