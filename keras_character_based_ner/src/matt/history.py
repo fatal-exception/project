@@ -19,9 +19,9 @@ def graph_model_history(filepath, dest_file_name):
     e.g. 'toy-model'
     :return:
     """
-    import matplotlib
+    import matplotlib  # type: ignore
     matplotlib.use('TkAgg')
-    import matplotlib.pyplot as plt
+    import matplotlib.pyplot as plt # type: ignore
     history_dict = unpickle_large_file(filepath)
 
     cat_acc = history_dict['categorical_accuracy']
@@ -41,8 +41,6 @@ def graph_model_history(filepath, dest_file_name):
     plt.legend()
 
     plt.savefig('keras_character_based_ner/graphs/{}-acc.png'.format(dest_file_name))
-
-    print("BLAH")
 
     plt.figure(2)
 
