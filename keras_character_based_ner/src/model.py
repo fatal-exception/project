@@ -66,7 +66,9 @@ class CharacterBasedLSTMModel:
                        epochs=self.config.max_epochs,
                        validation_data=(x_dev, y_dev),
                        shuffle=True,
-                       callbacks=[early_stopping, checkpointer])
+                       # MIR Remove Early Stopping callback as at present we get NaN for validation
+                       # callbacks=[early_stopping, checkpointer])
+                       callbacks=[checkpointer])
 
     def fit_generator(self):
         train_data_generator = self.dataset.get_x_y_generator(dataset_name='train',
