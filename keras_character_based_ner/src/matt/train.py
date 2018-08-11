@@ -23,7 +23,7 @@ def toy_dataset_fit():
         """
         Override Config with something suitable for toy testing - i.e. only a few epochs
         """
-        max_epochs = 4
+        max_epochs = 5
 
     config = ToyConfig()
 
