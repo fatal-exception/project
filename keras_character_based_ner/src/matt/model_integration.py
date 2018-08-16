@@ -23,7 +23,7 @@ def get_labels():
     :return:
     """
     # 1 = LOC, 2 = ORG, 3 = PER, 0 = null
-    return list(range(1, 4))
+    return ["LOC", "ORG", "PER"]
 
 
 def create_x_toy(sentence_maxlen, dataset_name):
