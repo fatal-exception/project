@@ -19,8 +19,8 @@ class SavedCharacterBasedLSTMModel(CharacterBasedLSTMModel):
         """
         Provide a hook to manually run model.evaluate() without needing to create
         a new Dataset object each time. Useful for cross-fold evaluation.
-        :param x: x of the test dataset
-        :param y: y of the test dataset
+        :param x_test: x of the test dataset
+        :param y_test: y of the test dataset
         :param batch_size:
         :return:
         """

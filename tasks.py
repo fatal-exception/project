@@ -9,7 +9,7 @@ from ne_data_gathering import people
 from ne_data_gathering import companies
 from ne_data_gathering import util
 from invoke import task, call
-from keras_character_based_ner.src.matt import alphabet_management, file_management, model_integration, dataset_hashing, train, minify_dataset, history, predict
+from keras_character_based_ner.src.matt import alphabet_management, file_management, model_integration, dataset_hashing, train, minify_dataset, history, predict, eval
 from keras_character_based_ner.src.config import Config
 import pickle
 
@@ -236,3 +236,13 @@ def model_toy_predict_file(ctx, model, file):
 @task
 def model_mini_predict_file(ctx, model, file):
     print(predict.model_mini_predict_file(file))
+
+
+@task
+def eval_toy(ctx, dataset_name, dataset_size):
+    eval.toy_data_validation(dataset_name, dataset_size)
+
+
+@task
+def eval_k_fold_cross(ctx):
+    eval.k_fold_cross_validation()
