@@ -1,6 +1,7 @@
 bs4
 bleach
 django
+flask
 gunicorn
 h5py
 invoke
