@@ -11,6 +11,7 @@ from ne_data_gathering import util
 from invoke import task, call
 from keras_character_based_ner.src.matt import alphabet_management, file_management, model_integration, dataset_hashing, train, minify_dataset, history, predict, eval
 from keras_character_based_ner.src.config import Config
+from simple_gui import simple_gui
 import pickle
 
 
@@ -248,6 +249,7 @@ def eval_k_fold_cross(ctx):
     eval.k_fold_cross_validation()
 
 
-@task(enable_venv)
+@task
 def flask_start_server(ctx):
-    ctx.run("FLASK_APP=simple_gui/simple_gui.py FLASK_ENV=development flask run")
+    simple_gui.main()
+
