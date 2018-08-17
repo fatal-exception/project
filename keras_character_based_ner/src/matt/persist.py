@@ -15,6 +15,34 @@ class SavedCharacterBasedLSTMModel(CharacterBasedLSTMModel):
         """
         return self.model.save(filepath)
 
+    def manual_evaluate(self, x_test, y_test, batch_size):
+        """
+        Provide a hook to manually run model.evaluate() without needing to create
+        a new Dataset object each time. Useful for cross-fold evaluation.
+        :param x: x of the test dataset
+        :param y: y of the test dataset
+        :param batch_size:
+        :return:
+        """
+        self.model.evaluate(x=x_test, y=y_test, batch_size=batch_size)
+
+    def manual_fit(self, x_train, y_train, batch_size, epochs):
+        """
+        Provide a hook to manually run model.fit() without needing
+        to create a new Dataset object each time. Useful for cross-fold evaluation.
+        :param x_train:
+        :param y_train:
+        :param batch_size:
+        :param epochs:
+        :return:
+        """
+        return self.model.fit(x=x_train,
+                              y=y_train,
+                              batch_size=batch_size,
+                              epochs=epochs,
+                              verbose=1
+                              )
+
 
 class LoadedToyModel(SavedCharacterBasedLSTMModel):
     """

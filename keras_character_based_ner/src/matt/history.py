@@ -21,7 +21,7 @@ def graph_model_history(filepath, dest_file_name):
     """
     import matplotlib  # type: ignore
     matplotlib.use('TkAgg')
-    import matplotlib.pyplot as plt # type: ignore
+    import matplotlib.pyplot as plt  # type: ignore
     history_dict = unpickle_large_file(filepath)
 
     cat_acc = history_dict['categorical_accuracy']

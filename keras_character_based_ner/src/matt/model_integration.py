@@ -35,7 +35,7 @@ def create_x_toy(sentence_maxlen, dataset_name):
     with left-hand-side padding, and write out both the list object and pad_sequences'
     resulting numpy array to pickled files.
     :param sentence_maxlen:
-    :param dataset_name:
+    :param dataset_name: train, test, dev or eval
     :return:
     """
     from keras.preprocessing.sequence import pad_sequences  # type: ignore

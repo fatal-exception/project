@@ -200,9 +200,11 @@ def model_train_toy(ctx, regenerate_tensors=False):
         call(char_ner_create_x_toy, "train")
         call(char_ner_create_x_toy, "test")
         call(char_ner_create_x_toy, "dev")
+        call(char_ner_create_x_toy, "eval")
         call(char_ner_create_y_toy, "train")
         call(char_ner_create_y_toy, "test")
         call(char_ner_create_y_toy, "dev")
+        call(char_ner_create_y_toy, "eval")
     train.toy_dataset_fit()
 
 
