@@ -25,5 +25,11 @@ def view_hansard(date, debate_title):
     return render_template('debate.html', date=date, debate_title=debate_title, debate_paras=debate_paras)
 
 
+# Add a 'predict' route for AJAX posting of content to be predicted
+@app.route('/predict')
+def predict_text(text):
+    pass
+
+
 def main():
     app.run(load_dotenv=False, debug=True, port=5000)

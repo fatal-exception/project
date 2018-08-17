@@ -9,6 +9,11 @@
 <p>{{ para }}</p>
 {% endfor %}
 </body>
-<script src="{{ url_for('static', filename='test.js') }}"></script>
+<!-- Load JQuery - http://flask.pocoo.org/docs/1.0/patterns/jquery/ -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write(
+    '<script src="{{ url_for('static', filename='jquery.js') }}">\x3C/script>')</script>
+
+<script src="{{ url_for('static', filename='char-ner.js') }}"></script>
 
 </html>
