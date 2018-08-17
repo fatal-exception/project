@@ -24,7 +24,7 @@ class SavedCharacterBasedLSTMModel(CharacterBasedLSTMModel):
         :param batch_size:
         :return:
         """
-        self.model.evaluate(x=x_test, y=y_test, batch_size=batch_size)
+        return self.model.evaluate(x=x_test, y=y_test, batch_size=batch_size)
 
     def manual_fit(self, x_train, y_train, batch_size, epochs):
         """

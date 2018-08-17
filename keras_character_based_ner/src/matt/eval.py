@@ -38,16 +38,17 @@ def k_fold_cross_validation():
         scores = model.manual_evaluate(x_test=x[test], y_test=y[test], batch_size=Config.batch_size)
 
 
-def toy_data_validation(dataset_name):
+def toy_data_validation(dataset_name, dataset_size):
     """
-    Validate toy model on a bucket of text it hasn't been trained on or validated on yet -
-    the 'eval' dataset.
+    Validate toy model on a bucket of text it hasn't been trained on (train) or validated on (dev) yet.
     This is because the 'test' dataset used to train the model gave NaN for validation loss.
-    :param dataset_name: "mini", the mini-test dataset, or "eval" a one-bucket dataset
-    that the toy model has not seen before.
+    :param dataset_name: train, test, dev or eval
+    :param dataset_size: toy or mini
     :return:
     """
-    x = unpickle_large_file("keras_character_based_ner/src/x_np-{}-mini.p".format(dataset_name))
-    y = unpickle_large_file("keras_character_based_ner/src/y_np-{}-mini.p".format(dataset_name))
+    x = unpickle_large_file("keras_character_based_ner/src/x_np-{}-{}.p".format(
+        dataset_name, dataset_size))
+    y = unpickle_large_file("keras_character_based_ner/src/y_np-{}-{}.p".format(
+        dataset_name, dataset_size))
     model = LoadedToyModel(*init_config_dataset())
     evaluation = model.manual_evaluate(x, y, Config.batch_size)
