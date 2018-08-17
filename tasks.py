@@ -202,11 +202,9 @@ def model_train_toy(ctx, regenerate_tensors=False):
         call(char_ner_create_x_toy, "train")
         call(char_ner_create_x_toy, "test")
         call(char_ner_create_x_toy, "dev")
-        call(char_ner_create_x_toy, "eval")
         call(char_ner_create_y_toy, "train")
         call(char_ner_create_y_toy, "test")
         call(char_ner_create_y_toy, "dev")
-        call(char_ner_create_y_toy, "eval")
     train.toy_dataset_fit()
 
 
@@ -246,8 +244,8 @@ def model_mini_predict_file(ctx, file):
 
 
 @task
-def eval_toy(ctx, dataset_name, dataset_size):
-    eval.toy_data_validation(dataset_name, dataset_size)
+def eval_model_manual(ctx, dataset_name, dataset_size):
+    eval.model_data_validation(dataset_name, dataset_size)
 
 
 @task

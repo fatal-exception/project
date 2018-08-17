@@ -59,11 +59,11 @@ def k_fold_cross_validation():
         print("Standard deviation for {} is {}".format(title, np.std(scores)))
 
 
-def toy_data_validation(dataset_name, dataset_size):
+def model_data_validation(dataset_name, dataset_size):
     """
     Validate toy model on a bucket of text it hasn't been trained on (train) or validated on (dev) yet.
     This is because the 'test' dataset used to train the model gave NaN for validation loss.
-    :param dataset_name: train, test, dev or eval
+    :param dataset_name: train, test, dev
     :param dataset_size: toy or mini
     :return:
     """

@@ -24,8 +24,6 @@ def get_bucket_numbers_for_dataset_name(dataset_name: str) -> List[int]:
         return list(range(4, 6))
     elif dataset_name == "test":
         return list(range(6, 8))
-    elif dataset_name == "eval":
-        return [9]
     # Small set of debates to build an alphabet off
     elif dataset_name == "alphabet-sample":
         return [0]
