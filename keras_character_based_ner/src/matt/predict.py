@@ -21,6 +21,21 @@ def model_toy_predict_file(file_path: str):
     return lm.predict_long_str(file_contents)
 
 
+def model_toy_predict_str(string: str):
+    """
+    Take saved toy Keras model, load it and use it to predict the named entities in a file of text.
+    The file can be any text - it doesn't need to be a debate file.
+    :param string: The string to predict NEs for
+    :return:
+    """
+
+    config = Config()
+    dataset = CharBasedNERDataset()
+    lm = LoadedToyModel(config=config, dataset=dataset)
+
+    return lm.predict_long_str(string)
+
+
 def model_mini_predict_file(file_path: str):
     """
     Take saved mini Keras model, load it and use it to predict the named entities in a file of text.

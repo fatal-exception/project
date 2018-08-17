@@ -236,6 +236,11 @@ def model_toy_predict_file(ctx, file):
 
 
 @task
+def model_toy_predict_str(ctx, string):
+    print(predict.model_toy_predict_str(string))
+
+
+@task
 def model_mini_predict_file(ctx, file):
     print(predict.model_mini_predict_file(file))
 
