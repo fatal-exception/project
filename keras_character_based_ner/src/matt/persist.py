@@ -53,7 +53,7 @@ class SavedCharacterBasedLSTMModel(CharacterBasedLSTMModel):
         :param s:
         :return:
         """
-        x = self.dataset.str_to_x(s, sys.maxsize)
+        x = self.dataset.str_to_x(s, len(s))
         predicted_classes = self.predict_x(x)
         chars = self.dataset.x_to_str(x)[0]
         labels = self.dataset.y_to_labels(predicted_classes)[0]
