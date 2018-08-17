@@ -246,3 +246,8 @@ def eval_toy(ctx, dataset_name, dataset_size):
 @task
 def eval_k_fold_cross(ctx):
     eval.k_fold_cross_validation()
+
+
+@task(enable_venv)
+def flask_start_server(ctx):
+    ctx.run("FLASK_APP=simple_gui/simple_gui.py FLASK_ENV=development flask run")
