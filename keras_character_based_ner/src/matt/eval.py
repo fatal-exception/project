@@ -1,13 +1,13 @@
 """
 Evaluate the trained Keras model
 """
-from sklearn.model_selection import KFold
+from sklearn.model_selection import KFold  # type: ignore
 from keras_character_based_ner.src.matt.file_management import unpickle_large_file
 from keras_character_based_ner.src.config import Config
 from keras_character_based_ner.src.dataset import CharBasedNERDataset
 from keras_character_based_ner.src.matt.persist import LoadedToyModel, SavedCharacterBasedLSTMModel
 from typing import List
-import numpy as np
+import numpy as np  # type: ignore
 
 
 def init_config_dataset():

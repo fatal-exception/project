@@ -1,0 +1,10 @@
+<html>
+<head>
+    List of dates from which to select a Hansard debate.
+</head>
+<ul>
+    {% for date in dates %}
+    <li><a href="{{ url_for('get_hansards_by_date', date=date) }}">{{ date }}</a></li>
+    {% endfor %}
+</ul>
+</html>
