@@ -21,7 +21,8 @@ def get_hansards_by_date(date):
 def view_hansard(date, debate_title):
     pass
     debate = filesystem.view_hansard(date, debate_title)
-    return render_template('debate.html', date=date, debate_title=debate_title, debate=debate)
+    debate_paras = debate.split("\n")
+    return render_template('debate.html', date=date, debate_title=debate_title, debate_paras=debate_paras)
 
 
 def main():

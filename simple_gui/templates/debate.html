@@ -4,6 +4,8 @@
     <a href="{{ url_for('get_hansards_by_date', date=date) }}"> Up one level.</a> <br/><br/>
 </head>
 <body>
-{{ debate }}
+{% for para in debate_paras %}
+<p>{{ para }}</p>
+{% endfor %}
 </body>
 </html>
