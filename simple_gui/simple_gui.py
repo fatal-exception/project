@@ -1,3 +1,4 @@
+from typing import List, Tuple
 from flask import Flask, render_template
 from hansard_gathering import filesystem
 
@@ -12,12 +13,12 @@ def get_dates_list():
 
 @app.route('/<date>/')
 def get_hansards_by_date(date):
-    debates = filesystem.get_debates_by_date()
+    debates: List[Tuple[int, str]] = list(filesystem.get_debates_by_date(date))
     return render_template('date.html', date=date, debates=debates)
 
 
-@app.route('/<date>/<debate_id>')
-def view_hansard(date, debate_id):
+@app.route('/<date>/<debate_title>')
+def view_hansard(date, debate_title):
     pass
     # debate = blah.blah()  # Something to predict NEs for the debate!
     # return render_template('debate.html', debate=debate)

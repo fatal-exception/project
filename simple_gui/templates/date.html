@@ -1,7 +1,16 @@
 <html>
+<head>
+    Debates for date {{ date }}. <br/>
+    <a href="{{ url_for('get_dates_list') }}"> Up one level</a>
+</head>
 <ul>
-    {% for date in dates %}
-    <li>{{ date }}</li>
+    {% for debate_idx, debate_title in debates %}
+    <li>
+        <a href="{{ url_for('view_hansard', date=date, debate_title=debate_title) }}">
+          {{ debate_idx + 1 }} - {{ debate_title }}
+        </a>
+    </li>
+</ul>
     {% endfor %}
 </ul>
 </html>

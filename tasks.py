@@ -9,7 +9,8 @@ from ne_data_gathering import people
 from ne_data_gathering import companies
 from ne_data_gathering import util
 from invoke import task, call
-from keras_character_based_ner.src.matt import alphabet_management, file_management, model_integration, dataset_hashing, train, minify_dataset, history, predict, eval
+from keras_character_based_ner.src.matt import alphabet_management, file_management, \
+    model_integration, dataset_hashing, train, minify_dataset, history, predict, eval
 from keras_character_based_ner.src.config import Config
 from simple_gui import simple_gui
 import pickle
