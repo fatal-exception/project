@@ -2,10 +2,13 @@
 <head>
     This is the debate from date {{ date }} titled {{ debate_title }}<br/>
     <a href="{{ url_for('get_hansards_by_date', date=date) }}"> Up one level.</a> <br/><br/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 {% for para in debate_paras %}
 <p>{{ para }}</p>
 {% endfor %}
 </body>
+<script src="{{ url_for('static', filename='test.js') }}"></script>
+
 </html>
