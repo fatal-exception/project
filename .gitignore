@@ -112,3 +112,4 @@ y_*.p
 
 # h5 for saved out models from keras
 *.h5
+*.h5.old
