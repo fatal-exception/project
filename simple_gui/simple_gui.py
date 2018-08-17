@@ -20,8 +20,8 @@ def get_hansards_by_date(date):
 @app.route('/<date>/<debate_title>')
 def view_hansard(date, debate_title):
     pass
-    # debate = blah.blah()  # Something to predict NEs for the debate!
-    # return render_template('debate.html', debate=debate)
+    debate = filesystem.view_hansard(date, debate_title)
+    return render_template('debate.html', date=date, debate_title=debate_title, debate=debate)
 
 
 def main():
