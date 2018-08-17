@@ -231,12 +231,12 @@ def model_history_toy(ctx):
 
 
 @task
-def model_toy_predict_file(ctx, model, file):
+def model_toy_predict_file(ctx, file):
     print(predict.model_toy_predict_file(file))
 
 
 @task
-def model_mini_predict_file(ctx, model, file):
+def model_mini_predict_file(ctx, file):
     print(predict.model_mini_predict_file(file))
 
 

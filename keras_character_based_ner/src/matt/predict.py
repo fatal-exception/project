@@ -18,7 +18,7 @@ def model_toy_predict_file(file_path: str):
     dataset = CharBasedNERDataset()
     lm = LoadedToyModel(config=config, dataset=dataset)
 
-    return lm.predict_str(file_contents)
+    return lm.predict_long_str(file_contents)
 
 
 def model_mini_predict_file(file_path: str):
@@ -36,4 +36,4 @@ def model_mini_predict_file(file_path: str):
     dataset = CharBasedNERDataset()
     lm = LoadedMiniModel(config=config, dataset=dataset)
 
-    return lm.predict_str(file_contents)
+    return lm.predict_long_str(file_contents)

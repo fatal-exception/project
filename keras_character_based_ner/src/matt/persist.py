@@ -1,6 +1,7 @@
 from keras_character_based_ner.src.model import CharacterBasedLSTMModel
 from typing import Callable, Dict
 from keras.models import load_model, Sequential  # type: ignore
+import sys
 
 
 class SavedCharacterBasedLSTMModel(CharacterBasedLSTMModel):
@@ -42,6 +43,22 @@ class SavedCharacterBasedLSTMModel(CharacterBasedLSTMModel):
                               epochs=epochs,
                               verbose=1
                               )
+
+    def predict_long_str(self, s: str):
+        """
+        Override CharacterBasedLSTMModel's own predict_str. This is because
+        we want to be able to predict strings that are longer than config.sentence_max_length.
+        Other than setting the 2nd argument of str_to_x to 'sys.maxsize', the rest is unchanged
+        from the original predict_str function.
+        :param s:
+        :return:
+        """
+        x = self.dataset.str_to_x(s, sys.maxsize)
+        predicted_classes = self.predict_x(x)
+        chars = self.dataset.x_to_str(x)[0]
+        labels = self.dataset.y_to_labels(predicted_classes)[0]
+
+        return list(zip(chars, labels))
 
 
 class LoadedToyModel(SavedCharacterBasedLSTMModel):
