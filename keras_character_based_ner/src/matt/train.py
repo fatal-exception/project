@@ -9,7 +9,7 @@ class ToyConfig(Config):
     """
     Override Config with something suitable for toy testing - i.e. only a few epochs
     """
-    max_epochs = 4
+    max_epochs = 3
 
 
 class ToyCharBasedNERDataset(CharBasedNERDataset):
