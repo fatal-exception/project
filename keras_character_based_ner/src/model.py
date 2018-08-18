@@ -67,8 +67,8 @@ class CharacterBasedLSTMModel:
                        validation_data=(x_dev, y_dev),
                        shuffle=True,
                        # MIR Remove Early Stopping callback as at present we get NaN for validation
-                       # callbacks=[early_stopping, checkpointer])
-                       callbacks=[checkpointer])
+                       # callbacks=[checkpointer])
+                       callbacks=[early_stopping, checkpointer])
 
     def fit_generator(self):
         train_data_generator = self.dataset.get_x_y_generator(dataset_name='train',
@@ -87,7 +87,7 @@ class CharacterBasedLSTMModel:
                                  validation_data=dev_data_generator,
                                  validation_steps=self.dataset.num_dev_docs / self.config.batch_size,
                                  # MIR Remove early_stopping while we investigate NaN validation scores
-                                 # callbacks=[early_stopping]
+                                 callbacks=[early_stopping]
                                  )
 
     def evaluate(self):
