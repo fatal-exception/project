@@ -45,8 +45,8 @@ def create_x_toy(sentence_maxlen, dataset_name):
     # to see if that fixes NaN-validation problem.
     cutoff = {
         "train": 500000,
-        "test": 4000,
-        "dev": 4000,
+        "test": 6000,
+        "dev": 6000,
     }
 
     total_chunks = 0
