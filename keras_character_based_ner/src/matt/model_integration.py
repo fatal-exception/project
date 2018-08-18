@@ -55,7 +55,7 @@ def create_x_toy(sentence_maxlen, dataset_name):
 
     x_list = []
     for idx, hansard_sentence in enumerate(get_chunked_hansard_texts(dataset_name)):
-        if idx > cutoff[dataset_name]:
+        if idx >= cutoff[dataset_name]:
             break
         numbers_list = numerify.numerify_text(hansard_sentence, alphabet, sentence_maxlen)
         x_list.append(numbers_list)
@@ -101,7 +101,7 @@ def create_y_toy(sentence_maxlen, dataset_name):
     # Model is overfitting. Try reducing tensor size for each dataset
     # to see if that fixes NaN-validation problem.
     cutoff = {
-        "train": 200000,
+        "train": 500000,
         "test": 6000,
         "dev": 6000,
     }
@@ -111,7 +111,7 @@ def create_y_toy(sentence_maxlen, dataset_name):
 
     for idx, interpolated_hansard_sentence in enumerate(
             get_chunked_hansard_interpolations(dataset_name)):
-        if idx > cutoff[dataset_name]:
+        if idx >= cutoff[dataset_name]:
             break
         y_list.append([onehot(int(num), onehot_vector_length) for num in interpolated_hansard_sentence])
         if debug:
