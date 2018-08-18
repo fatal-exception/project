@@ -25,6 +25,7 @@ class ToyCharBasedNERDataset(CharBasedNERDataset):
 
 
 def toy_dataset_fit():
+    print("Fitting toy dataset")
     config = ToyConfig()
     dataset = ToyCharBasedNERDataset()
     model = SavedCharacterBasedLSTMModel(config, dataset)

@@ -40,6 +40,8 @@ def create_x_toy(sentence_maxlen, dataset_name):
     """
     from keras.preprocessing.sequence import pad_sequences  # type: ignore
     debug = True
+    if debug:
+        print("Generating X tensor")
 
     # Model is overfitting. Try reducing tensor size for each dataset
     # to see if that fixes NaN-validation problem.
@@ -95,6 +97,9 @@ def create_y_toy(sentence_maxlen, dataset_name):
     from keras.preprocessing.sequence import pad_sequences  # type: ignore
 
     debug = True
+
+    if debug:
+        print("Generating Y tensor")
 
     # Model is overfitting. Try reducing tensor size for each dataset
     # to see if that fixes NaN-validation problem.

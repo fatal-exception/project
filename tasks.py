@@ -197,14 +197,15 @@ def model_minify_toy(ctx):
 
 
 @task
-def model_train_toy(ctx, regenerate_tensors=False):
-    if regenerate_tensors:
-        call(char_ner_create_x_toy, "train")
-        call(char_ner_create_x_toy, "test")
-        call(char_ner_create_x_toy, "dev")
-        call(char_ner_create_y_toy, "train")
-        call(char_ner_create_y_toy, "test")
-        call(char_ner_create_y_toy, "dev")
+def model_train_toy(ctx, regenerate_tensors="no"):
+    if regenerate_tensors == "yes":
+        print("Regenerating tensors")
+        model_integration.create_x_toy(Config.sentence_max_length, "train")
+        model_integration.create_x_toy(Config.sentence_max_length, "test")
+        model_integration.create_x_toy(Config.sentence_max_length, "dev")
+        model_integration.create_y_toy(Config.sentence_max_length, "train")
+        model_integration.create_y_toy(Config.sentence_max_length, "test")
+        model_integration.create_y_toy(Config.sentence_max_length, "dev")
     train.toy_dataset_fit()
 
 
