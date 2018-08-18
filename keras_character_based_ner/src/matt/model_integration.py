@@ -51,9 +51,6 @@ def create_x_toy(sentence_maxlen, dataset_name):
         "dev": 6000,
     }
 
-    total_chunks = 0
-    if debug:
-        total_chunks = read_total_number_of_hansard_sentences_from_file(dataset_name)
     alphabet = get_pickled_alphabet()
 
     x_list = []
@@ -63,7 +60,7 @@ def create_x_toy(sentence_maxlen, dataset_name):
         numbers_list = numerify.numerify_text(hansard_sentence, alphabet, sentence_maxlen)
         x_list.append(numbers_list)
         if debug:
-            print("Building x, progress {} %".format((idx / total_chunks) * 100)) if idx % 10000 == 0 else None
+            print("Building x, progress {} %".format((idx / cutoff[dataset_name]) * 100)) if idx % 10000 == 0 else None
 
     # Write X so we don't have to regenerate every time...
     pickle_large_file(x_list, "keras_character_based_ner/src/x_list-{}-toy.p".format(dataset_name))
@@ -109,10 +106,6 @@ def create_y_toy(sentence_maxlen, dataset_name):
         "dev": 6000,
     }
 
-    total_chunks = 0
-    if debug:
-        total_chunks = read_total_number_of_hansard_sentences_from_file(dataset_name)
-
     y_list = []
     onehot_vector_length = len(get_labels()) + 1  # list of labels plus one extra for non-NE
 
@@ -122,7 +115,7 @@ def create_y_toy(sentence_maxlen, dataset_name):
             break
         y_list.append([onehot(int(num), onehot_vector_length) for num in interpolated_hansard_sentence])
         if debug:
-            print("Building y, progress {} %".format((idx / total_chunks) * 100)) if idx % 10000 == 0 else None
+            print("Building y, progress {} %".format((idx / cutoff[dataset_name]) * 100)) if idx % 10000 == 0 else None
 
     # Write Y so we don't have to regenerate every time...
     pickle_large_file(y_list, "keras_character_based_ner/src/y_list-{}-toy.p".format(dataset_name))
