@@ -3,14 +3,22 @@ from flask import Flask, render_template, request
 from hansard_gathering import filesystem
 from keras_character_based_ner.src.matt.persist import LoadedToyModel
 from keras_character_based_ner.src.matt.eval import init_config_dataset
+import tensorflow as tf
 
 app = Flask(__name__)
 
 cache = {}
 
+# Tensorflow default graph has to be captured to avoid a TF threading bug
+# when running with Flask:
+# https://github.com/keras-team/keras/issues/2397
+graph = None
+
 
 def initialize_keras_model():
+    global graph
     cache["model"] = LoadedToyModel(*init_config_dataset())
+    graph = tf.get_default_graph()
 
 
 @app.route('/')
@@ -35,16 +43,14 @@ def view_hansard(date, debate_title):
 # Add a 'predict' route for AJAX posting of content to be predicted
 @app.route('/predict/', methods=['POST'])
 def predict_text():
-    model = cache['model']
-    data = request.get_data().decode(encoding='UTF-8')
-    print(data)
-    print(type(data))
-    print(model)
-    print(type(model))
-    prediction = model.predict_long_str(data)
-    return prediction
+    global graph
+    with graph.as_default():
+        model = cache['model']
+        data = request.get_data().decode(encoding='UTF-8')
+        prediction = model.predict_long_str(data)
+        return str(prediction)
 
 
 def main():
     initialize_keras_model()
-    app.run(load_dotenv=False, debug=True, port=5000)
+    app.run(load_dotenv=False, debug=True, port=5000, threaded=True)

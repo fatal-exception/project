@@ -1,7 +1,8 @@
 from keras_character_based_ner.src.model import CharacterBasedLSTMModel
+from keras_character_based_ner.src.dataset import CharBasedNERDataset
+from keras_character_based_ner.src.matt.file_management import unpickle_large_file
 from typing import Callable, Dict
 from keras.models import load_model, Sequential  # type: ignore
-import sys
 
 
 class SavedCharacterBasedLSTMModel(CharacterBasedLSTMModel):
@@ -87,3 +88,19 @@ class LoadedMiniModel(SavedCharacterBasedLSTMModel):
             'non_null_label_accuracy': SavedCharacterBasedLSTMModel.non_null_label_accuracy
         }
         self.model: Sequential = load_model(model_path, custom_objects=custom_objects)
+
+
+class AlphabetPreloadedCharBasedNERDataset(CharBasedNERDataset):
+    """
+    A version of CharBasedNERDataset where we don't need to create an alphabet dynamically
+    by unioning together a set of texts. This means a. it's quicker to load the whole model
+    and b. we can run the model independently of having the texts to hand.
+    """
+    def __init__(self):
+        print("Using pickled alphabet for dataset")
+        self.alphabet = unpickle_large_file("keras_character_based_ner/src/alphabet.p")
+        self.labels = self.BASE_LABELS + self.get_labels()
+        self.num_labels = len(self.labels)
+        self.num_to_label = {}
+        self.label_to_num = {}
+        self.init_mappings()
