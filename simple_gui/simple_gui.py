@@ -36,8 +36,11 @@ def view_hansard(date, debate_title):
 @app.route('/predict/', methods=['POST'])
 def predict_text():
     model = cache['model']
-    data = str(request.get_data())
+    data = request.get_data().decode(encoding='UTF-8')
     print(data)
+    print(type(data))
+    print(model)
+    print(type(model))
     prediction = model.predict_long_str(data)
     return prediction
 
