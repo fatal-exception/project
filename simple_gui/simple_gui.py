@@ -3,6 +3,7 @@ from flask import Flask, render_template, request
 from hansard_gathering import filesystem
 from keras_character_based_ner.src.matt.persist import LoadedToyModel
 from keras_character_based_ner.src.matt.eval import init_config_dataset
+from simple_gui.util import format_prediction_string
 import tensorflow as tf
 
 app = Flask(__name__)
@@ -18,6 +19,7 @@ graph = None
 def initialize_keras_model():
     global graph
     cache["model"] = LoadedToyModel(*init_config_dataset())
+    # Set Tensorflow graph as soon as model is set
     graph = tf.get_default_graph()
 
 
@@ -46,9 +48,10 @@ def predict_text():
     global graph
     with graph.as_default():
         model = cache['model']
-        data = request.get_data().decode(encoding='UTF-8')
-        prediction = model.predict_long_str(data)
-        return str(prediction)
+        data: str = request.get_data().decode(encoding='UTF-8')
+        prediction: List[Tuple[str]] = model.predict_long_str(data)
+        gui_prediction: str = format_prediction_string(prediction)
+        return gui_prediction
 
 
 def main():
