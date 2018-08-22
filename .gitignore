@@ -104,9 +104,6 @@ hansard_gathering/data_buckets_archive
 x_*.p
 y_*.p
 
-# pickled files for histories
-*.history.p
-
 # env file for passwords
 .env
 
