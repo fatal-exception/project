@@ -79,3 +79,36 @@ def model_data_validation(dataset_name, dataset_size):
     print("loss is: " + str(loss))
     print("categorical_accuracy is: " + str(categorical_accuracy))
     print("non_null_label_accuracy is: " + str(non_null_label_accuracy))
+
+
+def calc_eval_baseline(dataset_name, dataset_size):
+    """
+    Calculate a basic evaluation baseline, of assuming all labels are NULL
+    :param dataset_name: train, test or dev
+    :param dataset_size: toy or mini
+    :return:
+    """
+    def all_zeros(_char_onehot):
+        return all(elem == 0 for elem in _char_onehot)
+
+    def not_null(_char_onehot):
+        return _char_onehot[0] == 0 and 1 in _char_onehot[1:]
+
+    y = unpickle_large_file("keras_character_based_ner/src/y_np-{}-{}.p".format(
+        dataset_name, dataset_size))
+
+    num_of_chars = 0
+    num_of_not_nulls = 0
+    for sample in y:
+        for char_onehot in sample:
+            if all_zeros(char_onehot):
+                pass  # This is padding, ignore
+            else:
+                num_of_chars += 1
+                if not_null(char_onehot):
+                    num_of_not_nulls += 1
+
+    # The baseline will be wrong for every not-null in the chars
+    baseline_inaccuracy = float(num_of_not_nulls) / float(num_of_chars)
+    baseline_accuracy = 1 - baseline_inaccuracy
+    print(baseline_accuracy)

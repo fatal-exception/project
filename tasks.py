@@ -255,6 +255,11 @@ def eval_k_fold_cross(ctx):
 
 
 @task
+def eval_baseline(ctx, dataset_name, dataset_size):
+    eval.calc_eval_baseline(dataset_name, dataset_size)
+
+
+@task
 def flask_start_server(ctx):
     simple_gui.main()
 
