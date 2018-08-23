@@ -81,11 +81,12 @@ def model_data_validation(dataset_name, dataset_size):
     print("non_null_label_accuracy is: " + str(non_null_label_accuracy))
 
 
-def calc_eval_baseline(dataset_name, dataset_size):
+def calc_eval_baseline(dataset_name, dataset_size, baseline_label=0):
     """
     Calculate a basic evaluation baseline, of assuming all labels are NULL
     :param dataset_name: train, test or dev
     :param dataset_size: toy or mini
+    :param baseline_label: the label the baseline should always try to guess
     :return:
     """
     def all_zeros(_char_onehot):
@@ -94,11 +95,17 @@ def calc_eval_baseline(dataset_name, dataset_size):
     def not_null(_char_onehot):
         return _char_onehot[0] == 0 and 1 in _char_onehot[1:]
 
+    def un_one_hot(_char_onehot):
+        for pos, val in enumerate(_char_onehot):
+            if val == 1:
+                return pos
+
     y = unpickle_large_file("keras_character_based_ner/src/y_np-{}-{}.p".format(
         dataset_name, dataset_size))
 
     num_of_chars = 0
     num_of_not_nulls = 0
+    num_correctly_guessed = 0
     for sample in y:
         for char_onehot in sample:
             if all_zeros(char_onehot):
@@ -107,8 +114,12 @@ def calc_eval_baseline(dataset_name, dataset_size):
                 num_of_chars += 1
                 if not_null(char_onehot):
                     num_of_not_nulls += 1
+                if un_one_hot(char_onehot) == baseline_label:
+                    num_correctly_guessed += 1
 
     # The baseline will be wrong for every not-null in the chars
     baseline_inaccuracy = float(num_of_not_nulls) / float(num_of_chars)
     baseline_accuracy = 1 - baseline_inaccuracy
+    baseline_guessed_accuracy = float(num_correctly_guessed) / float(num_of_chars)
     print(baseline_accuracy)
+    print(baseline_guessed_accuracy)
