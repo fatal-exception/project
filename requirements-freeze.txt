@@ -41,6 +41,7 @@ jupyter-console==5.2.0
 jupyter-core==4.4.0
 Keras==2.2.0
 Keras-Applications==1.0.2
+keras-metrics==0.0.3
 Keras-Preprocessing==1.0.1
 kiwisolver==1.0.1
 lxml==4.2.1

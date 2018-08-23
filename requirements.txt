@@ -8,6 +8,7 @@ invoke
 ipython
 jupyter
 keras
+keras-metrics
 lxml
 matplotlib
 mypy

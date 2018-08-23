@@ -27,9 +27,15 @@ def graph_model_history(filepath, dest_file_name):
     cat_acc = history_dict['categorical_accuracy']
     non_null_label_acc = history_dict['non_null_label_accuracy']
     loss = history_dict['loss']
+    precision = history_dict['precision']
+    recall = history_dict['recall']
+    f1 = history_dict['f1']
     val_loss = history_dict['val_loss']
     val_cat_acc = history_dict['val_categorical_accuracy']
     val_non_null_label_acc = history_dict['val_non_null_label_accuracy']
+    val_precision = history_dict['val_precision']
+    val_recall = history_dict['val_recall']
+    val_f1 = history_dict['val_f1']
 
     epochs = range(1, len(cat_acc) + 1)
 
@@ -59,3 +65,30 @@ def graph_model_history(filepath, dest_file_name):
     plt.legend()
 
     plt.savefig('keras_character_based_ner/graphs/{}-non-null-label-acc.png'.format(dest_file_name))
+
+    plt.figure(4)
+
+    plt.plot(epochs, precision, 'bo', label='Precision')
+    plt.plot(epochs, val_precision, 'b', label='Validation Precision')
+    plt.title('Training and validation precision')
+    plt.legend()
+
+    plt.savefig('keras_character_based_ner/graphs/{}-precision.png'.format(dest_file_name))
+
+    plt.figure(5)
+
+    plt.plot(epochs, recall, 'bo', label='Recall')
+    plt.plot(epochs, val_recall, 'b', label='Validation Recall')
+    plt.title('Training and validation recall')
+    plt.legend()
+
+    plt.savefig('keras_character_based_ner/graphs/{}-recall.png'.format(dest_file_name))
+
+    plt.figure(6)
+
+    plt.plot(epochs, f1, 'bo', label='F1')
+    plt.plot(epochs, val_f1, 'b', label='Validation F1')
+    plt.title('Training and validation f1')
+    plt.legend()
+
+    plt.savefig('keras_character_based_ner/graphs/{}-f1.png'.format(dest_file_name))
