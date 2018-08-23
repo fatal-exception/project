@@ -28,17 +28,14 @@ def format_prediction_string(prediction: List[Tuple[str]]) -> str:
     for char, label in prediction:
         # label-start
         if previous_label_state == "0" and label != "0":
-            print("label-start")
             result.append(label_start_chars[label])
             result.append(char)
         # label-end
         elif previous_label_state != "0" and label == "0":
-            print("label-end")
             result.append(label_end_chars[previous_label_state])
             result.append(char)
         # label-continue
         elif label == previous_label_state:
-            print("label-continue")
             result.append(char)
         else:
             raise RuntimeError("Unexpected state")

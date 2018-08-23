@@ -6,7 +6,7 @@
 </head>
 <body>
 {% for para in debate_paras %}
-<p>{{ para }}</p>
+<p class="unrendered">{{ para }}</p>
 {% endfor %}
 </body>
 <!-- Load JQuery - http://flask.pocoo.org/docs/1.0/patterns/jquery/ -->
@@ -15,5 +15,6 @@
     '<script src="{{ url_for('static', filename='jquery.js') }}">\x3C/script>')</script>
 
 <script src="{{ url_for('static', filename='char-ner.js') }}"></script>
+<script src="{{ url_for('static', filename='jquery-ui.min.js') }}"></script>
 
 </html>

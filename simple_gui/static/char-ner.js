@@ -1,10 +1,12 @@
 console.log("char-ner javascript loaded");
-$( "p" ).click(function(event) {
-    console.log("Para clicked on");
+$( ".unrendered" ).click(function(event) {
     const $elem = $( this );
     const text = $elem.text();
+    $elem.effect("bounce", "slow");
     $.post("http://localhost:5000/predict/", text, function(data) {
-        console.log(data);
         $elem.text(data);
+        $elem.removeClass("unrendered");
+        $elem.addClass("rendered");
+        $elem.unbind("click");
     })
 });
