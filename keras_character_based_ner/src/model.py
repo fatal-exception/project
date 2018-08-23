@@ -51,7 +51,6 @@ class CharacterBasedLSTMModel:
                           self.non_null_label_accuracy,
                           keras_metrics.precision(),
                           keras_metrics.recall(),
-                          keras_metrics.f1_score(),
                       ])
         # MIR non_null_label_accuracy is a func
         return model
