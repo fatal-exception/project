@@ -6,6 +6,9 @@ from keras.layers.wrappers import TimeDistributed  # type: ignore
 from keras.callbacks import EarlyStopping, ModelCheckpoint  # type: ignore
 from keras.layers import Dense, Dropout, Embedding, LSTM, Bidirectional  # type: ignore
 
+#  MIR add Precision and Recall
+import keras_metrics  #type: ignore
+
 
 class CharacterBasedLSTMModel:
     """ Character-based stacked bi-directional LSTM model
@@ -43,7 +46,13 @@ class CharacterBasedLSTMModel:
                          clipnorm=1.0)
 
         model.compile(optimizer=optimizer, loss='categorical_crossentropy',
-                      metrics=['categorical_accuracy', self.non_null_label_accuracy])
+                      metrics=[
+                          'categorical_accuracy',
+                          self.non_null_label_accuracy,
+                          keras_metrics.precision(),
+                          keras_metrics.recall(),
+                          keras_metrics.f1_score(),
+                      ])
         # MIR non_null_label_accuracy is a func
         return model
 
