@@ -255,7 +255,7 @@ def eval_k_fold_cross(ctx):
 
 
 @task
-def eval_baseline(ctx, dataset_name, dataset_size):
+def eval_baseline(ctx, dataset_name, dataset_size, guessed_label):
     eval.calc_eval_baseline(dataset_name, dataset_size)
 
 
