@@ -101,9 +101,9 @@ def create_y_toy(sentence_maxlen, dataset_name):
     # Model is overfitting. Try reducing tensor size for each dataset
     # to see if that fixes NaN-validation problem.
     cutoff = {
-        "train": 500000,
-        "test": 6000,
-        "dev": 6000,
+        "train": 1000000,
+        "test": 60000,
+        "dev": 60000,
     }
 
     y_list = []
