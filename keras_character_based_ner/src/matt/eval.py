@@ -35,9 +35,9 @@ def k_fold_cross_validation():
     categorical_accuracy_scores: List = []
     non_null_label_accuracy_scores: List = []
     # Use a new CharBasedLSTMModel with saving capabilities, and manual evaluation and fit methods
-    model = SavedCharacterBasedLSTMModel(*init_config_dataset())
     kf = KFold(n_splits=10)
     for train, test in kf.split(x):
+        model = SavedCharacterBasedLSTMModel(*init_config_dataset())
         model.manual_fit(x_train=x[train], y_train=y[train], batch_size=Config.batch_size,
                          epochs=3)
         loss, categorical_accuracy, non_null_label_accuracy = model.manual_evaluate(
@@ -51,6 +51,8 @@ def k_fold_cross_validation():
         "categorical_accuracy_scores": categorical_accuracy_scores,
         "non_null_label_accuracy": non_null_label_accuracy_scores,
     }
+
+    print(scores_dict)
 
     for title, scores in scores_dict.items():
         # With thanks to
