@@ -45,11 +45,27 @@ class CharacterBasedLSTMModel:
         optimizer = Adam(lr=self.config.learning_rate,
                          clipnorm=1.0)
 
+        # MIR Add precision, recall, f1 metrics for all labels
+        extra_metrics = {
+            "precision_null": keras_metrics.precision(label=0),
+            "precision_loc": keras_metrics.precision(label=1),
+            "precision_org": keras_metrics.precision(label=2),
+            "precision_per": keras_metrics.precision(label=3),
+            "recall_null": keras_metrics.recall(label=0),
+            "recall_loc": keras_metrics.recall(label=1),
+            "recall_org": keras_metrics.recall(label=2),
+            "recall_per": keras_metrics.recall(label=3),
+            "f1_null": keras_metrics.f1_score(label=0),
+            "f1_loc": keras_metrics.f1_score(label=1),
+            "f1_org": keras_metrics.f1_score(label=2),
+            "f1_per": keras_metrics.f1_score(label=3),
+        }
+
         model.compile(optimizer=optimizer, loss='categorical_crossentropy',
                       metrics=[
                           'categorical_accuracy',
                           self.non_null_label_accuracy,
-                      ])
+                      ].extend(extra_metrics))
         # MIR non_null_label_accuracy is a func
         return model
 
@@ -75,6 +91,7 @@ class CharacterBasedLSTMModel:
                        # MIR Remove Early Stopping callback as at present we get NaN for validation
                        # callbacks=[checkpointer])
                        callbacks=[early_stopping, checkpointer])
+
 
     def fit_generator(self):
         train_data_generator = self.dataset.get_x_y_generator(dataset_name='train',
