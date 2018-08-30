@@ -192,7 +192,8 @@ def get_x_y_generator(sentence_maxlen, dataset_name):
         x_list = []
         y_list = []
 
-        for idx in range(batch_idx, batch_idx + batch_length):
+        batch_end = max(batch_idx + batch_length, total_sentences)
+        for idx in range(batch_idx, batch_end):
             x_raw = next(x_generator)
             x_processed = numerify.numerify_text(x_raw, alphabet, sentence_maxlen)
             x_list.append(x_processed)

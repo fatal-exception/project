@@ -5,6 +5,7 @@ from keras.models import Sequential  # type: ignore
 from keras.layers.wrappers import TimeDistributed  # type: ignore
 from keras.callbacks import EarlyStopping, ModelCheckpoint  # type: ignore
 from keras.layers import Dense, Dropout, Embedding, LSTM, Bidirectional  # type: ignore
+from keras_character_based_ner.src.matt.file_management import get_total_number_of_hansard_sentences
 
 #  MIR add Precision and Recall
 import keras_metrics  #type: ignore
@@ -82,15 +83,14 @@ class CharacterBasedLSTMModel:
                                        save_best_only=True)
 
         # MIR add 'return' so we have access to the training accuracy history
-        return self.model.fit(x_train,
-                       y_train,
-                       batch_size=self.config.batch_size,
-                       epochs=self.config.max_epochs,
-                       validation_data=(x_dev, y_dev),
-                       shuffle=True,
-                       # MIR Remove Early Stopping callback as at present we get NaN for validation
-                       # callbacks=[checkpointer])
-                       callbacks=[early_stopping, checkpointer])
+        return self.model.fit(
+            x_train,
+            y_train,
+            batch_size=self.config.batch_size,
+            epochs=self.config.max_epochs,
+            validation_data=(x_dev, y_dev),
+            shuffle=True,
+            callbacks=[early_stopping, checkpointer])
 
     def fit_generator(self):
 
@@ -107,14 +107,15 @@ class CharacterBasedLSTMModel:
                                        verbose=1)
 
         # MIR add 'return' so we have access to the training accuracy history
-        return self.model.fit_generator(train_data_generator,
-                                 steps_per_epoch=self.dataset.num_train_docs / self.config.batch_size,
-                                 epochs=self.config.max_epochs,
-                                 validation_data=dev_data_generator,
-                                 validation_steps=self.dataset.num_dev_docs / self.config.batch_size,
-                                 # MIR Remove early_stopping while we investigate NaN validation scores
-                                 callbacks=[early_stopping]
-                                 )
+        # MIR add calls to get_total_number_of_hansard_sentences to get steps per epoch correct
+        return self.model.fit_generator(
+            train_data_generator,
+            steps_per_epoch=get_total_number_of_hansard_sentences("train") / 200_000,
+            epochs=self.config.max_epochs,
+            validation_data=dev_data_generator,
+            validation_steps=get_total_number_of_hansard_sentences("dev") / 200_000,
+            callbacks=[early_stopping]
+            )
 
     def evaluate(self):
         x_test, y_test = self.dataset.get_x_y(self.config.sentence_max_length, dataset_name='test')
