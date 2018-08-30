@@ -212,5 +212,5 @@ def get_x_y_generator(sentence_maxlen, dataset_name):
         print("Padding and converting to numpy arrays...")
         x_np = pad_sequences(x_list, maxlen=sentence_maxlen)
         y_np = pad_sequences(y_list, maxlen=sentence_maxlen)
-        print("Batch generation done up to {}, yielding to Keras model".format(batch_position)
+        print("Batch generation done up to {}, yielding to Keras model".format(batch_position))
         yield(x_np, y_np)
