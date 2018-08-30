@@ -15,15 +15,14 @@ def get_bucket_numbers_for_dataset_name(dataset_name: str) -> List[int]:
     :return: a list of ints for the bucket numbers containing file lists
     which, when unioned together, comprise that dataset.
     """
-    # Keeping ALL artificially small for now while we get the model working.
     if dataset_name == "ALL":
-        return list(range(8))
+        return list(range(320))
     elif dataset_name == "train":
-        return list(range(0, 4))
+        return list(range(0, 160))
     elif dataset_name == "dev":
-        return list(range(4, 6))
+        return list(range(160, 240))
     elif dataset_name == "test":
-        return list(range(6, 8))
+        return list(range(240, 320))
     # Small set of debates to build an alphabet off
     elif dataset_name == "alphabet-sample":
         return [0]
