@@ -174,6 +174,8 @@ def get_x_y_generator(sentence_maxlen, dataset_name):
     """
     from keras.preprocessing.sequence import pad_sequences  # type: ignore
 
+    debug: bool = True
+
     alphabet = get_pickled_alphabet()
 
     onehot_vector_length = len(get_labels()) + 1  # list of labels plus one extra for non-NE
@@ -183,6 +185,7 @@ def get_x_y_generator(sentence_maxlen, dataset_name):
 
     total_sentences: int = get_total_number_of_hansard_sentences(dataset_name)
 
+    print("Preparing generators...")
     x_generator = get_chunked_hansard_texts(dataset_name)
     y_generator = get_chunked_hansard_interpolations(dataset_name)
 
@@ -192,8 +195,11 @@ def get_x_y_generator(sentence_maxlen, dataset_name):
         x_list = []
         y_list = []
 
-        batch_end = max(batch_idx + batch_length, total_sentences)
+        batch_end = min(batch_idx + batch_length, total_sentences)
         for idx in range(batch_idx, batch_end):
+            if debug:
+                print("Generating sequence {} of {}, the end of this batch"
+                      .format(idx, batch_end))
             x_raw = next(x_generator)
             x_processed = numerify.numerify_text(x_raw, alphabet, sentence_maxlen)
             x_list.append(x_processed)
@@ -201,7 +207,8 @@ def get_x_y_generator(sentence_maxlen, dataset_name):
             y_processed = [onehot(int(num), onehot_vector_length) for num in y_raw]
             y_list.append(y_processed)
 
-        batch_position += batch_length
+        batch_position = batch_end
         x_np = pad_sequences(x_list, maxlen=sentence_maxlen)
         y_np = pad_sequences(y_list, maxlen=sentence_maxlen)
+        print("Batch generation done, yielding to Keras model")
         yield(x_np, y_np)
