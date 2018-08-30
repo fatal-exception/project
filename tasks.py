@@ -210,6 +210,11 @@ def model_train_toy(ctx, regenerate_tensors="no"):
 
 
 @task
+def model_train_full(ctx):
+    train.full_dataset_fit_generator()
+
+
+@task
 def model_retrain_toy(ctx):
     train.toy_dataset_refit()
 
