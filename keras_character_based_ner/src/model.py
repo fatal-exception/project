@@ -92,14 +92,17 @@ class CharacterBasedLSTMModel:
                        # callbacks=[checkpointer])
                        callbacks=[early_stopping, checkpointer])
 
-
     def fit_generator(self):
-        train_data_generator = self.dataset.get_x_y_generator(dataset_name='train',
-                                                              maxlen=self.config.sentence_max_length,
-                                                              batch_size=self.config.batch_size)
-        dev_data_generator = self.dataset.get_x_y_generator(dataset_name='dev',
-                                                            maxlen=self.config.sentence_max_length,
-                                                            batch_size=self.config.batch_size)
+
+        train_data_generator = self.dataset.get_x_y_generator(
+            dataset_name='train',
+            sentence_maxlen=self.config.sentence_max_length,
+            batch_size=self.config.batch_size)
+        dev_data_generator = self.dataset.get_x_y_generator(
+            dataset_name='dev',
+            sentence_maxlen=self.config.sentence_max_length,
+            batch_size=self.config.batch_size)
+
         early_stopping = EarlyStopping(patience=self.config.early_stopping,
                                        verbose=1)
 

@@ -87,7 +87,7 @@ def mini_dataset_fit():
 
 
 def full_dataset_fit_generator():
-    print("Fitting toy dataset")
+    print("Fitting full dataset using generator")
     config = Config()
     dataset = CharBasedNERDataset()
     model = SavedCharacterBasedLSTMModel(config, dataset)
