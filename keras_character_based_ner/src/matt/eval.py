@@ -75,12 +75,25 @@ def model_data_validation(dataset_name, dataset_size):
         dataset_name, dataset_size))
     # Load in the pre-trained Toy model off disk
     model = LoadedToyModel(*init_config_dataset())
-    loss, categorical_accuracy, non_null_label_accuracy = model.manual_evaluate(x, y, Config.batch_size)
+    metrics = model.manual_evaluate(x, y, Config.batch_size)
     print("On dataset {dataset_size}-{dataset_name}; ".format(
         dataset_size=dataset_size, dataset_name=dataset_name))
-    print("loss is: " + str(loss))
-    print("categorical_accuracy is: " + str(categorical_accuracy))
-    print("non_null_label_accuracy is: " + str(non_null_label_accuracy))
+    print("loss: {}".format(metrics[0]))
+    print("categorical accuracy: {}".format(metrics[1]))
+    print("non null label accuracy: {}".format(metrics[2]))
+    if len(metrics) > 3:  # If extended metrics have been added...
+        print("precision_null: {}".format(metrics[3]))
+        print("precision_loc: {}".format(metrics[4]))
+        print("precision_org: {}".format(metrics[5]))
+        print("precision_per: {}".format(metrics[6]))
+        print("recall_null: {}".format(metrics[7]))
+        print("recall_loc: {}".format(metrics[8]))
+        print("recall_org: {}".format(metrics[9]))
+        print("recall_per: {}".format(metrics[10]))
+        print("f1_null: {}".format(metrics[11]))
+        print("f1_loc: {}".format(metrics[12]))
+        print("f1_org: {}".format(metrics[13]))
+        print("f1_per: {}".format(metrics[14]))
 
 
 def calc_eval_baseline(dataset_name, dataset_size, baseline_label=0):

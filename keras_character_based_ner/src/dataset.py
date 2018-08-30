@@ -48,7 +48,7 @@ class CharBasedNERDataset:
 
         :return: Generator object that yields tuples (x, y), same as in get_x_y()
         """
-        return matt_get_x_y_generator()
+        return matt_get_x_y_generator(sentence_maxlen, dataset_name)
 
     def get_labels(self):
         """ Implement with own data source.

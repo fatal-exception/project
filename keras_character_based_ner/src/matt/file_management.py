@@ -74,6 +74,23 @@ def write_total_number_of_hansard_sentences_to_file(dataset_name: str):
         f.write(str(sentences_total))
 
 
+def get_total_number_of_hansard_sentences(dataset_name: str):
+    """
+    Get num of sentences in a particular dataset, dev, test or train.
+    Also accept dataset_name 'ALL' while I work on dataset divisions.
+    Count number of sentences in the -spans files and return this to caller.
+
+    :param dataset_name: must be dev, test or train, or ALL.
+    :return:
+    """
+    print("Calculating total number of sentences in {} dataset...".format(dataset_name))
+    sentences_total = 0
+    for span_file in get_hansard_span_files(dataset_name):
+        sentences_total += file_lines(span_file)
+
+    return sentences_total
+
+
 def read_total_number_of_hansard_sentences_from_file(dataset_name) -> int:
     """
     Get num of samples in a particular dataset, dev, test or train.

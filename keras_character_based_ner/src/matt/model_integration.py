@@ -2,9 +2,9 @@
 from keras_character_based_ner.src.matt.alphabet_management import get_pickled_alphabet
 from keras_character_based_ner.src.matt.file_management import get_all_hansard_files
 from keras_character_based_ner.src.matt.file_management import pickle_large_file, unpickle_large_file
-from keras_character_based_ner.src.matt.file_management import read_total_number_of_hansard_sentences_from_file
 from keras_character_based_ner.src.matt.file_management import get_chunked_hansard_texts
 from keras_character_based_ner.src.matt.file_management import get_chunked_hansard_interpolations
+from keras_character_based_ner.src.matt.file_management import get_total_number_of_hansard_sentences
 from typing import List, Tuple
 from hansard_gathering import numerify, chunk
 from statistics import median
@@ -162,7 +162,7 @@ def get_x_y(dataset_name, dataset_size="toy") -> Tuple:
     return x_np, y_np
 
 
-def get_x_y_generator():
+def get_x_y_generator(sentence_maxlen, dataset_name):
     """
     Generator that returns a tuple each time, of inputs/targets as Numpy arrays. Each tuple
     is a batch used in training.
@@ -172,4 +172,35 @@ def get_x_y_generator():
     within the dataset's debates, and yield (short) x and y tensors.
     :return: Generator object that yields tuples (x, y), same as in get_x_y()
     """
-    pass
+    from keras.preprocessing.sequence import pad_sequences  # type: ignore
+
+    alphabet = get_pickled_alphabet()
+
+    onehot_vector_length = len(get_labels()) + 1  # list of labels plus one extra for non-NE
+
+    batch_length: int = 200_000
+    batch_position: int = 0
+
+    total_sentences: int = get_total_number_of_hansard_sentences(dataset_name)
+
+    x_generator = get_chunked_hansard_texts(dataset_name)
+    y_generator = get_chunked_hansard_interpolations(dataset_name)
+
+    for batch_idx in (batch_position, total_sentences, batch_length):
+        print("Generating new batch for keras, on sentence {} of {}"
+              .format(batch_position, total_sentences))
+        x_list = []
+        y_list = []
+
+        for idx in range(batch_idx, batch_idx + batch_length):
+            x_raw = next(x_generator)
+            x_processed = numerify.numerify_text(x_raw, alphabet, sentence_maxlen)
+            x_list.append(x_processed)
+            y_raw = next(y_generator)
+            y_processed = [onehot(int(num), onehot_vector_length) for num in y_raw]
+            y_list.append(y_processed)
+
+        batch_position += batch_length
+        x_np = pad_sequences(x_list, maxlen=sentence_maxlen)
+        y_np = pad_sequences(y_list, maxlen=sentence_maxlen)
+        yield(x_np, y_np)
