@@ -175,7 +175,7 @@ def get_x_y_generator(sentence_maxlen, dataset_name):
     """
     from keras.preprocessing.sequence import pad_sequences  # type: ignore
 
-    debug: bool = True
+    debug: bool = False
 
     alphabet = get_pickled_alphabet()
 
@@ -212,5 +212,5 @@ def get_x_y_generator(sentence_maxlen, dataset_name):
         print("Padding and converting to numpy arrays...")
         x_np = pad_sequences(x_list, maxlen=sentence_maxlen)
         y_np = pad_sequences(y_list, maxlen=sentence_maxlen)
-        print("Batch generation done, yielding to Keras model")
+        print("Batch generation done up to {}, yielding to Keras model".format(batch_position)
         yield(x_np, y_np)
