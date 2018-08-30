@@ -6,6 +6,7 @@ from keras.layers.wrappers import TimeDistributed  # type: ignore
 from keras.callbacks import EarlyStopping, ModelCheckpoint  # type: ignore
 from keras.layers import Dense, Dropout, Embedding, LSTM, Bidirectional  # type: ignore
 from keras_character_based_ner.src.matt.file_management import get_total_number_of_hansard_sentences
+from keras_character_based_ner.src.config import Config
 
 #  MIR add Precision and Recall
 import keras_metrics  #type: ignore
@@ -110,10 +111,10 @@ class CharacterBasedLSTMModel:
         # MIR add calls to get_total_number_of_hansard_sentences to get steps per epoch correct
         return self.model.fit_generator(
             train_data_generator,
-            steps_per_epoch=get_total_number_of_hansard_sentences("train") / 200_000,
+            steps_per_epoch=get_total_number_of_hansard_sentences("train") // Config.batch_size,
             epochs=self.config.max_epochs,
             validation_data=dev_data_generator,
-            validation_steps=get_total_number_of_hansard_sentences("dev") / 200_000,
+            validation_steps=get_total_number_of_hansard_sentences("dev") // Config.batch_size,
             callbacks=[early_stopping]
             )
 

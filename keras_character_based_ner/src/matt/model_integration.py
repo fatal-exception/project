@@ -5,6 +5,7 @@ from keras_character_based_ner.src.matt.file_management import pickle_large_file
 from keras_character_based_ner.src.matt.file_management import get_chunked_hansard_texts
 from keras_character_based_ner.src.matt.file_management import get_chunked_hansard_interpolations
 from keras_character_based_ner.src.matt.file_management import get_total_number_of_hansard_sentences
+from keras_character_based_ner.src.config import Config
 from typing import List, Tuple
 from hansard_gathering import numerify, chunk
 from statistics import median
@@ -180,7 +181,7 @@ def get_x_y_generator(sentence_maxlen, dataset_name):
 
     onehot_vector_length = len(get_labels()) + 1  # list of labels plus one extra for non-NE
 
-    batch_length: int = 200_000
+    batch_length: int = Config.batch_size
     batch_position: int = 0
 
     total_sentences: int = get_total_number_of_hansard_sentences(dataset_name)
@@ -199,7 +200,7 @@ def get_x_y_generator(sentence_maxlen, dataset_name):
         for idx in range(batch_idx, batch_end):
             if debug:
                 print("Generating sequence {} of {}, the end of this batch"
-                      .format(idx, batch_end))
+                      .format(idx, batch_end - 1))
             x_raw = next(x_generator)
             x_processed = numerify.numerify_text(x_raw, alphabet, sentence_maxlen)
             x_list.append(x_processed)
@@ -208,6 +209,7 @@ def get_x_y_generator(sentence_maxlen, dataset_name):
             y_list.append(y_processed)
 
         batch_position = batch_end
+        print("Padding and converting to numpy arrays...")
         x_np = pad_sequences(x_list, maxlen=sentence_maxlen)
         y_np = pad_sequences(y_list, maxlen=sentence_maxlen)
         print("Batch generation done, yielding to Keras model")
