@@ -1,7 +1,7 @@
 from typing import Set
 from nltk.tokenize import TreebankWordTokenizer  # type: ignore
 from hansard_gathering.interpolate import interpolate_one
-from hansard_gathering.interpolate import ngram_span_search_named_entities
+from hansard_gathering.interpolate import ngram_span_search_named_entities, overlaps
 
 
 def test_interpolate_one(fs):
@@ -40,3 +40,6 @@ def test_ngram_span_search_named_entities():
     assert result == expected_result
 
 
+def test_overlaps():
+    assert overlaps(((98, 102), (102, 103), None, None), 101)
+    assert not overlaps(((98, 102), (102, 103), None, None), 97)

@@ -188,7 +188,7 @@ def python_type_check(ctx):
 @task(python_type_check)
 def test(ctx):
     ctx.run("echo pytest: running tests...")
-    ctx.run("pytest test")
+    ctx.run("pytest -v test")
 
 
 @task
