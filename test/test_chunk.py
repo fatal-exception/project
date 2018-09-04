@@ -1,5 +1,5 @@
 from hansard_gathering.chunk import chunk_hansard_debate_file_nltk
-from hansard_gathering.chunk import nltk_get_tokenizer
+from hansard_gathering.chunk import nltk_get_tokenizer, get_sentence_spans
 import os
 
 tokenizer = nltk_get_tokenizer()
@@ -35,3 +35,18 @@ def test_chunk_hansard_debate_file_nltk(fs):
                       "(48,66)"
 
     assert get_contents(fake_spans_path) == expected_spans2
+
+
+def test_get_sentence_spans(fs):
+    spans: str = "(0,27)\n" + \
+            "(28,50)\n" + \
+            "(51,59)"
+
+    fake_spans_path: str = "/fake/sent-spans.txt"
+    fake_debate_path: str = "/fake/sent.txt"
+    fs.create_file(fake_spans_path, contents=spans)
+    generator = get_sentence_spans(fake_debate_path)
+    expected_list = [(0, 27), (28, 50), (51, 59)]
+    assert list(generator) == expected_list
+
+
