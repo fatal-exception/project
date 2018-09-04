@@ -4,7 +4,6 @@ Make a dataset smaller - the toy dataset we chose is too large to get a feel for
 from keras_character_based_ner.src.matt.file_management import unpickle_large_file, pickle_large_file
 from keras_character_based_ner.src.config import Config
 from keras.preprocessing.sequence import pad_sequences  # type: ignore
-from typing import List
 
 MAX_BATCH = 4000
 
