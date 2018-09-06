@@ -1,5 +1,5 @@
 from lxml import etree  # type: ignore
-from typing import Generator, List
+from typing import Generator
 import glob
 import os
 
@@ -16,6 +16,11 @@ def unxml_hansard_document(document_text):
     tree = etree.fromstring(document_text.encode('utf-8'), parser=parser)
     notags = etree.tostring(tree, encoding='utf8', method='text')
     return notags
+
+
+def process_hansard_directory(dir_path):
+    for _file in glob.glob("{dir_path}/*.xml".format(dir_path=dir_path)):
+        process_hansard_file(_file)
 
 
 def process_hansard_file(file_path):

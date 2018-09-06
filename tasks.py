@@ -23,6 +23,11 @@ def print_debate_titles(ctx, datestring):
 
 
 @task
+def hansard_download_for_date(ctx, date):
+    driver.get_hansards_for_date(date)
+
+
+@task
 def hansard_download_all(ctx, year=1919, month=1, day=1):
     driver.get_all_hansards(year, month, day)
 
