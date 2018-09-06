@@ -40,26 +40,31 @@ def remove_other_debate_content(tree, debate_colnum_start, debate_colnum_end):
     return tree
 
 
-def download_and_split_all_debates(datestring, debates_list):
+def download_and_split_debates_for_date(datestring, debates_list):
     """
     Given a list of debate titles, download them all into files,
     correctly splitting the XML into separate files per title.
     :param datestring: Date to download for
     :param debates_list: List of tuples of (title, HTML url, XML url)
     """
+    # Currently, all debates for a given day are actually served in one big XML file.
+    # Just take the debate XML url from the first one, so we only download
+    # this XML once, and then take the right colnums for each debate title to
+    # write out to separate debate files.
+
     parser = etree.XMLParser(ns_clean=True, recover=True, encoding='utf-8')
+    xml_url = debates_list[0][2]
+    if xml_url == "N/A":
+        return
+    xml_data = requests.get(xml_url).text
+
     for idx, debate in enumerate(debates_list):
         print("Data for {}: {}".format(datestring, debate))
-        xml_url = debate[2]
-        if xml_url == "N/A":
-            continue
         title = debate[0].replace("/", "")  # UNIX filenames cannot contain forward slash
         debate_colnum_start: int = get_debate_colnum_start(debate)
         debate_colnum_end: int = get_debate_colnum_end(idx, debates_list)
 
-        xml_data = requests.get(xml_url).text
         tree = etree.fromstring(xml_data.encode('utf-8'), parser=parser)
-
         tree = remove_other_debate_content(tree, debate_colnum_start, debate_colnum_end)
 
         os.makedirs("hansard_gathering/raw_hansard_data/{datestring}".format(datestring=datestring), exist_ok=True)
@@ -91,7 +96,7 @@ def get_titles_and_download(datestring, content_type):
     # TODO lords titles don't seem to work with scraped xml?
     lords_titles = get_hansard_titles(datestring, "Debates", "lords")
 
-    download_and_split_all_debates(datestring, commons_titles)
+    download_and_split_debates_for_date(datestring, commons_titles)
 
 
 def get_hansards_for_date(date):
