@@ -46,6 +46,11 @@ def k_fold_cross_validation():
         categorical_accuracy_scores.append(categorical_accuracy)
         non_null_label_accuracy_scores.append(non_null_label_accuracy)
 
+        print("loss_scores are: {}, categorical_accuracy_scores are: {}, non_null_label_accuracy scores are:{} "
+              .format(loss_scores,
+                      categorical_accuracy_scores,
+                      non_null_label_accuracy_scores))
+
     scores_dict = {
         "loss_scores": loss_scores,
         "categorical_accuracy_scores": categorical_accuracy_scores,
