@@ -56,4 +56,4 @@ def predict_text():
 
 def main():
     initialize_keras_model()
-    app.run(load_dotenv=False, debug=True, port=5000, threaded=True)
+    app.run(host='0.0.0.0', load_dotenv=False, debug=True, port=5000, threaded=True)

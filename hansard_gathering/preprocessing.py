@@ -19,7 +19,9 @@ def unxml_hansard_document(document_text):
 
 
 def process_hansard_directory(dir_path):
+    print("Processing Hansard directory {}".format(dir_path))
     for _file in glob.glob("{dir_path}/*.xml".format(dir_path=dir_path)):
+        print("Found file {}".format(_file))
         process_hansard_file(_file)
 
 
@@ -35,8 +37,6 @@ def process_hansard_file(file_path):
     os.makedirs(os.path.dirname(dest_path), exist_ok=True)
     with open(dest_path, 'wb+') as f:
         f.write(processed_document_text)
-    # Clean up as we go along to save Matt's Hard Drive!
-    os.remove(file_path)
 
 
 def list_raw_hansard_files() -> Generator[str, None, None]:

@@ -43,6 +43,11 @@ def hansard_process_all(ctx):
 
 
 @task
+def hansard_process_for_date(ctx, date):
+    preprocessing.process_hansard_directory("hansard_gathering/raw_hansard_data/{}".format(date))
+
+
+@task
 def hansard_chunk_one(ctx, filepath):
     tokenizer = chunk.nltk_get_tokenizer()
     chunk.chunk_hansard_debate_file_nltk(filepath, tokenizer)
